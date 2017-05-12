@@ -3,6 +3,7 @@ package com.example.radog.patm_cine_mapas.Map;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
+import android.widget.Toast;
 
 import com.example.radog.patm_cine_mapas.R;
 import com.google.android.gms.maps.CameraUpdate;
@@ -31,11 +32,18 @@ public class SucursalMapsActivity extends FragmentActivity implements OnMapReady
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sucursal_maps);
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
         marcas = new ArrayList<>();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
     }
 
     @Override
@@ -43,7 +51,6 @@ public class SucursalMapsActivity extends FragmentActivity implements OnMapReady
         getMenuInflater().inflate(R.menu.map_menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
-
 
     /**
      * Manipulates the map once available.
@@ -65,11 +72,12 @@ public class SucursalMapsActivity extends FragmentActivity implements OnMapReady
         latitud = objGeo.getLatActual();
         longitud = objGeo.getLongActual();
 
+        Toast.makeText(this, "latitud: " + latitud + "\nLongitud: " + longitud, Toast.LENGTH_SHORT).show();
+
         LatLng aquiEstoy = new LatLng(latitud, longitud);
 
         Geocode objG = new Geocode(this, mMap, aquiEstoy);
         objG.getPlace(latitud, longitud);
-
     }
 
     @Override
@@ -79,7 +87,8 @@ public class SucursalMapsActivity extends FragmentActivity implements OnMapReady
         setMarca();
 
         objOL = new Places(this, mMap, marcas);
-        objOL.getNokia(latMarca, lonMarca);
+        //objOL.getNokia(latMarca, lonMarca);
+        objOL.getCinemas(latMarca, lonMarca);
     }
 
     private void setMarca() {
@@ -92,6 +101,6 @@ public class SucursalMapsActivity extends FragmentActivity implements OnMapReady
             marcador.remove();
         }
 
-        marcador = mMap.addMarker(new MarkerOptions().position(coordenada).title("Posición X").icon(BitmapDescriptorFactory.fromResource(R.mipmap.location)));
+        marcador = mMap.addMarker(new MarkerOptions().position(coordenada).title("Ubicación Seleccionada").icon(BitmapDescriptorFactory.fromResource(R.mipmap.location)));
     }
 }

@@ -60,6 +60,25 @@ public class Places implements Response.Listener<String>, Response.ErrorListener
         qSolicitudes.add(solGETCte);
     }
 
+    public void getCinemas(double latmarca, double lonmarca) {
+        qSolicitudes = Volley.newRequestQueue(con);
+
+        String URL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?" +
+                "location=" + latmarca + "," + lonmarca +
+                "&radius=10000" +
+                "&type=movie_theater" +
+                "&keyword=cine" +
+                "&key=AIzaSyAg8JGCUKDz1XyDzSe7dF0VNKglIIGB7jc";
+
+        StringRequest solGETCte = new StringRequest(Request.Method.GET, URL, this, this) {
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> params = new HashMap<String, String>();
+                return params;
+            }
+        };
+        qSolicitudes.add(solGETCte);
+    }
 
     @Override
     public void onErrorResponse(VolleyError error) {
@@ -68,28 +87,34 @@ public class Places implements Response.Listener<String>, Response.ErrorListener
 
     @Override
     public void onResponse(String response) {
+        //Toast.makeText(con, response, Toast.LENGTH_SHORT).show();
+
         try {
+            //para eliminar las marcas
             int tamaño = marcas2.size();
             if (tamaño != 0) {
                 for (int i = 0; i < tamaño; i++)
                     marcas2.get(i).remove();
             }
 
-            results = new JSONObject(response);
-            item = results.getJSONObject("results");
-            lugares = item.getJSONArray("items");
+            JSONObject objRes = new JSONObject(response);
+            JSONArray objArr = objRes.getJSONArray("results");
+            for (int i = 0; i < objArr.length(); i++) {
+                JSONObject objObj = objArr.getJSONObject(i);
+                Bitmap bmIcon = Ion.with(con).load(objObj.getString("icon")).asBitmap().get(); //se obtiene el ícono
 
-            for (int i = 0; i < lugares.length(); i++) {
-                lugar = lugares.getJSONObject(i);
-
-                Bitmap bmImg = Ion.with(con).load(lugar.getString("icon")).asBitmap().get();
+                //get lat and lng
+                JSONObject objPlace = objObj.getJSONObject("geometry");
+                objPlace = objPlace.getJSONObject("location");
+                double objLat = objPlace.getDouble("lat");
+                double objLon = objPlace.getDouble("lng");
 
                 marcas2.add(mapa.addMarker(new MarkerOptions()
                         .position(new LatLng(
-                                lugar.getJSONArray("position").getDouble(0),
-                                lugar.getJSONArray("position").getDouble(1)))
-                        .title(lugar.getString("title"))
-                        .icon(BitmapDescriptorFactory.fromBitmap(bmImg))));
+                                objLat,
+                                objLon))
+                        .title(objObj.getString("name"))
+                        .icon(BitmapDescriptorFactory.fromBitmap(bmIcon))));
             }
         } catch (Exception e) {
             e.printStackTrace();
