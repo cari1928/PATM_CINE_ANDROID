@@ -1,4 +1,4 @@
-package com.example.radog.patm_cine;
+package com.example.radog.patm_cine_mapas;
 
 import org.junit.Test;
 

@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.radog.patm_cine.Login">
-
+    tools:context="com.example.radog.patm_cine_mapas.Login">
 
     <ImageView
         android:id="@+id/imageView"
