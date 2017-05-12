@@ -14,6 +14,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.radog.patm_cine_mapas.Map.SucursalMapsActivity;
 
 import org.json.JSONObject;
 
@@ -49,8 +50,9 @@ public class Login extends AppCompatActivity implements Response.Listener<String
 
     @OnClick(R.id.btnLogin)
     public void btnLogin() {
+        Tools objT = new Tools();
         user = etUser.getText().toString();
-        pass = etUser.getText().toString();
+        pass = objT.encriptaDato("MD5", etPass.getText().toString());
 
         if (user.equals("") || pass.equals("")) {
             Toast.makeText(this, "Input the required information", Toast.LENGTH_SHORT).show();
@@ -77,12 +79,14 @@ public class Login extends AppCompatActivity implements Response.Listener<String
             JSONObject objJSON = new JSONObject(response);
             if (objJSON.getString("status").equals("bitacora")) {
                 Toast.makeText(this, "Welcome " + user, Toast.LENGTH_SHORT).show();
-                Bundle data = new Bundle();
-                Tools tool = new Tools();
-                pass = tool.md5(pass);
 
+                Intent iSucursal = new Intent(this, SucursalMapsActivity.class);
+                Bundle data = new Bundle();
                 data.putString("USER", user);
                 data.putString("PASS", pass);
+                iSucursal.putExtras(data);
+                startActivity(iSucursal);
+
             } else {
                 errorMsg();
             }

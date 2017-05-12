@@ -1,7 +1,6 @@
 package com.example.radog.patm_cine_mapas;
 
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 
 /**
  * Created by radog on 12/05/2017.
@@ -9,22 +8,31 @@ import java.security.NoSuchAlgorithmException;
 
 public class Tools {
 
-    public static String md5(String s) {
+    public String encriptaDato(String tipo, String cadena) {
         try {
-            // Create MD5 Hash
-            MessageDigest digest = java.security.MessageDigest.getInstance("MD5");
-            digest.update(s.getBytes());
-            byte messageDigest[] = digest.digest();
+            byte[] digest = null;
+            byte[] buffer = cadena.getBytes();
 
-            // Create Hex String
-            StringBuffer hexString = new StringBuffer();
-            for (int i = 0; i < messageDigest.length; i++)
-                hexString.append(Integer.toHexString(0xFF & messageDigest[i]));
-            return hexString.toString();
+            MessageDigest messageDigest = MessageDigest.getInstance(tipo);
+            messageDigest.reset();
+            messageDigest.update(buffer);
+            digest = messageDigest.digest();
 
-        } catch (NoSuchAlgorithmException e) {
+            return toHexadecimal(digest);
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        return "";
+        return null;
+    }
+
+    private static String toHexadecimal(byte[] digest) {
+        String hash = "";
+        for (byte aux : digest) {
+            int b = aux & 0xff;
+            if (Integer.toHexString(b).length() == 1)
+                hash += "0";
+            hash += Integer.toHexString(b);
+        }
+        return hash;
     }
 }

@@ -107,7 +107,6 @@ public class Registration extends AppCompatActivity implements Response.Listener
     }
 
     private void insCliente() {
-        Tools tool = new Tools();
         try {
             jsonObject.put("nombre", etName.getText().toString());
             jsonObject.put("apellidos", etLastName.getText().toString());
