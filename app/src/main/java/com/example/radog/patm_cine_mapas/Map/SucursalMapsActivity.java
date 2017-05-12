@@ -1,19 +1,31 @@
 package com.example.radog.patm_cine_mapas.Map;
 
-import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
+import android.view.Menu;
 
 import com.example.radog.patm_cine_mapas.R;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class SucursalMapsActivity extends FragmentActivity implements OnMapReadyCallback {
+import java.util.ArrayList;
+import java.util.List;
+
+public class SucursalMapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMapClickListener {
 
     private GoogleMap mMap;
+    private Marker marcador = null;
+    double latMarca, lonMarca;
+    private Places objOL;
+    private List<Marker> marcas = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,6 +35,13 @@ public class SucursalMapsActivity extends FragmentActivity implements OnMapReady
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+        marcas = new ArrayList<>();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.map_menu, menu);
+        return super.onCreateOptionsMenu(menu);
     }
 
 
@@ -38,10 +57,41 @@ public class SucursalMapsActivity extends FragmentActivity implements OnMapReady
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        double latitud, longitud;
+        mMap.setOnMapClickListener(this);
+        Geolocation objGeo = new Geolocation(this);
 
-        // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        //obtiene posición actual
+        latitud = objGeo.getLatActual();
+        longitud = objGeo.getLongActual();
+
+        LatLng aquiEstoy = new LatLng(latitud, longitud);
+
+        Geocode objG = new Geocode(this, mMap, aquiEstoy);
+        objG.getPlace(latitud, longitud);
+
+    }
+
+    @Override
+    public void onMapClick(LatLng latLng) {
+        latMarca = latLng.latitude;
+        lonMarca = latLng.longitude;
+        setMarca();
+
+        objOL = new Places(this, mMap, marcas);
+        objOL.getNokia(latMarca, lonMarca);
+    }
+
+    private void setMarca() {
+        LatLng coordenada = new LatLng(latMarca, lonMarca);
+        CameraPosition camara = new CameraPosition.Builder().target(coordenada).zoom(15).build();
+        CameraUpdate camUpd = CameraUpdateFactory.newCameraPosition(camara);
+        mMap.animateCamera(camUpd);
+
+        if (marcador != null) {
+            marcador.remove();
+        }
+
+        marcador = mMap.addMarker(new MarkerOptions().position(coordenada).title("Posición X").icon(BitmapDescriptorFactory.fromResource(R.mipmap.location)));
     }
 }
