@@ -32,18 +32,19 @@
 
         <activity
             android:name=".Map.SucursalMapsActivity"
-            android:label="@string/title_activity_sucursal_maps">
+            android:label="@string/title_activity_sucursal_maps"></activity>
+        <activity android:name=".Login">
 
         </activity>
-        <activity android:name=".Login">
+        <activity android:name=".Registration" />
+        <activity android:name=".Function" />
+        <activity android:name=".MainMenuActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Registration" />
-        <activity android:name=".Function"></activity>
     </application>
 
 </manifest>

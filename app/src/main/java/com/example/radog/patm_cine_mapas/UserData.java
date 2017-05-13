@@ -7,6 +7,9 @@ import android.os.Parcelable;
  * Created by radog on 13/05/2017.
  */
 
+/**
+ * Used for passing user information like username, pass, etc.
+ */
 public class UserData implements Parcelable {
 
     String nombre;

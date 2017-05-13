@@ -6,7 +6,6 @@ import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.radog.patm_cine_mapas.Function;
 import com.example.radog.patm_cine_mapas.R;
@@ -76,10 +75,9 @@ public class SucursalMapsActivity extends FragmentActivity implements OnMapReady
         latitud = objGeo.getLatActual();
         longitud = objGeo.getLongActual();
 
-        Toast.makeText(this, "latitud: " + latitud + "\nLongitud: " + longitud, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "latitud: " + latitud + "\nLongitud: " + longitud, Toast.LENGTH_SHORT).show();
 
         LatLng aquiEstoy = new LatLng(latitud, longitud);
-
         Geocode objG = new Geocode(this, mMap, aquiEstoy);
         objG.getPlace(latitud, longitud);
     }
@@ -147,6 +145,7 @@ public class SucursalMapsActivity extends FragmentActivity implements OnMapReady
             marcador.remove();
         }
 
-        marcador = mMap.addMarker(new MarkerOptions().position(coordenada).title("Ubicación Seleccionada").icon(BitmapDescriptorFactory.fromResource(R.mipmap.location)));
+        marcador = mMap.addMarker(new MarkerOptions().position(coordenada).title("Ubicación Seleccionada").
+                icon(BitmapDescriptorFactory.fromResource(R.mipmap.location)));
     }
 }
