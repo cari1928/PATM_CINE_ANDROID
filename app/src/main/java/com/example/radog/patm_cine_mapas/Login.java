@@ -18,6 +18,7 @@ import com.example.radog.patm_cine_mapas.Map.SucursalMapsActivity;
 
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -82,8 +83,14 @@ public class Login extends AppCompatActivity implements Response.Listener<String
 
                 Intent iSucursal = new Intent(this, SucursalMapsActivity.class);
                 Bundle data = new Bundle();
-                data.putString("USER", user);
-                data.putString("PASS", pass);
+
+                ArrayList<UserData> userData = new ArrayList<>();
+                UserData objU = new UserData("username", user);
+                userData.add(objU);
+                objU = new UserData("pass", pass);
+                userData.add(objU);
+
+                data.putParcelableArrayList("USERDATA", userData);
                 iSucursal.putExtras(data);
                 startActivity(iSucursal);
 

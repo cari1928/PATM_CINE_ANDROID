@@ -1,11 +1,16 @@
 package com.example.radog.patm_cine_mapas.Map;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.radog.patm_cine_mapas.Function;
 import com.example.radog.patm_cine_mapas.R;
+import com.example.radog.patm_cine_mapas.UserData;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -27,6 +32,8 @@ public class SucursalMapsActivity extends FragmentActivity implements OnMapReady
     double latMarca, lonMarca;
     private Places objOL;
     private List<Marker> marcas = new ArrayList<>();
+    private ArrayList<UserData> lUserData;
+    Bundle data;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,12 +45,9 @@ public class SucursalMapsActivity extends FragmentActivity implements OnMapReady
         mapFragment.getMapAsync(this);
 
         marcas = new ArrayList<>();
-    }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-
+        data = getIntent().getExtras();
+        lUserData = data.getParcelableArrayList("USERDATA");
     }
 
     @Override
@@ -87,8 +91,50 @@ public class SucursalMapsActivity extends FragmentActivity implements OnMapReady
         setMarca();
 
         objOL = new Places(this, mMap, marcas);
-        //objOL.getNokia(latMarca, lonMarca);
         objOL.getCinemas(latMarca, lonMarca);
+
+        if (mMap != null) {
+            mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+
+                @Override
+                public View getInfoWindow(Marker marker) {
+                    return null;
+                }
+
+                @Override
+                public View getInfoContents(Marker marker) {
+                    //HOW IT LOOKS LIKE
+                    View v = getLayoutInflater().inflate(R.layout.marker_info, null);
+                    TextView tvName = (TextView) v.findViewById(R.id.tvName);
+                    LatLng ll = marker.getPosition();
+                    tvName.setText(marker.getTitle());
+                    return v;
+                }
+
+            });
+
+            mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+
+                @Override
+                public void onInfoWindowClick(Marker marker) {
+                    //Toast.makeText(SucursalMapsActivity.this, "prueba", Toast.LENGTH_SHORT).show();
+                    changeIntent(marker.getPosition());
+                }
+            });
+        }
+    }
+
+    public void changeIntent(LatLng position) {
+        UserData objU = new UserData("latitud", String.valueOf(position.latitude));
+        lUserData.add(objU);
+        objU = new UserData("longitud", String.valueOf(position.longitude));
+        lUserData.add(objU);
+
+        Intent iFuncion = new Intent(this, Function.class);
+        data = new Bundle();
+        data.putParcelableArrayList("USERDATA", lUserData);
+        iFuncion.putExtras(data);
+        startActivity(iFuncion);
     }
 
     private void setMarca() {

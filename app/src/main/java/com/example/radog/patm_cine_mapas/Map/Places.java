@@ -44,22 +44,6 @@ public class Places implements Response.Listener<String>, Response.ErrorListener
         this.marcas2 = marcas2;
     }
 
-    public void getNokia(double latmarca, double lonmarca) {
-        qSolicitudes = Volley.newRequestQueue(con);
-
-        String URL = "http://demo.places.nlp.nokia.com/places/v1/discover/explore?at="
-                + latmarca + "," + lonmarca + "&app_id=DemoAppId01082013GAL&app_code=AJKnXv84fjrb0KIHawS0Tg&tf=plain&pretty=true";
-
-        StringRequest solGETCte = new StringRequest(Request.Method.GET, URL, this, this) {
-            @Override
-            public Map<String, String> getHeaders() {
-                Map<String, String> params = new HashMap<String, String>();
-                return params;
-            }
-        };
-        qSolicitudes.add(solGETCte);
-    }
-
     public void getCinemas(double latmarca, double lonmarca) {
         qSolicitudes = Volley.newRequestQueue(con);
 
@@ -120,10 +104,5 @@ public class Places implements Response.Listener<String>, Response.ErrorListener
             e.printStackTrace();
             Toast.makeText(con, e.toString(), Toast.LENGTH_SHORT).show();
         }
-    }
-
-    private void borrarMarcadores() {
-        for (int i = 0; i < marcas.length; i++)
-            marcas[i].remove();
     }
 }
