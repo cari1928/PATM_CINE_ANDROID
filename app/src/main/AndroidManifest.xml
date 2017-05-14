@@ -32,19 +32,29 @@
 
         <activity
             android:name=".Map.SucursalMapsActivity"
-            android:label="@string/title_activity_sucursal_maps"></activity>
-        <activity android:name=".Login">
-
-        </activity>
+            android:label="@string/title_activity_sucursal_maps" />
+        <activity android:name=".Login"></activity>
         <activity android:name=".Registration" />
         <activity android:name=".Function" />
         <activity android:name=".MainMenuActivity">
+
+        </activity>
+        <activity
+            android:name=".ProveedorContenido.Rol.RolesActivity"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <provider
+            android:name=".ProveedorContenido.Proveedor.ProveedorDeContenido"
+            android:authorities="com.example.radog.patm_cine_mapas.ProveedorContenido.Proveedor.ProveedorDeContenido"
+            android:enabled="true"
+            android:exported="true" />
+
     </application>
 
 </manifest>
