@@ -5,7 +5,7 @@
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
          Google Maps Android API v2, but you must specify either coarse or fine
-         location permissions for the 'MyLocation' functionality. 
+         location permissions for the 'MyLocation' functionality.
     -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -24,7 +24,7 @@
              Note that the API key is linked to the encryption key used to sign the APK.
              You need a different API key for each encryption key, including the release key that is used to
              sign the APK for publishing.
-             You can define the keys for the debug and release targets in src/debug/ and src/release/. 
+             You can define the keys for the debug and release targets in src/debug/ and src/release/.
         -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
@@ -33,7 +33,7 @@
         <activity
             android:name=".Map.SucursalMapsActivity"
             android:label="@string/title_activity_sucursal_maps" />
-        <activity android:name=".Login"></activity>
+        <activity android:name=".Login" />
         <activity android:name=".Registration" />
         <activity android:name=".Function" />
         <activity android:name=".MainMenuActivity">
@@ -42,6 +42,44 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".rol.RolActivity"
+            android:parentActivityName=".MainMenuActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.radog.patm_cine_mapas.MainMenuActivity" />
+        </activity>
+
+        <provider
+            android:name=".proveedor.ProveedorDeContenido"
+            android:authorities="com.example.radog.patm_cine_mapas.proveedor.ProveedorDeContenido"
+            android:enabled="true"
+            android:exported="true" />
+
+        <activity
+            android:name=".rol.RolInsertActivity"
+            android:parentActivityName=".rol.RolActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.radog.patm_cine_mapas.rol.RolActivity" />
+        </activity>
+        <activity
+            android:name=".rol.RolUpdateActivity"
+            android:parentActivityName=".rol.RolActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.radog.patm_cine_mapas.rol.RolActivity" />
+
         </activity>
     </application>
 

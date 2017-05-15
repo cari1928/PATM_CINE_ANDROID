@@ -6,6 +6,9 @@
     <string name="strNombreDev">Santana De Los Ríos Carolina</string>
     <string name="strCorreoDev">13030622@itcelaya.edu.mx</string>
     <string name="strTelDev">(044) 461-171-4676</string>
+
     <string name="sin_datos">Sin datos.</string>
     <string name="progress_cargando_datos">Cargando datos...</string>
+    <string name="rol">Nombre del Rol</string>
+    <string name="campo_requerido">Campo Requerido</string>
 </resources>

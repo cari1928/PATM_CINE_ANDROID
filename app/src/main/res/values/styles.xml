@@ -6,13 +6,17 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="actionModeStyle">@style/action_mode_style</item>
+    </style>
+
+    <style name="action_mode_style" parent="Widget.AppCompat.ActionMode">
+        <item name="background">@color/colorPrimary</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
-        <item name="windowActionModeOverlay">true
-        </item> <!-- Para que el contextual action bar se ponga por encima del AppBar -->
+        <item name="windowActionModeOverlay">true</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
