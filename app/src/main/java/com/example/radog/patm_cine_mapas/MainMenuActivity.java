@@ -1,6 +1,5 @@
 package com.example.radog.patm_cine_mapas;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -9,8 +8,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-
-import com.example.radog.patm_cine_mapas.rol.RolActivity;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -45,8 +42,7 @@ public class MainMenuActivity extends AppCompatActivity {
 
     @OnClick(R.id.ibtnTickets)
     public void ibtnTickets() {
-        Intent intent = new Intent(this, RolActivity.class);
-        startActivity(intent);
+
     }
 
     @OnClick(R.id.ibtnLog)
