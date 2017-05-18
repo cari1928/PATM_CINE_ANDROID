@@ -9,16 +9,24 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.example.radog.patm_cine_mapas.BD.DBHelper;
+
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class MainMenuActivity extends AppCompatActivity {
+
+    DBHelper objDBH;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
         ButterKnife.bind(this);
+
+        //conexión y apertura de la BD
+        objDBH = new DBHelper(this, "cinemaster", null, 2);
+        objDBH.openDB();
     }
 
     @Override
@@ -53,6 +61,13 @@ public class MainMenuActivity extends AppCompatActivity {
     @OnClick(R.id.ibtnAbout)
     public void ibtnAbout() {
         showAlertDialog();
+    }
+
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        objDBH.closeDB();
     }
 
     /**
