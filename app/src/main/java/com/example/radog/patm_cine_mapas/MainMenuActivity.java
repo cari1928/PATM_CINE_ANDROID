@@ -25,7 +25,7 @@ public class MainMenuActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         //conexión y apertura de la BD
-        objDBH = new DBHelper(this, "cinemaster", null, 2);
+        objDBH = new DBHelper(this);
         objDBH.openDB();
     }
 
