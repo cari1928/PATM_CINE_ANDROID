@@ -512,9 +512,9 @@ public class DBHelper extends SQLiteOpenHelper {
         delete(TABLE_SALA, null);
         delete(TABLE_SUCURSAL, null);
 
-        //delete(TABLE_CATEGORIA_PELICULA, null);
-        //delete(TABLE_REPARTO, null);
-        //delete(TABLE_COLABORADOR, null);
-        //delete(TABLE_CATEGORIA, null);
+        delete(TABLE_CATEGORIA_PELICULA, null);
+        delete(TABLE_REPARTO, null);
+        delete(TABLE_COLABORADOR, null);
+        delete(TABLE_CATEGORIA, null);
     }
 }

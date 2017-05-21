@@ -7,7 +7,7 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.TextView;
 
-import com.example.radog.patm_cine_mapas.Function;
+import com.example.radog.patm_cine_mapas.Activities.Function;
 import com.example.radog.patm_cine_mapas.R;
 import com.example.radog.patm_cine_mapas.UserData;
 import com.google.android.gms.maps.CameraUpdate;

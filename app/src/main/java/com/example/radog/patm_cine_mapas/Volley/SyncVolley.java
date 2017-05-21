@@ -14,16 +14,11 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.radog.patm_cine_mapas.BD.DBHelper;
 import com.example.radog.patm_cine_mapas.Constatns;
-import com.example.radog.patm_cine_mapas.TDA.TDAFuncion;
-import com.example.radog.patm_cine_mapas.TDA.TDAPelicula;
-import com.example.radog.patm_cine_mapas.TDA.TDASala;
-import com.example.radog.patm_cine_mapas.TDA.TDASucursal;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -31,6 +26,18 @@ import java.util.Map;
  */
 
 public class SyncVolley implements Response.Listener<String>, Response.ErrorListener {
+
+    /*
+    List<TDASucursal> lSuc = db.select("SELECT * FROM sucursal", new TDASucursal());
+    List<TDASala> lSal = db.select("SELECT * FROM sala", new TDASala());
+    List<TDAPelicula> lPeli = db.select("SELECT * FROM pelicula", new TDAPelicula());
+    List<TDAFuncion> lFun = db.select("SELECT * FROM funcion", new TDAFuncion());
+    List<TDACategoria> lCat = db.select("SELECT * FROM categoria", new TDACategoria());
+    List<TDAColaborador> lCol = db.select("SELECT * FROM colaborador", new TDAColaborador());
+    List<String> lCatPeli = db.select("SELECT * FROM categoria_pelicula", 3);
+    List<String> lRep = db.select("SELECT * FROM reparto", 3);
+            Log.e("VOLLEY-SUC",lFun.toString());
+    */
 
     private RequestQueue qSolicitudes;
     private Context con;
@@ -65,6 +72,10 @@ public class SyncVolley implements Response.Listener<String>, Response.ErrorList
             JSONArray jaFun = objJSON.getJSONArray("funciones");
             JSONArray jaSuc = objJSON.getJSONArray("sucursales");
             JSONArray jaSal = objJSON.getJSONArray("salas");
+            JSONArray jaCat = objJSON.getJSONArray("categorias");
+            JSONArray jaCol = objJSON.getJSONArray("colaboradores");
+            JSONArray jaCatPeli = objJSON.getJSONArray("cat_pelis");
+            JSONArray jaRep = objJSON.getJSONArray("repartos");
             JSONObject tmp;
 
             for (int i = 0; i < jaSuc.length(); i++) {
@@ -100,7 +111,7 @@ public class SyncVolley implements Response.Listener<String>, Response.ErrorList
                         tmp.getString(db.NOMBRE),
                         tmp.getString(db.SUCURSAL_ID),
                         tmp.getString(db.NUMERO_SALA)
-                }, db.TABLE_SALA, false);
+                }, db.TABLE_SALA, true);
 
                 if (res == -1) return;
             }
@@ -123,7 +134,7 @@ public class SyncVolley implements Response.Listener<String>, Response.ErrorList
                         tmp.getString(db.LENGUAJE),
                         tmp.getString(db.DURACION),
                         tmp.getString(db.POSTER)
-                }, db.TABLE_PELICULA, false);
+                }, db.TABLE_PELICULA, true);
 
                 if (res == -1) return;
             }
@@ -146,16 +157,70 @@ public class SyncVolley implements Response.Listener<String>, Response.ErrorList
                         tmp.getString(db.HORA),
                         tmp.getString(db.FECHA_FIN),
                         tmp.getString(db.HORA_FIN)
-                }, db.TABLE_FUNCION, false);
+                }, db.TABLE_FUNCION, true);
 
                 if (res == -1) return;
             }
 
-            List<TDASucursal> lSuc = db.select("SELECT * FROM sucursal", new TDASucursal());
-            List<TDASala> lSal = db.select("SELECT * FROM sala", new TDASala());
-            List<TDAPelicula> lPeli = db.select("SELECT * FROM pelicula", new TDAPelicula());
-            List<TDAFuncion> lFun = db.select("SELECT * FROM funcion", new TDAFuncion());
-            Log.e("VOLLEY-SUC", lFun.toString());
+            for (int i = 0; i < jaCat.length(); i++) {
+                tmp = jaCat.getJSONObject(i);
+                res = db.insert(new String[]{
+                        db.CATEGORIA_ID,
+                        db.CATEGORIA
+                }, new String[]{
+                        tmp.getString(db.CATEGORIA_ID),
+                        tmp.getString(db.CATEGORIA)
+                }, db.TABLE_CATEGORIA, false);
+
+                if (res == -1) return;
+            }
+
+            for (int i = 0; i < jaCol.length(); i++) {
+                tmp = jaCol.getJSONObject(i);
+                res = db.insert(new String[]{
+                        db.COLABORADOR_ID,
+                        db.NOMBRE,
+                        db.APELLIDOS
+                }, new String[]{
+                        tmp.getString(db.COLABORADOR_ID),
+                        tmp.getString(db.NOMBRE),
+                        tmp.getString(db.APELLIDOS)
+                }, db.TABLE_COLABORADOR, false);
+
+                if (res == -1) return;
+            }
+
+            for (int i = 0; i < jaCatPeli.length(); i++) {
+                tmp = jaCatPeli.getJSONObject(i);
+                res = db.insert(new String[]{
+                        db.CATEGORIA_ID,
+                        db.PELICULA_ID,
+                        db.CATEGORIA_PELICULA_ID
+                }, new String[]{
+                        tmp.getString(db.CATEGORIA_ID),
+                        tmp.getString(db.PELICULA_ID),
+                        tmp.getString(db.CATEGORIA_PELICULA_ID)
+                }, db.TABLE_CATEGORIA_PELICULA, true);
+
+                if (res == -1) return;
+            }
+
+            for (int i = 0; i < jaRep.length(); i++) {
+                tmp = jaRep.getJSONObject(i);
+                res = db.insert(new String[]{
+                        db.COLABORADOR_ID,
+                        db.PELICULA_ID,
+                        db.PUESTO,
+                        db.REPARTO_ID
+                }, new String[]{
+                        tmp.getString(db.COLABORADOR_ID),
+                        tmp.getString(db.PELICULA_ID),
+                        tmp.getString(db.PUESTO),
+                        tmp.getString(db.REPARTO_ID)
+                }, db.TABLE_REPARTO, true);
+
+                if (res == -1) return;
+            }
 
             db.closeDB();
 

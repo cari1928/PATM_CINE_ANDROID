@@ -6,6 +6,7 @@ package com.example.radog.patm_cine_mapas.TDA;
 
 public class TDAPelicula {
 
+    //info pelicula
     private int pelicula_id;
     private String titulo;
     private String descripcion;
@@ -14,10 +15,23 @@ public class TDAPelicula {
     private int duracion;
     private String poster;
 
+    //info funcion
+    private int funcion_id;
+    private int sala_id;
+    private String fecha;
+    private String hora;
+    private String fecha_fin;
+    private String hora_fin;
+
+    //info sala
+    private String nombre;
+    private int sucursal_id;
+    private int numero_sala;
+
     public TDAPelicula() {
     }
 
-    public TDAPelicula(int pelicula_id, String titulo, String descripcion, String f_lanzamiento, String lenguaje, int duracion, String poster) {
+    public TDAPelicula(int pelicula_id, String titulo, String descripcion, String f_lanzamiento, String lenguaje, int duracion, String poster, int funcion_id, int sala_id, String fecha, String hora, String fecha_fin, String hora_fin, String nombre, int sucursal_id, int numero_sala) {
         this.pelicula_id = pelicula_id;
         this.titulo = titulo;
         this.descripcion = descripcion;
@@ -25,6 +39,87 @@ public class TDAPelicula {
         this.lenguaje = lenguaje;
         this.duracion = duracion;
         this.poster = poster;
+        this.funcion_id = funcion_id;
+        this.sala_id = sala_id;
+        this.fecha = fecha;
+        this.hora = hora;
+        this.fecha_fin = fecha_fin;
+        this.hora_fin = hora_fin;
+        this.nombre = nombre;
+        this.sucursal_id = sucursal_id;
+        this.numero_sala = numero_sala;
+    }
+
+    public int getFuncion_id() {
+        return funcion_id;
+    }
+
+    public void setFuncion_id(int funcion_id) {
+        this.funcion_id = funcion_id;
+    }
+
+    public int getSala_id() {
+        return sala_id;
+    }
+
+    public void setSala_id(int sala_id) {
+        this.sala_id = sala_id;
+    }
+
+    public String getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(String fecha) {
+        this.fecha = fecha;
+    }
+
+    public String getHora() {
+        return hora;
+    }
+
+    public void setHora(String hora) {
+        this.hora = hora;
+    }
+
+    public String getFecha_fin() {
+        return fecha_fin;
+    }
+
+    public void setFecha_fin(String fecha_fin) {
+        this.fecha_fin = fecha_fin;
+    }
+
+    public String getHora_fin() {
+        return hora_fin;
+    }
+
+    public void setHora_fin(String hora_fin) {
+        this.hora_fin = hora_fin;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public int getSucursal_id() {
+        return sucursal_id;
+    }
+
+    public void setSucursal_id(int sucursal_id) {
+        this.sucursal_id = sucursal_id;
+    }
+
+    public int getNumero_sala() {
+        return numero_sala;
+    }
+
+    public void setNumero_sala(int numero_sala) {
+        this.numero_sala = numero_sala;
     }
 
     public int getPelicula_id() {

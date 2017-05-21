@@ -1,4 +1,4 @@
-package com.example.radog.patm_cine_mapas;
+package com.example.radog.patm_cine_mapas.Activities;
 
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.example.radog.patm_cine_mapas.BD.DBHelper;
+import com.example.radog.patm_cine_mapas.R;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;

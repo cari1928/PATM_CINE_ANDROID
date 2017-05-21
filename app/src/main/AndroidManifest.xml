@@ -41,7 +41,7 @@
             android:label="@string/title_activity_sucursal_maps" />
 
         <activity
-            android:name=".Login"
+            android:name=".Activities.Login"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -52,36 +52,36 @@
         </activity>
 
         <activity
-            android:name=".Registration"
+            android:name=".Activities.Registration"
             android:label="@string/title_activity_registration"
-            android:parentActivityName=".Login"
+            android:parentActivityName=".Activities.Login"
             android:theme="@style/AppTheme.NoActionBar">
 
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".Login" />
+                android:value=".Activities.Login" />
         </activity>
 
         <activity
-            android:name=".Function"
+            android:name=".Activities.Function"
             android:label="@string/title_activity_function"
-            android:parentActivityName=".Login"
+            android:parentActivityName=".Activities.Login"
             android:theme="@style/AppTheme.NoActionBar">
 
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".Login" />
+                android:value=".Activities.Login" />
         </activity>
 
         <activity
-            android:name=".MainMenuActivity"
+            android:name=".Activities.MainMenuActivity"
             android:label="@string/title_activity_second"
-            android:parentActivityName=".Login"
+            android:parentActivityName=".Activities.Login"
             android:theme="@style/AppTheme.NoActionBar">
 
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".Login" />
+                android:value=".Activities.Login" />
 
         </activity>
 

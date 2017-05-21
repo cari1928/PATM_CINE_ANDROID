@@ -1,4 +1,4 @@
-package com.example.radog.patm_cine_mapas;
+package com.example.radog.patm_cine_mapas.Activities;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -15,6 +15,8 @@ import android.widget.Toast;
 
 import com.example.radog.patm_cine_mapas.Connectivity.ConnectivityReceiver;
 import com.example.radog.patm_cine_mapas.Connectivity.MyApplication;
+import com.example.radog.patm_cine_mapas.R;
+import com.example.radog.patm_cine_mapas.Tools;
 import com.example.radog.patm_cine_mapas.Volley.LoginVolley;
 import com.example.radog.patm_cine_mapas.Volley.SyncVolley;
 
@@ -108,9 +110,7 @@ public class Login extends AppCompatActivity implements ConnectivityReceiver.Con
         if (isConnected) {
             message = "Good! Connected to Internet";
             color = Color.WHITE;
-
-            //sincroniza BD, solo las funciones
-            new SyncVolley(this);
+            new SyncVolley(this); //sincroniza BD, solo las funciones
         } else {
             message = "Sorry! Not connected to internet";
             color = Color.RED;
