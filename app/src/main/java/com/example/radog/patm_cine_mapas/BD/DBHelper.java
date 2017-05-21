@@ -7,9 +7,11 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.example.radog.patm_cine_mapas.TDA.TDACategoria;
+import com.example.radog.patm_cine_mapas.TDA.TDACategoriaPelicula;
 import com.example.radog.patm_cine_mapas.TDA.TDAColaborador;
 import com.example.radog.patm_cine_mapas.TDA.TDAFuncion;
 import com.example.radog.patm_cine_mapas.TDA.TDAPelicula;
+import com.example.radog.patm_cine_mapas.TDA.TDAReparto;
 import com.example.radog.patm_cine_mapas.TDA.TDASala;
 import com.example.radog.patm_cine_mapas.TDA.TDASucursal;
 
@@ -24,7 +26,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     //DATABASE - GENERAL INFORMATION
     private static final String DB_NAME = "cine.db";
-    private static final int VERSION = 3;
+    private static final int VERSION = 1;
 
     /**
      * TABLE Persona - STRUCTURE
@@ -76,7 +78,7 @@ public class DBHelper extends SQLiteOpenHelper {
     /**
      * TABLE Categoria-Pelicula - STRUCTURE
      */
-    public static final String TABLE_CATEGORIA_PELICULA = "categoria_pelicula_id"; //table name
+    public static final String TABLE_CATEGORIA_PELICULA = "categoria_pelicula"; //table name
     public static final String CATEGORIA_PELICULA_ID = "categoria_pelicula_id";
 
     /**
@@ -458,8 +460,61 @@ public class DBHelper extends SQLiteOpenHelper {
         return registers;
     }
 
+    public List<TDACategoriaPelicula> select(String query, TDACategoriaPelicula tda) {
+        List<TDACategoriaPelicula> registers = new ArrayList<>();
+        TDACategoriaPelicula objTDA;
+
+        Cursor c = myDB.rawQuery(query, null);
+        if (c.moveToFirst()) {
+            do {
+                objTDA = new TDACategoriaPelicula();
+                objTDA.setCategoria_id(c.getInt(0));
+                objTDA.setPelicula_id(c.getInt(1));
+                objTDA.setCategoria_pelicula_id(c.getInt(2));
+
+                registers.add(objTDA);
+            } while (c.moveToNext());
+        } else {
+            return null;
+        }
+        return registers;
+    }
+
+    public List<TDAReparto> select(String query, TDAReparto tdaReparto) {
+        List<TDAReparto> registers = new ArrayList<>();
+        TDAReparto objTDA;
+
+        Cursor c = myDB.rawQuery(query, null);
+        if (c.moveToFirst()) {
+            do {
+                objTDA = new TDAReparto();
+                objTDA.setColaborador_id(c.getInt(0));
+                objTDA.setPelicula_id(c.getInt(1));
+                objTDA.setPuesto(c.getString(2));
+                objTDA.setReparto_id(c.getInt(3));
+
+                registers.add(objTDA);
+            } while (c.moveToNext());
+        } else {
+            return null;
+        }
+        return registers;
+    }
+
     public long delete(String table, String where) {
         //String where = ID_EVENT + "=" + idEvent;
         return myDB.delete(table, where, null);
+    }
+
+    public void cleanDB() {
+        delete(TABLE_FUNCION, null);
+        delete(TABLE_PELICULA, null);
+        delete(TABLE_SALA, null);
+        delete(TABLE_SUCURSAL, null);
+
+        //delete(TABLE_CATEGORIA_PELICULA, null);
+        //delete(TABLE_REPARTO, null);
+        //delete(TABLE_COLABORADOR, null);
+        //delete(TABLE_CATEGORIA, null);
     }
 }

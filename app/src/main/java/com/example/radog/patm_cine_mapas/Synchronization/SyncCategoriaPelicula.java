@@ -13,6 +13,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.radog.patm_cine_mapas.BD.DBHelper;
+import com.example.radog.patm_cine_mapas.Constatns;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -26,6 +27,7 @@ import java.util.Map;
  */
 
 public class SyncCategoriaPelicula implements Response.Listener<String>, Response.ErrorListener {
+
     private RequestQueue qSolicitudes;
     private Context con;
     private DBHelper db;
@@ -43,25 +45,27 @@ public class SyncCategoriaPelicula implements Response.Listener<String>, Respons
 
     @Override
     public void onErrorResponse(VolleyError error) {
-        Log.e("VOLLEY", error.toString());
+        Log.e("VOLLEY-CATPELI", error.toString());
     }
 
     @Override
     public void onResponse(String response) {
         try {
-            JSONArray jsonArray = new JSONArray(response);
-            db.delete(db.TABLE_CATEGORIA, null);
-            insCategorias(jsonArray);
+            JSONObject obJson = new JSONObject(response);
+            JSONArray jsonArray = obJson.getJSONArray("categoria_pelicula");
+            db.delete(db.TABLE_CATEGORIA_PELICULA, null);
+            insCatPeliculas(jsonArray);
 
         } catch (Exception e) {
-            Log.e("VOLLEY", e.toString());
+            Log.e("VOLLEY-CATPELI", e.toString());
             errorMsg();
         }
         db.closeDB();
     }
 
     private void sync() {
-        String URL = "http://192.168.1.67/cineSlim/public/index.php/api/categoria/listado";
+        //String URL = "http://192.168.1.67/cineSlim/public/index.php/api/categoria/listado";
+        String URL = Constatns.RUTA_JAVA + "/categoria_pelicula/listado/app";
 
         StringRequest srURL = new StringRequest(Request.Method.GET, URL, this, this) {
 
@@ -85,18 +89,21 @@ public class SyncCategoriaPelicula implements Response.Listener<String>, Respons
         Toast.makeText(con, "Error, try later", Toast.LENGTH_SHORT).show();
     }
 
-    private void insCategorias(JSONArray jsonArray) throws JSONException {
+    private void insCatPeliculas(JSONArray jsonArray) throws JSONException {
         //obtiene info de las peliculas
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject jsonObject = jsonArray.getJSONObject(i);
+            JSONObject joCategoria = jsonObject.getJSONObject("categoria_id");
 
             db.insert(new String[]{
                     db.CATEGORIA_ID,
-                    db.CATEGORIA
+                    db.PELICULA_ID,
+                    db.CATEGORIA_PELICULA_ID
             }, new String[]{
-                    jsonObject.getString(db.CATEGORIA_ID),
-                    jsonObject.getString(db.CATEGORIA)
-            }, db.TABLE_CATEGORIA, true);
+                    joCategoria.getString(db.CATEGORIA_ID),
+                    jsonObject.getString(db.PELICULA_ID),
+                    jsonObject.getString(db.CATEGORIA_PELICULA_ID)
+            }, db.TABLE_CATEGORIA_PELICULA, true);
         }
     }
 

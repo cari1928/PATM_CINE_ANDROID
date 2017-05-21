@@ -2,6 +2,7 @@ package com.example.radog.patm_cine_mapas;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Base64;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -51,6 +52,10 @@ public class Registration extends AppCompatActivity implements Response.Listener
         ButterKnife.bind(this);
 
         jsonObject = new JSONObject();
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @Override

@@ -13,7 +13,13 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.radog.patm_cine_mapas.BD.DBHelper;
+import com.example.radog.patm_cine_mapas.Constatns;
 import com.example.radog.patm_cine_mapas.TDA.TDACategoria;
+import com.example.radog.patm_cine_mapas.TDA.TDAColaborador;
+import com.example.radog.patm_cine_mapas.TDA.TDAFuncion;
+import com.example.radog.patm_cine_mapas.TDA.TDAPelicula;
+import com.example.radog.patm_cine_mapas.TDA.TDASala;
+import com.example.radog.patm_cine_mapas.TDA.TDASucursal;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -40,6 +46,14 @@ public class SyncCategoria implements Response.Listener<String>, Response.ErrorL
         //PREPARA LA BD LOCAL
         db = new DBHelper(con);
         db.openDB();
+        db.cleanDB(); //funciona
+
+        List<TDACategoria> lCat = db.select("SELECT * FROM categoria", new TDACategoria());
+        List<TDAColaborador> lCol = db.select("SELECT * FROM colaborador", new TDAColaborador());
+        List<TDASucursal> lSuc = db.select("SELECT * FROM sucursal", new TDASucursal());
+        List<TDASala> lSal = db.select("SELECT * FROM sala", new TDASala());
+        List<TDAPelicula> lPeli = db.select("SELECT * FROM pelicula", new TDAPelicula());
+        List<TDAFuncion> lFun = db.select("SELECT * FROM funcion", new TDAFuncion());
 
         sync();
     }
@@ -66,7 +80,8 @@ public class SyncCategoria implements Response.Listener<String>, Response.ErrorL
     }
 
     private void sync() {
-        String URL = "http://192.168.1.67:8082/PATM_CINE/apirest/categoria/listado/app";
+        //String URL = "http://192.168.1.67:8082/PATM_CINE/apirest/categoria/listado/app";
+        String URL = Constatns.RUTA_JAVA + "/categoria/listado/app";
 
         StringRequest srURL = new StringRequest(Request.Method.GET, URL, this, this) {
 

@@ -13,12 +13,15 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.radog.patm_cine_mapas.BD.DBHelper;
+import com.example.radog.patm_cine_mapas.TDA.TDASala;
+import com.example.radog.patm_cine_mapas.TDA.TDASucursal;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -44,29 +47,30 @@ public class SyncSala implements Response.Listener<String>, Response.ErrorListen
 
     @Override
     public void onErrorResponse(VolleyError error) {
-        Log.e("VOLLEY", error.toString());
+        Log.e("VOLLEY-SALA", error.toString());
     }
 
     @Override
     public void onResponse(String response) {
         try {
             JSONArray jsonArray = new JSONArray(response);
-            db.delete(db.TABLE_SALA, null);
             insSalas(jsonArray);
 
         } catch (Exception e) {
-            Log.e("VOLLEY", e.toString());
+            Log.e("VOLLEY-SALA", e.toString());
             errorMsg();
         }
 
-        db.closeDB();
+        List<TDASucursal> lSuc = db.select("SELECT * FROM sucursal", new TDASucursal());
+        List<TDASala> lSal = db.select("SELECT * FROM sala", new TDASala());
+        Log.e("VOLLEY-SUC", lSal.toString());
     }
 
     private void sync() {
         String URL = "http://192.168.1.67/cineSlim/public/index.php/api/sala/listado/app";
+        //String URL = Constatns.RUTA_PHP + "/sala/listado/app";
 
         StringRequest srURL = new StringRequest(Request.Method.GET, URL, this, this) {
-
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 //HEADERS =  encabezados para la petición
@@ -102,7 +106,7 @@ public class SyncSala implements Response.Listener<String>, Response.ErrorListen
                     jsonObject.getString(db.NOMBRE),
                     jsonObject.getString(db.SUCURSAL_ID),
                     jsonObject.getString(db.NUMERO_SALA)
-            }, db.TABLE_SALA, true);
+            }, db.TABLE_SALA, false);
         }
     }
 }

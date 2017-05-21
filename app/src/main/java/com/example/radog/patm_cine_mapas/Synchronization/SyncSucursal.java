@@ -13,6 +13,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.radog.patm_cine_mapas.BD.DBHelper;
+import com.example.radog.patm_cine_mapas.Constatns;
+import com.example.radog.patm_cine_mapas.TDA.TDASucursal;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -39,34 +41,34 @@ public class SyncSucursal implements Response.Listener<String>, Response.ErrorLi
         //PREPARA LA BD LOCAL
         db = new DBHelper(con);
         db.openDB();
+        db.cleanDB(); //funciona
 
         sync();
     }
 
     @Override
     public void onErrorResponse(VolleyError error) {
-        Log.e("VOLLEY", error.toString());
+        Log.e("VOLLEY-SUCURSAL", error.toString());
     }
 
     @Override
     public void onResponse(String response) {
         try {
             JSONArray jsonArray = new JSONArray(response);
-            db.delete(db.TABLE_SUCURSAL, null);
-
             insSucursales(jsonArray);
 
         } catch (Exception e) {
-            Log.e("VOLLEY", e.toString());
+            Log.e("VOLLEY-SUCURSAL", e.toString());
             errorMsg();
         }
 
-        List<String> p = db.select("SELECT * FROM sucursal", 1);
-        db.closeDB();
+        List<TDASucursal> lSuc = db.select("SELECT * FROM sucursal", new TDASucursal());
+        Log.e("VOLLEY-SUC", lSuc.toString());
     }
 
     private void sync() {
-        String URL = "http://192.168.1.67/cineSlim/public/index.php/api/sucursal/listado/app";
+        //String URL = "http://192.168.1.67/cineSlim/public/index.php/api/sucursal/listado/app";
+        String URL = Constatns.RUTA_PHP + "/sucursal/listado/app";
 
         StringRequest srURL = new StringRequest(Request.Method.GET, URL, this, this) {
 

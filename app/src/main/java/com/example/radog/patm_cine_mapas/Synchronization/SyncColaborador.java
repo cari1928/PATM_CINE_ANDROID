@@ -13,15 +13,13 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.radog.patm_cine_mapas.BD.DBHelper;
-import com.example.radog.patm_cine_mapas.TDA.TDACategoria;
-import com.example.radog.patm_cine_mapas.TDA.TDAColaborador;
+import com.example.radog.patm_cine_mapas.Constatns;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -67,7 +65,8 @@ public class SyncColaborador implements Response.Listener<String>, Response.Erro
     }
 
     private void sync() {
-        String URL = "http://192.168.1.67:8082/PATM_CINE/apirest/colaborador/listado/app";
+        //String URL = "http://192.168.1.67:8082/PATM_CINE/apirest/colaborador/listado/app";
+        String URL = Constatns.RUTA_JAVA + "/colaborador/listado/app";
 
         StringRequest srURL = new StringRequest(Request.Method.GET, URL, this, this) {
 

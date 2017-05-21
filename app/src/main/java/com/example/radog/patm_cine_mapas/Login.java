@@ -15,13 +15,8 @@ import android.widget.Toast;
 
 import com.example.radog.patm_cine_mapas.Connectivity.ConnectivityReceiver;
 import com.example.radog.patm_cine_mapas.Connectivity.MyApplication;
-import com.example.radog.patm_cine_mapas.Synchronization.SyncCategoria;
-import com.example.radog.patm_cine_mapas.Synchronization.SyncColaborador;
-import com.example.radog.patm_cine_mapas.Synchronization.SyncFuncion;
-import com.example.radog.patm_cine_mapas.Synchronization.SyncPelicula;
-import com.example.radog.patm_cine_mapas.Synchronization.SyncSala;
-import com.example.radog.patm_cine_mapas.Synchronization.SyncSucursal;
 import com.example.radog.patm_cine_mapas.Volley.LoginVolley;
+import com.example.radog.patm_cine_mapas.Volley.SyncVolley;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -115,12 +110,7 @@ public class Login extends AppCompatActivity implements ConnectivityReceiver.Con
             color = Color.WHITE;
 
             //sincroniza BD, solo las funciones
-            new SyncCategoria(this);
-            new SyncColaborador(this);
-            new SyncSucursal(this);
-            new SyncSala(this);
-            new SyncPelicula(this);
-            new SyncFuncion(this);
+            new SyncVolley(this);
         } else {
             message = "Sorry! Not connected to internet";
             color = Color.RED;
