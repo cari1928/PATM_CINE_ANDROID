@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cardView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    app:cardCornerRadius="4dp"
+    app:cardElevation="4dp"
+    app:cardUseCompatPadding="true">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+        <ImageView
+            android:id="@+id/imvPoster"
+            android:layout_width="60dp"
+            android:layout_height="80dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginRight="16dp" />
+
+        <TextView
+            android:id="@+id/txtTitulo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/imvPoster"
+            android:hint="Título"
+            android:paddingBottom="5dp"
+            android:paddingTop="5dp"
+            android:textSize="15dp" />
+
+        <TextView
+            android:id="@+id/txtLenguaje"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/txtTitulo"
+            android:layout_toRightOf="@+id/imvPoster"
+            android:hint="Lenguaje"
+            android:paddingBottom="5dp"
+            android:paddingTop="5dp"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/txtDuracion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/txtLenguaje"
+            android:layout_toRightOf="@+id/imvPoster"
+            android:hint="Duración"
+            android:paddingBottom="5dp"
+            android:paddingTop="5dp"
+            android:textSize="12sp" />
+
+    </RelativeLayout>
+
+</android.support.v7.widget.CardView>

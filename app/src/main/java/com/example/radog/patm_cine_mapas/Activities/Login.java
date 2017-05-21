@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.radog.patm_cine_mapas.BD.DBHelper;
 import com.example.radog.patm_cine_mapas.Connectivity.ConnectivityReceiver;
 import com.example.radog.patm_cine_mapas.Connectivity.MyApplication;
 import com.example.radog.patm_cine_mapas.R;
@@ -24,7 +25,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class Login extends AppCompatActivity implements ConnectivityReceiver.ConnectivityReceiverListener {
+public class Login extends AppCompatActivity implements
+        ConnectivityReceiver.ConnectivityReceiverListener {
 
     @BindView(R.id.etUser)
     EditText etUser;
@@ -34,12 +36,16 @@ public class Login extends AppCompatActivity implements ConnectivityReceiver.Con
     Toolbar toolbar;
 
     private String user, pass;
+    private DBHelper db;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
+        db = new DBHelper(this);
+        db.openDB();
 
         setSupportActionBar(toolbar);
         checkConnection(true); //para la sincronización de la bd
@@ -84,7 +90,7 @@ public class Login extends AppCompatActivity implements ConnectivityReceiver.Con
         if (user.equals("") || pass.equals("")) {
             Toast.makeText(this, "Input the required information", Toast.LENGTH_SHORT).show();
         } else {
-            //TODO loguear
+            new LoginVolley(this, etUser, user, pass);
         }
     }
 
@@ -126,10 +132,12 @@ public class Login extends AppCompatActivity implements ConnectivityReceiver.Con
 
     private void volley(boolean isConnected) {
         LoginVolley loginVolley;
+
         if (isConnected) {
             loginVolley = new LoginVolley(this, etUser, user, pass);
         } else {
             //valida de forma local
+            //db.select("SELECT persona_id FROM persona WHERE username='" + user + "' AND pass='" + pass + "'", 5);
         }
     }
 

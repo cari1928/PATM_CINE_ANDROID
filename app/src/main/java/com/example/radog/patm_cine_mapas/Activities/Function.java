@@ -8,6 +8,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
+import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,10 +20,12 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.radog.patm_cine_mapas.BD.DBHelper;
 import com.example.radog.patm_cine_mapas.Connectivity.ConnectivityReceiver;
 import com.example.radog.patm_cine_mapas.Connectivity.MyApplication;
-import com.example.radog.patm_cine_mapas.Constatns;
+import com.example.radog.patm_cine_mapas.FunctionAdapter;
 import com.example.radog.patm_cine_mapas.R;
+import com.example.radog.patm_cine_mapas.TDA.TDAFuncion;
 import com.example.radog.patm_cine_mapas.TDA.TDAPelicula;
 import com.example.radog.patm_cine_mapas.Volley.SyncVolley;
 
@@ -41,13 +45,11 @@ public class Function extends AppCompatActivity implements
         ConnectivityReceiver.ConnectivityReceiverListener {
 
     //private RecyclerView recyclerView;
-    private RecyclerView.Adapter adapter;
+    private FunctionAdapter adapter;
     private RecyclerView.LayoutManager adminLayout;
+    private DBHelper db;
     private RequestQueue qSolicitudes;
     List<TDAPelicula> lPeliculas;
-    String fecha, hora;
-    int value;
-    private boolean volley;
 
     @BindView(R.id.recycleList)
     RecyclerView recyclerView;
@@ -59,15 +61,17 @@ public class Function extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_function);
         ButterKnife.bind(this);
-        volley = false;
+        checkConnection();
+        qSolicitudes = Volley.newRequestQueue(this);
+        db = new DBHelper(this);
+        db.openDB();
 
         lPeliculas = new ArrayList<>();
-        qSolicitudes = Volley.newRequestQueue(this);
-
         //recyclerView = (RecyclerView) findViewById(R.id.recycleList);
         recyclerView.setHasFixedSize(true);
 
-        getPeliculas();
+        //getPeliculas();
+        getVolleyPel();
 
         adminLayout = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(adminLayout);
@@ -77,9 +81,18 @@ public class Function extends AppCompatActivity implements
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
-    /**
-     * DETECCIÓN DE CONECCIÓN WIFI
-     */
+    /****************************************************************
+     * MENÚ AL MANTENER PRESIONADO **************************************************************
+     ***************************************************************/
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        adapter.getItemSelected(item, "login");
+        return super.onContextItemSelected(item);
+    }
+
+    /****************************************************************
+     * DETECCIÓN DE CONECCIÓN WIFI **************************************************************
+     ***************************************************************/
     @Override
     protected void onResume() {
         super.onResume();
@@ -89,6 +102,11 @@ public class Function extends AppCompatActivity implements
 
     @Override
     public void onNetworkConnectionChanged(boolean isConnected) {
+        showSnack(isConnected);
+    }
+
+    private void checkConnection() {
+        boolean isConnected = ConnectivityReceiver.isConnected();
         showSnack(isConnected);
     }
 
@@ -107,8 +125,7 @@ public class Function extends AppCompatActivity implements
             color = Color.RED;
         }
 
-        volley = isConnected;
-        Snackbar snackbar = Snackbar.make(findViewById(R.id.login_layout), message, Snackbar.LENGTH_LONG);
+        Snackbar snackbar = Snackbar.make(findViewById(R.id.function_layout), message, Snackbar.LENGTH_LONG);
 
         View sbView = snackbar.getView();
         TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
@@ -116,82 +133,100 @@ public class Function extends AppCompatActivity implements
         snackbar.show();
     }
 
-    /**
-     * FIN DE DETECCIÓN DE CONEXIÓN WIFI
-     */
+    /****************************************************************
+     * FIN DE DETECCIÓN DE CONEXIÓN WIFI**************************************************************
+     ***************************************************************/
 
+    /****************************************************************
+     * Inicio Volley**************************************************************
+     ***************************************************************/
     @Override
     public void onErrorResponse(VolleyError error) {
-        //Log.e("Error", error.toString());
-        Toast.makeText(this, error.toString(), Toast.LENGTH_SHORT).show();
+        Log.e("VOLLEY-FUNCTION", error.toString());
     }
 
     @Override
     public void onResponse(String response) {
-        TDAPelicula objC;
-        JSONObject objJSONComp;
-        String vFechaHora;
-
+        TDAPelicula objPel;
         try {
-            JSONObject objJSON = new JSONObject(response);
-            JSONArray arrJSON = objJSON.getJSONArray("competenciac");
+            JSONArray jsonArray = new JSONArray(response);
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject tmp = jsonArray.getJSONObject(i);
 
-            for (int i = 0; i < arrJSON.length(); i++) {
-                objJSONComp = arrJSON.getJSONObject(i);
+                objPel = new TDAPelicula();
+                objPel.setPelicula_id(tmp.getInt("pelicula_id"));
+                objPel.setTitulo(tmp.getString("titulo"));
+                objPel.setLenguaje(tmp.getString("lenguaje"));
+                objPel.setDuracion(tmp.getInt("duracion"));
+                objPel.setPoster(tmp.getString("poster"));
 
-                vFechaHora = objJSONComp.getString("fecha_hora");
-                if (chDatos(vFechaHora)) {
-                    /*objC = new Competencias();
-                    objC.setFecha_hora(vFechaHora);
-                    objC.setId_equipo1(objJSONComp.getInt("id_equipo1"));
-                    objC.setId_equipo2(objJSONComp.getInt("id_equipo2"));
-                    objC.setId_institucion_local(objJSONComp.getInt("id_institucion_local"));
-                    objC.setId_institucion_visita(objJSONComp.getInt("id_institucion_visita"));
-                    objC.setLogotipo_local(objJSONComp.getString("logotipol"));
-                    objC.setLogotipo_visita(objJSONComp.getString("logotipov"));
-                    objC.setNombre_corto_local(objJSONComp.getString("nombre_corto_local"));
-                    objC.setNombre_corto_visita(objJSONComp.getString("nombre_corto_visita"));
-                    objC.setRama(objJSONComp.getString("rama"));
-                    objC.setSede(objJSONComp.getString("sede"));
-                    objC.setValor_equipo1(objJSONComp.getInt("valor_equipo1"));
-                    objC.setValor_equipo2(objJSONComp.getInt("valor_equipo2"));*/
-
-                    //lPeliculas.add(objC);
-                }
-
+                lPeliculas.add(objPel);
             }
 
-            //adapter = new CompAdapter(lPeliculas, this);
+            adapter = new FunctionAdapter(lPeliculas, this);
             recyclerView.setAdapter(adapter);
         } catch (Exception e) {
             Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show();
         }
     }
 
-
-    public boolean chDatos(String pFechaHora) {
-        String parts[] = pFechaHora.split("T");
-
-        if (parts[0].contains(fecha) && parts[1].contains(hora)) {
-            return true;
-        }
-
-        return false;
-    }
-
-    private void getPeliculas() {
-        String URL = Constatns.RUTA_PHP + "/pelicula/listado";
-
+    private void getVolleyPel() {
+        String URL = "http://192.168.1.67/cineSlim/public/index.php/api/pelicula/listado";
         StringRequest reqListComp = new StringRequest(Request.Method.GET, URL, this, this) {
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> params = new HashMap<>();
                 params.put("Authorization", String.format("Basic %s", Base64.encodeToString(
-                        String.format("%s:%s", "intertecs", "1nt3rt3c5").getBytes(),
+                        String.format("%s:%s", "root", "root").getBytes(),
                         Base64.DEFAULT)));
                 return params;
             }
         };
         qSolicitudes.add(reqListComp);
     }
+
+    /****************************************************************
+     * FIN DE VOLLEY**************************************************************
+     ***************************************************************/
+
+    /**
+     * HASTA RESOLVER EL PROBLEMA DE SQLITE
+     */
+    private void getPeliculas() {
+        TDAPelicula objPel;
+        int totalFields = 7;
+
+        try {
+            /*List<String> listPel = db.select(
+                    "SELECT DISTINCT f.pelicula_id, titulo, fecha, fecha_fin, lenguaje, duracion, poster " +
+                            "    FROM funcion f " +
+                            "    INNER JOIN pelicula ON f.pelicula_id = pelicula.pelicula_id " +
+                            "    ORDER BY titulo", totalFields);*/
+
+            List<TDAPelicula> lPeli = db.select("SELECT * FROM pelicula", new TDAPelicula());
+            List<TDAFuncion> lFun = db.select("SELECT * FROM funcion", new TDAFuncion());
+            List<String> listPel = db.select(
+                    "SELECT * FROM pelicula INNER JOIN funcion on funcion.pelicula_id = pelicula.pelicula_id", 3);
+
+            for (int i = 0; i < listPel.size(); i++) {
+                objPel = new TDAPelicula();
+
+                objPel.setPelicula_id(Integer.parseInt(listPel.get(i)));
+                objPel.setTitulo(listPel.get(++i));
+                objPel.setFecha(listPel.get(++i));
+                objPel.setFecha_fin(listPel.get(++i));
+                objPel.setLenguaje(listPel.get(++i));
+                objPel.setDuracion(Integer.parseInt(listPel.get(++i)));
+                objPel.setPoster(listPel.get(++i));
+
+                lPeliculas.add(objPel);
+            }
+
+            adapter = new FunctionAdapter(lPeliculas, this);
+            recyclerView.setAdapter(adapter);
+        } catch (Exception e) {
+            Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
 }

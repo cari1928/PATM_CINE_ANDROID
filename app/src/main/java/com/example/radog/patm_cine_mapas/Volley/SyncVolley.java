@@ -53,6 +53,8 @@ public class SyncVolley implements Response.Listener<String>, Response.ErrorList
         db.cleanDB(); //borra el contenido de las tablas
 
         sync(); //comienza sincronización
+
+        db.select("SELECT * FROM pelicula", 3);
     }
 
     @Override
@@ -64,6 +66,7 @@ public class SyncVolley implements Response.Listener<String>, Response.ErrorList
     @Override
     public void onResponse(String response) {
         long res;
+        Log.e("VOLLEY-RESPONSE", response);
         try {
             if (response.isEmpty()) return;
 
@@ -223,6 +226,7 @@ public class SyncVolley implements Response.Listener<String>, Response.ErrorList
             }
 
             db.closeDB();
+            Log.e("VOLLEY-SYNC", "bien");
 
         } catch (Exception e) {
             Log.e("VOLLEY-SYNC", e.toString());

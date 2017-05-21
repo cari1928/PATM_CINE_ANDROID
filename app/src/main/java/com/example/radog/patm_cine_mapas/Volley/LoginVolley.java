@@ -14,6 +14,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.radog.patm_cine_mapas.Activities.MainMenuActivity;
 import com.example.radog.patm_cine_mapas.Map.SucursalMapsActivity;
 import com.example.radog.patm_cine_mapas.UserData;
 
@@ -57,7 +58,7 @@ public class LoginVolley implements Response.Listener<String>, Response.ErrorLis
             if (objJSON.getString("status").equals("bitacora")) {
                 Toast.makeText(con, "Welcome " + user, Toast.LENGTH_SHORT).show();
 
-                Intent iSucursal = new Intent(con, SucursalMapsActivity.class);
+                Intent iMainMenu = new Intent(con, MainMenuActivity.class);
                 Bundle data = new Bundle();
 
                 ArrayList<UserData> userData = new ArrayList<>();
@@ -67,8 +68,8 @@ public class LoginVolley implements Response.Listener<String>, Response.ErrorLis
                 userData.add(objU);
 
                 data.putParcelableArrayList("USERDATA", userData);
-                iSucursal.putExtras(data);
-                con.startActivity(iSucursal);
+                iMainMenu.putExtras(data);
+                con.startActivity(iMainMenu);
 
             } else {
                 errorMsg();

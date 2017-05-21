@@ -1,10 +1,14 @@
 package com.example.radog.patm_cine_mapas.Activities;
 
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
+import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -14,7 +18,10 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.radog.patm_cine_mapas.Connectivity.ConnectivityReceiver;
+import com.example.radog.patm_cine_mapas.Connectivity.MyApplication;
 import com.example.radog.patm_cine_mapas.R;
+import com.example.radog.patm_cine_mapas.Volley.SyncVolley;
 
 import org.json.JSONObject;
 
@@ -26,7 +33,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class Registration extends AppCompatActivity implements Response.Listener<String>, Response.ErrorListener {
+public class Registration extends AppCompatActivity implements
+        Response.Listener<String>, Response.ErrorListener,
+        ConnectivityReceiver.ConnectivityReceiverListener {
 
     @BindView(R.id.etName)
     EditText etName;
@@ -51,7 +60,7 @@ public class Registration extends AppCompatActivity implements Response.Listener
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
         ButterKnife.bind(this);
-
+        checkConnection();
         jsonObject = new JSONObject();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -63,6 +72,18 @@ public class Registration extends AppCompatActivity implements Response.Listener
     protected void onStart() {
         super.onStart();
         qSolicitudes = Volley.newRequestQueue(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // register connection status listener
+        MyApplication.getInstance().setConnectivityListener(this);
+    }
+
+    @Override
+    public void onNetworkConnectionChanged(boolean isConnected) {
+        showSnack(isConnected);
     }
 
     @OnClick(R.id.btnRegister)
@@ -102,6 +123,32 @@ public class Registration extends AppCompatActivity implements Response.Listener
             etName.setText(e.toString());
             errorMsg();
         }
+    }
+
+    private void checkConnection() {
+        boolean isConnected = ConnectivityReceiver.isConnected();
+        showSnack(isConnected);
+    }
+
+    private void showSnack(boolean isConnected) {
+        String message;
+        int color;
+
+        if (isConnected) {
+            message = "Good! Connected to Internet";
+            color = Color.WHITE;
+            new SyncVolley(this); //sincroniza BD, solo las funciones
+        } else {
+            message = "Sorry! Not connected to internet";
+            color = Color.RED;
+        }
+
+        Snackbar snackbar = Snackbar.make(findViewById(R.id.registration_layout), message, Snackbar.LENGTH_LONG);
+
+        View sbView = snackbar.getView();
+        TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+        textView.setTextColor(color);
+        snackbar.show();
     }
 
     private boolean checkEditText(EditText objE) {

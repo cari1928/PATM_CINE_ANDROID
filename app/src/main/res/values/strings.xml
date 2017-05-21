@@ -16,5 +16,5 @@
     <string name="title_activity_second">Another Screen</string>
     <string name="title_activity_registration">Sign In</string>
     <string name="title_activity_function">Cinema Functions</string>
-    <string name="action_reserve">Reservar</string>
+    <string name="action_reserve">Comprar entradas</string>
 </resources>

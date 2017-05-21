@@ -1,5 +1,7 @@
 package com.example.radog.patm_cine_mapas.TDA;
 
+import java.util.List;
+
 /**
  * Created by radog on 20/05/2017.
  */
@@ -19,19 +21,23 @@ public class TDAPelicula {
     private int funcion_id;
     private int sala_id;
     private String fecha;
-    private String hora;
+    private List<String> hora;
     private String fecha_fin;
-    private String hora_fin;
+    private List<String> hora_fin;
 
     //info sala
     private String nombre;
     private int sucursal_id;
     private int numero_sala;
 
+    //info categoria
+    private int categoria_id;
+    private List<String> categoria;
+
     public TDAPelicula() {
     }
 
-    public TDAPelicula(int pelicula_id, String titulo, String descripcion, String f_lanzamiento, String lenguaje, int duracion, String poster, int funcion_id, int sala_id, String fecha, String hora, String fecha_fin, String hora_fin, String nombre, int sucursal_id, int numero_sala) {
+    public TDAPelicula(int pelicula_id, String titulo, String descripcion, String f_lanzamiento, String lenguaje, int duracion, String poster, int funcion_id, int sala_id, String fecha, List<String> hora, String fecha_fin, List<String> hora_fin, String nombre, int sucursal_id, int numero_sala, int categoria_id, List<String> categoria) {
         this.pelicula_id = pelicula_id;
         this.titulo = titulo;
         this.descripcion = descripcion;
@@ -48,78 +54,8 @@ public class TDAPelicula {
         this.nombre = nombre;
         this.sucursal_id = sucursal_id;
         this.numero_sala = numero_sala;
-    }
-
-    public int getFuncion_id() {
-        return funcion_id;
-    }
-
-    public void setFuncion_id(int funcion_id) {
-        this.funcion_id = funcion_id;
-    }
-
-    public int getSala_id() {
-        return sala_id;
-    }
-
-    public void setSala_id(int sala_id) {
-        this.sala_id = sala_id;
-    }
-
-    public String getFecha() {
-        return fecha;
-    }
-
-    public void setFecha(String fecha) {
-        this.fecha = fecha;
-    }
-
-    public String getHora() {
-        return hora;
-    }
-
-    public void setHora(String hora) {
-        this.hora = hora;
-    }
-
-    public String getFecha_fin() {
-        return fecha_fin;
-    }
-
-    public void setFecha_fin(String fecha_fin) {
-        this.fecha_fin = fecha_fin;
-    }
-
-    public String getHora_fin() {
-        return hora_fin;
-    }
-
-    public void setHora_fin(String hora_fin) {
-        this.hora_fin = hora_fin;
-    }
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public int getSucursal_id() {
-        return sucursal_id;
-    }
-
-    public void setSucursal_id(int sucursal_id) {
-        this.sucursal_id = sucursal_id;
-    }
-
-    public int getNumero_sala() {
-        return numero_sala;
-    }
-
-    public void setNumero_sala(int numero_sala) {
-        this.numero_sala = numero_sala;
+        this.categoria_id = categoria_id;
+        this.categoria = categoria;
     }
 
     public int getPelicula_id() {
@@ -176,5 +112,93 @@ public class TDAPelicula {
 
     public void setPoster(String poster) {
         this.poster = poster;
+    }
+
+    public int getFuncion_id() {
+        return funcion_id;
+    }
+
+    public void setFuncion_id(int funcion_id) {
+        this.funcion_id = funcion_id;
+    }
+
+    public int getSala_id() {
+        return sala_id;
+    }
+
+    public void setSala_id(int sala_id) {
+        this.sala_id = sala_id;
+    }
+
+    public String getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(String fecha) {
+        this.fecha = fecha;
+    }
+
+    public List<String> getHora() {
+        return hora;
+    }
+
+    public void setHora(List<String> hora) {
+        this.hora = hora;
+    }
+
+    public String getFecha_fin() {
+        return fecha_fin;
+    }
+
+    public void setFecha_fin(String fecha_fin) {
+        this.fecha_fin = fecha_fin;
+    }
+
+    public List<String> getHora_fin() {
+        return hora_fin;
+    }
+
+    public void setHora_fin(List<String> hora_fin) {
+        this.hora_fin = hora_fin;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public int getSucursal_id() {
+        return sucursal_id;
+    }
+
+    public void setSucursal_id(int sucursal_id) {
+        this.sucursal_id = sucursal_id;
+    }
+
+    public int getNumero_sala() {
+        return numero_sala;
+    }
+
+    public void setNumero_sala(int numero_sala) {
+        this.numero_sala = numero_sala;
+    }
+
+    public int getCategoria_id() {
+        return categoria_id;
+    }
+
+    public void setCategoria_id(int categoria_id) {
+        this.categoria_id = categoria_id;
+    }
+
+    public List<String> getCategoria() {
+        return categoria;
+    }
+
+    public void setCategoria(List<String> categoria) {
+        this.categoria = categoria;
     }
 }
