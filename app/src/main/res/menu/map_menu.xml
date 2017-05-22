@@ -7,9 +7,4 @@
         android:title="@string/Profile"
         app:showAsAction="never"></item>
 
-    <item
-        android:id="@+id/itmAbout"
-        android:title="@string/About"
-        app:showAsAction="never"></item>
-
 </menu>

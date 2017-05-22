@@ -4,8 +4,10 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.util.Linkify;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -64,6 +66,9 @@ public class Login extends AppCompatActivity implements
                 Intent iFunction = new Intent(this, Function.class);
                 startActivity(iFunction);
                 break;
+
+            case R.id.itmAbout:
+                showAlertDialog();
         }
 
         return super.onOptionsItemSelected(item);
@@ -139,6 +144,24 @@ public class Login extends AppCompatActivity implements
             //valida de forma local
             //db.select("SELECT persona_id FROM persona WHERE username='" + user + "' AND pass='" + pass + "'", 5);
         }
+    }
+
+    /**
+     * To show modal window
+     */
+    private void showAlertDialog() {
+        AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
+        View view = getLayoutInflater().inflate(R.layout.dialog_about, null);
+
+        TextView tvEmail = (TextView) view.findViewById(R.id.tvEmail);
+        TextView tvPhone = (TextView) view.findViewById(R.id.tvPhone);
+
+        Linkify.addLinks(tvEmail, Linkify.EMAIL_ADDRESSES);
+        Linkify.addLinks(tvPhone, Linkify.PHONE_NUMBERS);
+
+        alertBuilder.setView(view);
+        AlertDialog alertDialog = alertBuilder.create();
+        alertDialog.show();
     }
 
 }

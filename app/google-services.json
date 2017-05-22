@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "582314423112",
+    "firebase_url": "https://cinemaster-dba24.firebaseio.com",
+    "project_id": "cinemaster-dba24",
+    "storage_bucket": "cinemaster-dba24.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:582314423112:android:70f37324146b9344",
+        "android_client_info": {
+          "package_name": "com.example.radog.patm_cine_mapas"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "582314423112-k1om0h9sn5si6ug6p1lq1uk01k15nqv5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBIKq0cmtqs602paAt0yGHt5FZP0A_gmbw"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

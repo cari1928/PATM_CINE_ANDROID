@@ -3,6 +3,7 @@ package com.example.radog.patm_cine_mapas.Activities;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.util.Linkify;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,6 +29,10 @@ public class MainMenuActivity extends AppCompatActivity {
         //conexión y apertura de la BD
         objDBH = new DBHelper(this);
         objDBH.openDB();
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @Override
@@ -41,9 +46,6 @@ public class MainMenuActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.itmProfile:
                 break;
-
-            case R.id.itmAbout:
-                showAlertDialog();
         }
 
         return super.onOptionsItemSelected(item);
