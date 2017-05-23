@@ -20,9 +20,16 @@ import com.example.radog.patm_cine_mapas.Connectivity.ConnectivityReceiver;
 import com.example.radog.patm_cine_mapas.Connectivity.MyApplication;
 import com.example.radog.patm_cine_mapas.LoginService;
 import com.example.radog.patm_cine_mapas.R;
+import com.example.radog.patm_cine_mapas.TDA.TDACategoria;
+import com.example.radog.patm_cine_mapas.TDA.TDAColaborador;
+import com.example.radog.patm_cine_mapas.TDA.TDAFuncion;
+import com.example.radog.patm_cine_mapas.TDA.TDAPelicula;
+import com.example.radog.patm_cine_mapas.TDA.TDASala;
 import com.example.radog.patm_cine_mapas.Tools;
 import com.example.radog.patm_cine_mapas.Volley.LoginVolley;
 import com.example.radog.patm_cine_mapas.Volley.SyncVolley;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -40,6 +47,7 @@ public class Login extends AppCompatActivity implements
 
     private String user, pass;
     private DBHelper db;
+    private SyncVolley syncVolley;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,9 +119,18 @@ public class Login extends AppCompatActivity implements
     /**
      * BLOCKS THE BACK BUTTON
      * Para una mejor funcionalidad en cuanto al tiempo que durará su sesión
+     * También usado para pruebas
      */
     @Override
     public void onBackPressed() {
+        List<TDASala> lSal = db.select("SELECT * FROM sala", new TDASala());
+        List<TDAPelicula> lPeli = db.select("SELECT * FROM pelicula", new TDAPelicula());
+        List<TDAFuncion> lFun = db.select("SELECT * FROM funcion", new TDAFuncion());
+        List<TDACategoria> lCat = db.select("SELECT * FROM categoria", new TDACategoria());
+        List<TDAColaborador> lCol = db.select("SELECT * FROM colaborador", new TDAColaborador());
+        List<String> lCatPeli = db.select("SELECT * FROM categoria_pelicula", 3);
+        List<String> lRep = db.select("SELECT * FROM reparto", 3);
+        Toast.makeText(this, "", Toast.LENGTH_SHORT).show();
     }
 
     @OnClick(R.id.btnRegister)
@@ -138,7 +155,7 @@ public class Login extends AppCompatActivity implements
         if (isConnected) {
             message = "Good! Connected to Internet";
             color = Color.WHITE;
-            new SyncVolley(this); //sincroniza BD, solo las funciones
+            syncVolley = new SyncVolley(this); //sincroniza BD, solo las funciones
         } else {
             message = "Sorry! Not connected to internet";
             color = Color.RED;

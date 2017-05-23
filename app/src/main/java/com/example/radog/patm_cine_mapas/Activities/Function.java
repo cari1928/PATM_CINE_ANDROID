@@ -44,7 +44,6 @@ public class Function extends AppCompatActivity implements
         Response.Listener<String>, Response.ErrorListener,
         ConnectivityReceiver.ConnectivityReceiverListener {
 
-    //private RecyclerView recyclerView;
     private FunctionAdapter adapter;
     private RecyclerView.LayoutManager adminLayout;
     private DBHelper db;

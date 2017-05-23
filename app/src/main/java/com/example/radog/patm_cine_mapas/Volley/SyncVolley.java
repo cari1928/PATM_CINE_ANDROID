@@ -14,11 +14,15 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.radog.patm_cine_mapas.BD.DBHelper;
 import com.example.radog.patm_cine_mapas.Constatns;
+import com.example.radog.patm_cine_mapas.Synchronization.SyncSucursal;
+import com.example.radog.patm_cine_mapas.TDA.TDASucursal;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -42,6 +46,7 @@ public class SyncVolley implements Response.Listener<String>, Response.ErrorList
     private RequestQueue qSolicitudes;
     private Context con;
     private DBHelper db;
+    List<TDASucursal> lSucursales;
 
     public SyncVolley(Context con) {
         qSolicitudes = Volley.newRequestQueue(con);
@@ -52,6 +57,8 @@ public class SyncVolley implements Response.Listener<String>, Response.ErrorList
         db.openDB();
         db.cleanDB(); //borra el contenido de las tablas
 
+        lSucursales = new ArrayList<>();
+
         sync(); //comienza sincronización
 
         db.select("SELECT * FROM pelicula", 3);
@@ -61,12 +68,14 @@ public class SyncVolley implements Response.Listener<String>, Response.ErrorList
     public void onErrorResponse(VolleyError error) {
         Log.e("VOLLEY-SYNC", error.toString());
         errorMsg(error);
+        error.printStackTrace();
     }
 
     @Override
     public void onResponse(String response) {
         long res;
-        Log.e("VOLLEY-RESPONSE", response);
+        TDASucursal tdaSucursal;
+
         try {
             if (response.isEmpty()) return;
 
@@ -83,24 +92,19 @@ public class SyncVolley implements Response.Listener<String>, Response.ErrorList
 
             for (int i = 0; i < jaSuc.length(); i++) {
                 tmp = jaSuc.getJSONObject(i);
-                res = db.insert(new String[]{
-                        db.SUCURSAL_ID,
-                        db.PAIS,
-                        db.CIUDAD,
-                        db.DIRECCION,
-                        db.LATITUD,
-                        db.LONGITUD
-                }, new String[]{
-                        tmp.getString(db.SUCURSAL_ID),
-                        tmp.getString(db.PAIS),
-                        tmp.getString(db.CIUDAD),
-                        tmp.getString(db.DIRECCION),
-                        tmp.getString(db.LATITUD),
-                        tmp.getString(db.LONGITUD)
-                }, db.TABLE_SUCURSAL, false);
 
-                if (res == -1) return;
+                tdaSucursal = new TDASucursal();
+                tdaSucursal.setSucursal_id(tmp.getInt(db.SUCURSAL_ID));
+                tdaSucursal.setPais(tmp.getString(db.PAIS));
+                tdaSucursal.setCiudad(tmp.getString(db.CIUDAD));
+                tdaSucursal.setDireccion(tmp.getString(db.DIRECCION));
+                tdaSucursal.setLatitud(Float.parseFloat(tmp.getString(db.LATITUD)));
+                tdaSucursal.setLongitud(Float.parseFloat(tmp.getString(db.LONGITUD)));
+
+                lSucursales.add(tdaSucursal);
             }
+
+            new SyncSucursal(con, lSucursales);
 
             for (int i = 0; i < jaSal.length(); i++) {
                 tmp = jaSal.getJSONObject(i);
@@ -231,6 +235,7 @@ public class SyncVolley implements Response.Listener<String>, Response.ErrorList
         } catch (Exception e) {
             Log.e("VOLLEY-SYNC", e.toString());
             errorMsg(e);
+            e.printStackTrace();
         }
     }
 
