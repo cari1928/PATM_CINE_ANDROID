@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.example.radog.patm_cine_mapas.BD.DBHelper;
 import com.example.radog.patm_cine_mapas.Connectivity.ConnectivityReceiver;
 import com.example.radog.patm_cine_mapas.Connectivity.MyApplication;
+import com.example.radog.patm_cine_mapas.LoginService;
 import com.example.radog.patm_cine_mapas.R;
 import com.example.radog.patm_cine_mapas.Tools;
 import com.example.radog.patm_cine_mapas.Volley.LoginVolley;
@@ -40,7 +41,6 @@ public class Login extends AppCompatActivity implements
     private String user, pass;
     private DBHelper db;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,8 +49,17 @@ public class Login extends AppCompatActivity implements
         db = new DBHelper(this);
         db.openDB();
 
+        closeService();
+
         setSupportActionBar(toolbar);
         checkConnection(true); //para la sincronización de la bd
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+
+        closeService();
     }
 
     @Override
@@ -97,6 +106,14 @@ public class Login extends AppCompatActivity implements
         } else {
             new LoginVolley(this, etUser, user, pass);
         }
+    }
+
+    /**
+     * BLOCKS THE BACK BUTTON
+     * Para una mejor funcionalidad en cuanto al tiempo que durará su sesión
+     */
+    @Override
+    public void onBackPressed() {
     }
 
     @OnClick(R.id.btnRegister)
@@ -162,6 +179,11 @@ public class Login extends AppCompatActivity implements
         alertBuilder.setView(view);
         AlertDialog alertDialog = alertBuilder.create();
         alertDialog.show();
+    }
+
+    private void closeService() {
+        Intent intent = new Intent(this, LoginService.class);
+        stopService(intent);
     }
 
 }

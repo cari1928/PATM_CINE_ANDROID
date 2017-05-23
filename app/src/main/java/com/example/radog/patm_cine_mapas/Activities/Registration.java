@@ -1,5 +1,6 @@
 package com.example.radog.patm_cine_mapas.Activities;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -20,6 +21,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.radog.patm_cine_mapas.Connectivity.ConnectivityReceiver;
 import com.example.radog.patm_cine_mapas.Connectivity.MyApplication;
+import com.example.radog.patm_cine_mapas.LoginService;
 import com.example.radog.patm_cine_mapas.R;
 import com.example.radog.patm_cine_mapas.Volley.SyncVolley;
 
@@ -62,6 +64,9 @@ public class Registration extends AppCompatActivity implements
         ButterKnife.bind(this);
         checkConnection();
         jsonObject = new JSONObject();
+
+        //pruebas de tiempo de sesión
+        //iniLoginService();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -201,5 +206,15 @@ public class Registration extends AppCompatActivity implements
         } catch (Exception e) {
             etName.setText(e.toString());
         }
+    }
+
+    /**
+     * Usado para pruebas de sesion de usuario
+     *
+     * @deprecated
+     */
+    private void iniLoginService() {
+        Intent intent = new Intent(this, LoginService.class);
+        startService(intent);
     }
 }

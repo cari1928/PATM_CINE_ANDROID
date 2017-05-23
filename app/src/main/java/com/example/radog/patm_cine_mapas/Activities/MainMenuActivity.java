@@ -1,5 +1,6 @@
 package com.example.radog.patm_cine_mapas.Activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -11,6 +12,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.example.radog.patm_cine_mapas.BD.DBHelper;
+import com.example.radog.patm_cine_mapas.LoginService;
 import com.example.radog.patm_cine_mapas.R;
 
 import butterknife.ButterKnife;
@@ -25,6 +27,8 @@ public class MainMenuActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
         ButterKnife.bind(this);
+
+        iniLoginService();
 
         //conexión y apertura de la BD
         objDBH = new DBHelper(this);
@@ -89,5 +93,10 @@ public class MainMenuActivity extends AppCompatActivity {
         alertBuilder.setView(view);
         AlertDialog alertDialog = alertBuilder.create();
         alertDialog.show();
+    }
+
+    private void iniLoginService() {
+        Intent intent = new Intent(this, LoginService.class);
+        startService(intent);
     }
 }

@@ -60,7 +60,7 @@ public class SyncVolley implements Response.Listener<String>, Response.ErrorList
     @Override
     public void onErrorResponse(VolleyError error) {
         Log.e("VOLLEY-SYNC", error.toString());
-        errorMsg();
+        errorMsg(error);
     }
 
     @Override
@@ -230,12 +230,12 @@ public class SyncVolley implements Response.Listener<String>, Response.ErrorList
 
         } catch (Exception e) {
             Log.e("VOLLEY-SYNC", e.toString());
-            errorMsg();
+            errorMsg(e);
         }
     }
 
-    private void errorMsg() {
-        Toast.makeText(con, "Error, try later", Toast.LENGTH_SHORT).show();
+    private void errorMsg(Exception e) {
+        Toast.makeText(con, e.toString(), Toast.LENGTH_SHORT).show();
     }
 
     private void sync() {

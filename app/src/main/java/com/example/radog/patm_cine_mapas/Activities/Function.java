@@ -23,11 +23,11 @@ import com.android.volley.toolbox.Volley;
 import com.example.radog.patm_cine_mapas.BD.DBHelper;
 import com.example.radog.patm_cine_mapas.Connectivity.ConnectivityReceiver;
 import com.example.radog.patm_cine_mapas.Connectivity.MyApplication;
+import com.example.radog.patm_cine_mapas.Constatns;
 import com.example.radog.patm_cine_mapas.FunctionAdapter;
 import com.example.radog.patm_cine_mapas.R;
 import com.example.radog.patm_cine_mapas.TDA.TDAFuncion;
 import com.example.radog.patm_cine_mapas.TDA.TDAPelicula;
-import com.example.radog.patm_cine_mapas.Volley.SyncVolley;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -119,7 +119,7 @@ public class Function extends AppCompatActivity implements
             color = Color.WHITE;
 
             //sincroniza BD, solo las funciones
-            new SyncVolley(this);
+            //new SyncVolley(this);
         } else {
             message = "Sorry! Not connected to internet";
             color = Color.RED;
@@ -143,6 +143,7 @@ public class Function extends AppCompatActivity implements
     @Override
     public void onErrorResponse(VolleyError error) {
         Log.e("VOLLEY-FUNCTION", error.toString());
+        Toast.makeText(this, error.toString(), Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -171,7 +172,7 @@ public class Function extends AppCompatActivity implements
     }
 
     private void getVolleyPel() {
-        String URL = "http://192.168.1.67/cineSlim/public/index.php/api/pelicula/listado";
+        String URL = Constatns.RUTA_PHP + "/pelicula/listado";
         StringRequest reqListComp = new StringRequest(Request.Method.GET, URL, this, this) {
             @Override
             public Map<String, String> getHeaders() {
