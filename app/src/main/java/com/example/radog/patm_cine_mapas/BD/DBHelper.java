@@ -128,6 +128,16 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String ENTRADAS = "entradas";
     public static final String TIPO_PAGO = "tipo_pago";
 
+    /**
+     * TABLE - STRUCTURE
+     */
+    public static final String TABLE_SALA_ASIENTOS = "sala_asientos"; //table name
+    public static final String ASIENTO_ID = "asiento_id";
+    //public static final String SALA_ID = "sala_id";
+    //public static final String FUNCION_ID = "funcion_id";
+    public static final String COLUMNA = "columna";
+    public static final String FILA = "fila";
+
     //TO CREATE TABLE Persona
     private static final String CREATE_PERSONA = "CREATE TABLE " + TABLE_PERSONA + " ( "
             + PERSONA_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -227,6 +237,16 @@ public class DBHelper extends SQLiteOpenHelper {
             + "FOREIGN KEY(" + CLIENTE_ID + ") REFERENCES " + TABLE_PERSONA + "(" + PERSONA_ID + "), "
             + "FOREIGN KEY(" + FUNCION_ID + ") REFERENCES " + TABLE_FUNCION + "(" + FUNCION_ID + ") );";
 
+    private static final String CREATE_SALA_ASIENTOS = "CREATE TABLE " + TABLE_SALA_ASIENTOS + " ( "
+            + ASIENTO_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+            + SALA_ID + " INTEGER, "
+            + FUNCION_ID + " INTEGER, "
+            + FILA + " INTEGER, "
+            + COLUMNA + " INTEGER, "
+            + "PRIMARY KEY(" + ASIENTO_ID + ", " + SALA_ID + ", " + FUNCION_ID + ") "
+            + "FOREIGN KEY(" + SALA_ID + ") REFERENCES " + TABLE_SALA + "(" + SALA_ID + "), "
+            + "FOREIGN KEY(" + FUNCION_ID + ") REFERENCES " + TABLE_FUNCION + "(" + FUNCION_ID + ") );";
+
     SQLiteDatabase myDB;
 
     /**
@@ -256,6 +276,7 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_SALA);
         db.execSQL(CREATE_FUNCION);
         db.execSQL(CREATE_COMPRA);
+        db.execSQL(CREATE_SALA_ASIENTOS);
     }
 
     @Override
@@ -507,6 +528,21 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     public void cleanDB() {
+        delete(TABLE_FUNCION, null);
+        delete(TABLE_PELICULA, null);
+        delete(TABLE_SALA, null);
+        delete(TABLE_SUCURSAL, null);
+
+        delete(TABLE_CATEGORIA_PELICULA, null);
+        delete(TABLE_REPARTO, null);
+        delete(TABLE_COLABORADOR, null);
+        delete(TABLE_CATEGORIA, null);
+    }
+
+    /**
+     * TODO MODIFICAR LAS TABLAS
+     */
+    public void cleanDB_P2() {
         delete(TABLE_FUNCION, null);
         delete(TABLE_PELICULA, null);
         delete(TABLE_SALA, null);

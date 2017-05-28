@@ -59,7 +59,7 @@
                 android:value=".Activities.Login" />
         </activity>
         <activity
-            android:name=".Activities.Function"
+            android:name=".Activities.FunctionActivity"
             android:label="@string/title_activity_function"
             android:parentActivityName=".Activities.Login"
             android:theme="@style/AppTheme.NoActionBar">
@@ -101,7 +101,15 @@
             android:name=".LoginService"
             android:exported="false" />
 
-        <activity android:name=".Activities.AsientosActivity"></activity>
+        <activity
+            android:name=".Activities.AsientosActivity"
+            android:label="@string/title_activity_asientos"
+            android:parentActivityName=".Activities.Login"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Activities.Login" />
+        </activity>
     </application>
 
 </manifest>

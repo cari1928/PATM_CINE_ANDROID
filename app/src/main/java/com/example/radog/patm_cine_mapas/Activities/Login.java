@@ -74,7 +74,7 @@ public class Login extends AppCompatActivity implements
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.itmFunction:
-                Intent iFunction = new Intent(this, Function.class);
+                Intent iFunction = new Intent(this, FunctionActivity.class);
 
                 Bundle data = new Bundle();
                 data.putString("TYPE", "Login");

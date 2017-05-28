@@ -7,7 +7,7 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.TextView;
 
-import com.example.radog.patm_cine_mapas.Activities.Function;
+import com.example.radog.patm_cine_mapas.Activities.FunctionActivity;
 import com.example.radog.patm_cine_mapas.Connectivity.MyApplication;
 import com.example.radog.patm_cine_mapas.R;
 import com.example.radog.patm_cine_mapas.UserData;
@@ -133,7 +133,7 @@ public class SucursalMapsActivity extends FragmentActivity implements OnMapReady
     }
 
     public void changeIntent(LatLng position) {
-        Intent iFuncion = new Intent(this, Function.class);
+        Intent iFuncion = new Intent(this, FunctionActivity.class);
         data = new Bundle();
         data.putString("TYPE", "Sucursal");
         iFuncion.putExtras(data);

@@ -1,4 +1,4 @@
-package com.example.radog.patm_cine_mapas;
+package com.example.radog.patm_cine_mapas.Adapters;
 
 import android.content.Context;
 import android.content.Intent;
@@ -17,6 +17,8 @@ import android.widget.Toast;
 import com.example.radog.patm_cine_mapas.Activities.AsientosActivity;
 import com.example.radog.patm_cine_mapas.Activities.Login;
 import com.example.radog.patm_cine_mapas.Connectivity.ConnectivityReceiver;
+import com.example.radog.patm_cine_mapas.LongClickListener;
+import com.example.radog.patm_cine_mapas.R;
 import com.example.radog.patm_cine_mapas.TDA.TDAPelicula;
 import com.koushikdutta.ion.Ion;
 
@@ -27,7 +29,8 @@ import java.util.concurrent.ExecutionException;
  * Created by radog on 21/05/2017.
  */
 
-public class FunctionAdapter extends RecyclerView.Adapter<FunctionAdapter.FuncViewHolder>
+public class FunctionAdapter extends
+        RecyclerView.Adapter<FunctionAdapter.FuncViewHolder>
         implements ConnectivityReceiver.ConnectivityReceiverListener {
 
     private List<TDAPelicula> lPeli;
@@ -106,9 +109,9 @@ public class FunctionAdapter extends RecyclerView.Adapter<FunctionAdapter.FuncVi
         public FuncViewHolder(View itemView) {
             super(itemView);
 
-            imvPoster = (ImageView) itemView.findViewById(R.id.imvPoster);
-            txtTitulo = (TextView) itemView.findViewById(R.id.txtTitulo);
-            txtLenguaje = (TextView) itemView.findViewById(R.id.txtLenguaje);
+            imvPoster = (ImageView) itemView.findViewById(R.id.imvAsiento);
+            txtTitulo = (TextView) itemView.findViewById(R.id.txtFila);
+            txtLenguaje = (TextView) itemView.findViewById(R.id.txtColumna);
             txtDuracion = (TextView) itemView.findViewById(R.id.txtDuracion);
 
             itemView.setOnLongClickListener(this);
@@ -140,6 +143,4 @@ public class FunctionAdapter extends RecyclerView.Adapter<FunctionAdapter.FuncVi
             return BitmapFactory.decodeResource(context.getResources(), R.drawable.no_disponible);
         }
     }
-
-
 }

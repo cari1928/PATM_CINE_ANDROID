@@ -25,7 +25,7 @@ import com.example.radog.patm_cine_mapas.BD.DBHelper;
 import com.example.radog.patm_cine_mapas.Connectivity.ConnectivityReceiver;
 import com.example.radog.patm_cine_mapas.Connectivity.MyApplication;
 import com.example.radog.patm_cine_mapas.Constatns;
-import com.example.radog.patm_cine_mapas.FunctionAdapter;
+import com.example.radog.patm_cine_mapas.Adapters.FunctionAdapter;
 import com.example.radog.patm_cine_mapas.R;
 import com.example.radog.patm_cine_mapas.TDA.TDAPelicula;
 import com.example.radog.patm_cine_mapas.TDA.TDASucursal;
@@ -42,7 +42,7 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class Function extends AppCompatActivity implements
+public class FunctionActivity extends AppCompatActivity implements
         Response.Listener<String>, Response.ErrorListener,
         ConnectivityReceiver.ConnectivityReceiverListener {
 
