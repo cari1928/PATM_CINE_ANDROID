@@ -36,10 +36,13 @@ public class FunctionAdapter extends
     private List<TDAPelicula> lPeli;
     Context context;
     private String name;
+    public int tipo;
+    private int funcion_id;
 
-    public FunctionAdapter(List<TDAPelicula> listComp, Context context) {
+    public FunctionAdapter(List<TDAPelicula> listComp, Context context, int tipo) {
         this.lPeli = listComp;
         this.context = context;
+        this.tipo = tipo;
     }
 
     @Override
@@ -58,10 +61,21 @@ public class FunctionAdapter extends
             holder.txtLenguaje.setText("Language: " + lPeli.get(position).getLenguaje());
             holder.txtDuracion.setText("Duration: " + String.valueOf(lPeli.get(position).getDuracion()));
 
+            if (tipo != 2) {
+                holder.txtSala.setVisibility(TextView.INVISIBLE);
+                holder.txtFecha.setVisibility(TextView.INVISIBLE);
+                holder.txtHora.setVisibility(TextView.INVISIBLE);
+            } else {
+                holder.txtSala.setText(lPeli.get(position).getNombre());
+                holder.txtFecha.setText(lPeli.get(position).getFecha() + " - " + lPeli.get(position).getFecha_fin());
+                holder.txtHora.setText(lPeli.get(position).getHora() + " - " + lPeli.get(position).getHora_fin());
+            }
+
             holder.setLongClickListener(new LongClickListener() {
                 @Override
                 public void onItemLongClick(int pos) {
                     name = lPeli.get(pos).getTitulo();
+                    funcion_id = lPeli.get(pos).getFuncion_id();
                     //Toast.makeText(context, name, Toast.LENGTH_SHORT).show();
                 }
             });
@@ -104,6 +118,11 @@ public class FunctionAdapter extends
         public TextView txtTitulo;
         public TextView txtLenguaje;
         public TextView txtDuracion;
+
+        public TextView txtSala;
+        public TextView txtFecha;
+        public TextView txtHora;
+
         LongClickListener longClickListener;
 
         public FuncViewHolder(View itemView) {
@@ -113,6 +132,10 @@ public class FunctionAdapter extends
             txtTitulo = (TextView) itemView.findViewById(R.id.txtFila);
             txtLenguaje = (TextView) itemView.findViewById(R.id.txtColumna);
             txtDuracion = (TextView) itemView.findViewById(R.id.txtDuracion);
+
+            txtSala = (TextView) itemView.findViewById(R.id.txtSala);
+            txtFecha = (TextView) itemView.findViewById(R.id.txtFecha);
+            txtHora = (TextView) itemView.findViewById(R.id.txtHora);
 
             itemView.setOnLongClickListener(this);
             itemView.setOnCreateContextMenuListener(this);
@@ -132,6 +155,7 @@ public class FunctionAdapter extends
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
             menu.setHeaderTitle("Select Action:");
             menu.add(0, 0, 0, "Buy Tickets");
+            menu.add(0, 1, 1, "Extra Info");
         }
     }
 

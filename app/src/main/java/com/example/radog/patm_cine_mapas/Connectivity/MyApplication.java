@@ -9,10 +9,13 @@ import android.app.Application;
 public class MyApplication extends Application {
 
     private static MyApplication mInstance;
+
     private static String persona_id;
     private static String token;
     private static double latitud;
     private static double longitud;
+    private int funcion_id;
+    private int asiento_id;
 
     @Override
     public void onCreate() {

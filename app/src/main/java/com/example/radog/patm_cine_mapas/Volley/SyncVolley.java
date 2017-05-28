@@ -243,6 +243,7 @@ public class SyncVolley implements Response.Listener<String>, Response.ErrorList
             Log.e("VOLLEY-SYNC", e.toString());
             errorMsg(e);
             e.printStackTrace();
+            Toast.makeText(con, e.toString(), Toast.LENGTH_SHORT).show();
         }
     }
 

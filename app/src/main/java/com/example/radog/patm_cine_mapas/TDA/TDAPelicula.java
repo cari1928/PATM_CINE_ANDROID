@@ -21,9 +21,9 @@ public class TDAPelicula {
     private int funcion_id;
     private int sala_id;
     private String fecha;
-    private List<String> hora;
+    private String hora;
     private String fecha_fin;
-    private List<String> hora_fin;
+    private String hora_fin;
 
     //info sala
     private String nombre;
@@ -37,7 +37,7 @@ public class TDAPelicula {
     public TDAPelicula() {
     }
 
-    public TDAPelicula(int pelicula_id, String titulo, String descripcion, String f_lanzamiento, String lenguaje, int duracion, String poster, int funcion_id, int sala_id, String fecha, List<String> hora, String fecha_fin, List<String> hora_fin, String nombre, int sucursal_id, int numero_sala, int categoria_id, List<String> categoria) {
+    public TDAPelicula(int pelicula_id, String titulo, String descripcion, String f_lanzamiento, String lenguaje, int duracion, String poster, int funcion_id, int sala_id, String fecha, String hora, String fecha_fin, String hora_fin, String nombre, int sucursal_id, int numero_sala, int categoria_id, List<String> categoria) {
         this.pelicula_id = pelicula_id;
         this.titulo = titulo;
         this.descripcion = descripcion;
@@ -138,11 +138,11 @@ public class TDAPelicula {
         this.fecha = fecha;
     }
 
-    public List<String> getHora() {
+    public String getHora() {
         return hora;
     }
 
-    public void setHora(List<String> hora) {
+    public void setHora(String hora) {
         this.hora = hora;
     }
 
@@ -154,11 +154,11 @@ public class TDAPelicula {
         this.fecha_fin = fecha_fin;
     }
 
-    public List<String> getHora_fin() {
+    public String getHora_fin() {
         return hora_fin;
     }
 
-    public void setHora_fin(List<String> hora_fin) {
+    public void setHora_fin(String hora_fin) {
         this.hora_fin = hora_fin;
     }
 

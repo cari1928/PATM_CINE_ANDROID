@@ -21,11 +21,11 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.radog.patm_cine_mapas.Adapters.FunctionAdapter;
 import com.example.radog.patm_cine_mapas.BD.DBHelper;
 import com.example.radog.patm_cine_mapas.Connectivity.ConnectivityReceiver;
 import com.example.radog.patm_cine_mapas.Connectivity.MyApplication;
 import com.example.radog.patm_cine_mapas.Constatns;
-import com.example.radog.patm_cine_mapas.Adapters.FunctionAdapter;
 import com.example.radog.patm_cine_mapas.R;
 import com.example.radog.patm_cine_mapas.TDA.TDAPelicula;
 import com.example.radog.patm_cine_mapas.TDA.TDASucursal;
@@ -52,6 +52,7 @@ public class FunctionActivity extends AppCompatActivity implements
     private RequestQueue qSolicitudes;
     List<TDAPelicula> lPeliculas;
     private String type;
+    private int tipo;
 
     @BindView(R.id.recycleList)
     RecyclerView recyclerView;
@@ -72,10 +73,14 @@ public class FunctionActivity extends AppCompatActivity implements
         recyclerView.setHasFixedSize(true);
 
         getPeliculas(); //sin conexion
-        //getVolleyPel(); //con conexion
 
         Bundle data = getIntent().getExtras();
         type = data.getString("TYPE");
+        if (type.equals("Login")) {
+            tipo = 1;
+        } else {
+            tipo = 2;
+        }
 
         adminLayout = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(adminLayout);
@@ -205,7 +210,7 @@ public class FunctionActivity extends AppCompatActivity implements
                 lPeliculas.add(objPel);
             }
 
-            adapter = new FunctionAdapter(lPeliculas, this);
+            adapter = new FunctionAdapter(lPeliculas, this, tipo);
             recyclerView.setAdapter(adapter);
         } catch (Exception e) {
             Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show();
@@ -236,7 +241,7 @@ public class FunctionActivity extends AppCompatActivity implements
      */
     private void getPeliculas() {
         TDAPelicula objPel;
-        int totalFields = 7;
+        //int tipo = 2;
         String url;
 
         try {
@@ -250,7 +255,12 @@ public class FunctionActivity extends AppCompatActivity implements
             List<String> lRep = db.select("SELECT * FROM reparto", 3);*/
 
             if (type.equals("Login")) {
-                url = "SELECT DISTINCT pelicula.pelicula_id, titulo, descripcion, f_lanzamiento, lenguaje, duracion, poster FROM pelicula ORDER BY titulo";
+                //para que la persona que no se ha logueado vea todas las películas disponibles sin clasificación por función o sucursal
+                url = "SELECT DISTINCT pelicula.pelicula_id, titulo, descripcion, f_lanzamiento, lenguaje, duracion, poster " +
+                        "FROM pelicula ORDER BY titulo";
+                /*url = "SELECT * FROM funcion \n" +
+                        "INNER JOIN pelicula p ON p.pelicula_id = funcion.pelicula_id\n" +
+                        "ORDER BY titulo";*/
             } else {
                 url = "SELECT * FROM sucursal " +
                         "WHERE latitud=" + ((MyApplication) this.getApplication()).getLatitud() +
@@ -261,31 +271,46 @@ public class FunctionActivity extends AppCompatActivity implements
                     return;
                 }
 
-                url = "SELECT DISTINCT pelicula.pelicula_id, titulo, descripcion, f_lanzamiento, lenguaje, duracion, poster \n" +
-                        "FROM pelicula\n" +
-                        "INNER JOIN funcion f ON f.pelicula_id = pelicula.pelicula_id\n" +
-                        "INNER JOIN sala s ON s.sala_id = f.sala_id\n" +
-                        "WHERE s.sucursal_id=" + lSuc.get(0).getSucursal_id() +
-                        " ORDER BY titulo";
+                //para que el cliente vea las funciones disponibles en una sucursal específica
+                url = "select f.pelicula_id, titulo, descripcion, f_lanzamiento, lenguaje, duracion, poster, funcion_id, f.sala_id, " +
+                        "fecha, hora, fecha_fin, hora_fin, nombre\n" +
+                        "from funcion f\n" +
+                        "inner join pelicula p on p.pelicula_id = f.pelicula_id\n" +
+                        "inner join sala s on s.sala_id = f.sala_id\n" +
+                        "where f.sala_id in (select sala_id from sala where sucursal_id=" + lSuc.get(0).getSucursal_id() + ")\n" +
+                        "order by titulo";
             }
 
-            List<TDAPelicula> lPeli = db.select(url, new TDAPelicula());
+            List<TDAPelicula> lPeli = db.select(url, new TDAPelicula(), tipo);
             for (int i = 0; i < lPeli.size(); i++) {
                 objPel = new TDAPelicula();
+
+                objPel.setFuncion_id(lPeli.get(i).getFuncion_id());
                 objPel.setPelicula_id(lPeli.get(i).getPelicula_id());
                 objPel.setTitulo(lPeli.get(i).getTitulo());
                 objPel.setLenguaje(lPeli.get(i).getLenguaje());
                 objPel.setDuracion(lPeli.get(i).getDuracion());
                 objPel.setPoster(lPeli.get(i).getPoster());
 
+                if (tipo == 2) {
+                    objPel.setFuncion_id(lPeli.get(i).getFuncion_id());
+                    objPel.setSala_id(lPeli.get(i).getSala_id());
+                    objPel.setFecha(lPeli.get(i).getFecha());
+                    objPel.setHora(lPeli.get(i).getHora());
+                    objPel.setFecha_fin(lPeli.get(i).getFecha_fin());
+                    objPel.setHora_fin(lPeli.get(i).getHora_fin());
+                    objPel.setNombre(lPeli.get(i).getNombre());
+                }
+
                 lPeliculas.add(objPel);
             }
 
-            adapter = new FunctionAdapter(lPeliculas, this);
+            adapter = new FunctionAdapter(lPeliculas, this, tipo);
             recyclerView.setAdapter(adapter);
         } catch (Exception e) {
             e.printStackTrace();
-            Toast.makeText(this, "Actualice u obtenga conexión a internet para sincronizar", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, "Actualice u obtenga conexión a internet para sincronizar", Toast.LENGTH_SHORT).show();
         }
     }
 

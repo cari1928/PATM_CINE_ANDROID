@@ -133,10 +133,14 @@ public class DBHelper extends SQLiteOpenHelper {
      */
     public static final String TABLE_SALA_ASIENTOS = "sala_asientos"; //table name
     public static final String ASIENTO_ID = "asiento_id";
-    //public static final String SALA_ID = "sala_id";
-    //public static final String FUNCION_ID = "funcion_id";
     public static final String COLUMNA = "columna";
     public static final String FILA = "fila";
+
+    /**
+     * TABLE - STRUCTURE
+     */
+    public static final String TABLE_ASIENTOS_RESERVADOS = "asientos_reservados"; //table name
+    public static final String LAST_UPDATE = "last_update";
 
     //TO CREATE TABLE Persona
     private static final String CREATE_PERSONA = "CREATE TABLE " + TABLE_PERSONA + " ( "
@@ -243,9 +247,17 @@ public class DBHelper extends SQLiteOpenHelper {
             + FUNCION_ID + " INTEGER, "
             + FILA + " INTEGER, "
             + COLUMNA + " INTEGER, "
-            + "PRIMARY KEY(" + ASIENTO_ID + ", " + SALA_ID + ", " + FUNCION_ID + ") "
             + "FOREIGN KEY(" + SALA_ID + ") REFERENCES " + TABLE_SALA + "(" + SALA_ID + "), "
             + "FOREIGN KEY(" + FUNCION_ID + ") REFERENCES " + TABLE_FUNCION + "(" + FUNCION_ID + ") );";
+
+    private static final String CREATE_ASIENTOS_RESERVADOS = "CREATE TABLE " + TABLE_ASIENTOS_RESERVADOS + " ( "
+            + CLIENTE_ID + " INTEGER,"
+            + ASIENTO_ID + " INTEGER, "
+            + SALA_ID + " INTEGER, "
+            + FUNCION_ID + " INTEGER, "
+            + "PRIMARY KEY(" + ASIENTO_ID + ", " + SALA_ID + ", " + FUNCION_ID + ") "
+            + "FOREIGN KEY(" + ASIENTO_ID + ", " + SALA_ID + ", " + FUNCION_ID + ") "
+            + "REFERENCES " + TABLE_SALA_ASIENTOS + "(" + ASIENTO_ID + ", " + SALA_ID + ", " + FUNCION_ID + ") );";
 
     SQLiteDatabase myDB;
 
@@ -257,6 +269,8 @@ public class DBHelper extends SQLiteOpenHelper {
      * Sala
      * Funcion
      * Compra
+     * Sala Asientos
+     * Asientos Reservados
      */
 
     public DBHelper(Context context) {
@@ -277,6 +291,7 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_FUNCION);
         db.execSQL(CREATE_COMPRA);
         db.execSQL(CREATE_SALA_ASIENTOS);
+        db.execSQL(CREATE_ASIENTOS_RESERVADOS);
     }
 
     @Override
@@ -292,6 +307,8 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_SALA);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_FUNCION);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_COMPRA);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_SALA_ASIENTOS);
+        db.execSQL("DROP TABLE IF EXISTS " + CREATE_ASIENTOS_RESERVADOS);
         onCreate(db);
     }
 
@@ -389,7 +406,7 @@ public class DBHelper extends SQLiteOpenHelper {
         return registers;
     }
 
-    public List<TDAPelicula> select(String query, TDAPelicula tda) {
+    public List<TDAPelicula> select(String query, TDAPelicula tda, int tipo) {
         List<TDAPelicula> registers = new ArrayList<>();
         TDAPelicula tdaPeli;
 
@@ -404,6 +421,16 @@ public class DBHelper extends SQLiteOpenHelper {
                 tdaPeli.setLenguaje(c.getString(4));
                 tdaPeli.setDuracion(c.getInt(5));
                 tdaPeli.setPoster(c.getString(6));
+
+                if (tipo == 2) {
+                    tdaPeli.setFuncion_id(c.getInt(7));
+                    tdaPeli.setSala_id(c.getInt(8));
+                    tdaPeli.setFecha(c.getString(9));
+                    tdaPeli.setHora(c.getString(10));
+                    tdaPeli.setFecha_fin(c.getString(11));
+                    tdaPeli.setHora_fin(c.getString(12));
+                    tdaPeli.setNombre(c.getString(13));
+                }
 
                 registers.add(tdaPeli);
             } while (c.moveToNext());
@@ -543,14 +570,7 @@ public class DBHelper extends SQLiteOpenHelper {
      * TODO MODIFICAR LAS TABLAS
      */
     public void cleanDB_P2() {
-        delete(TABLE_FUNCION, null);
-        delete(TABLE_PELICULA, null);
-        delete(TABLE_SALA, null);
-        delete(TABLE_SUCURSAL, null);
-
-        delete(TABLE_CATEGORIA_PELICULA, null);
-        delete(TABLE_REPARTO, null);
-        delete(TABLE_COLABORADOR, null);
-        delete(TABLE_CATEGORIA, null);
+        delete(TABLE_ASIENTOS_RESERVADOS, null);
+        delete(TABLE_SALA_ASIENTOS, null);
     }
 }

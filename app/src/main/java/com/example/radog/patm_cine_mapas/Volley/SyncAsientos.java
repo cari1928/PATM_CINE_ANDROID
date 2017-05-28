@@ -50,17 +50,14 @@ public class SyncAsientos implements Response.Listener<String>, Response.ErrorLi
     public SyncAsientos(Context con) {
         qSolicitudes = Volley.newRequestQueue(con);
         this.con = con;
+        lSucursales = new ArrayList<>();
 
         //PREPARA LA BD LOCAL
         db = new DBHelper(con);
         db.openDB();
-        db.cleanDB(); //borra el contenido de las tablas
-
-        lSucursales = new ArrayList<>();
+        db.cleanDB_P2(); //borra el contenido de las tablas
 
         sync(); //comienza sincronización
-
-        db.select("SELECT * FROM pelicula", 3);
     }
 
     @Override
