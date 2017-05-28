@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.example.radog.patm_cine_mapas.Activities.AsientosActivity;
 import com.example.radog.patm_cine_mapas.Activities.Login;
 import com.example.radog.patm_cine_mapas.Connectivity.ConnectivityReceiver;
+import com.example.radog.patm_cine_mapas.Connectivity.MyApplication;
 import com.example.radog.patm_cine_mapas.LongClickListener;
 import com.example.radog.patm_cine_mapas.R;
 import com.example.radog.patm_cine_mapas.TDA.TDAPelicula;
@@ -76,6 +77,13 @@ public class FunctionAdapter extends
                 public void onItemLongClick(int pos) {
                     name = lPeli.get(pos).getTitulo();
                     funcion_id = lPeli.get(pos).getFuncion_id();
+
+                    ((MyApplication) context.getApplicationContext()).setFuncion_id(lPeli.get(pos).getFuncion_id());
+                    ((MyApplication) context.getApplicationContext()).setPelicula_id(lPeli.get(pos).getPelicula_id());
+                    ((MyApplication) context.getApplicationContext()).setPelicula_titulo(lPeli.get(pos).getTitulo());
+                    ((MyApplication) context.getApplicationContext()).setSala_id(lPeli.get(pos).getSala_id());
+                    ((MyApplication) context.getApplicationContext()).setSala_nombre(lPeli.get(pos).getNombre());
+
                     //Toast.makeText(context, name, Toast.LENGTH_SHORT).show();
                 }
             });

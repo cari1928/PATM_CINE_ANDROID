@@ -16,28 +16,31 @@
 
         <ImageView
             android:id="@+id/imvAsiento"
-            android:layout_width="60dp"
-            android:layout_height="80dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
             android:layout_marginRight="16dp" />
 
         <TextView
             android:id="@+id/txtFila"
-            android:layout_width="match_parent"
+            android:layout_width="90dp"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/imvAsiento"
             android:hint="Fila"
             android:paddingBottom="5dp"
             android:paddingTop="5dp"
+            android:textAlignment="center"
             android:textSize="18dp" />
 
         <TextView
             android:id="@+id/txtColumna"
-            android:layout_width="match_parent"
+            android:layout_width="90dp"
             android:layout_height="wrap_content"
-            android:layout_below="@id/txtFila"
-            android:layout_toRightOf="@+id/imvAsiento"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="20dp"
+            android:layout_toRightOf="@id/txtFila"
             android:hint="Columna"
             android:paddingBottom="5dp"
             android:paddingTop="5dp"

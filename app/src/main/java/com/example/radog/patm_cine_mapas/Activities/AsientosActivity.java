@@ -13,17 +13,13 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.Volley;
 import com.example.radog.patm_cine_mapas.Adapters.AsientosAdapter;
 import com.example.radog.patm_cine_mapas.BD.DBHelper;
 import com.example.radog.patm_cine_mapas.Connectivity.ConnectivityReceiver;
 import com.example.radog.patm_cine_mapas.Connectivity.MyApplication;
 import com.example.radog.patm_cine_mapas.R;
 import com.example.radog.patm_cine_mapas.TDA.TDAAsiento;
-import com.example.radog.patm_cine_mapas.TDA.TDAPelicula;
-import com.example.radog.patm_cine_mapas.TDA.TDASucursal;
-import com.example.radog.patm_cine_mapas.Volley.SyncVolley;
+import com.example.radog.patm_cine_mapas.Volley.SyncAsientos;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +33,6 @@ public class AsientosActivity extends AppCompatActivity implements
     private AsientosAdapter adapter;
     private RecyclerView.LayoutManager adminLayout;
     private DBHelper db;
-    private RequestQueue qSolicitudes;
     private String type;
     List<TDAAsiento> lAsientos;
 
@@ -52,19 +47,14 @@ public class AsientosActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_asientos);
         ButterKnife.bind(this);
 
-        qSolicitudes = Volley.newRequestQueue(this);
-
         db = new DBHelper(this);
         db.openDB();
 
         lAsientos = new ArrayList<>();
         recyclerView.setHasFixedSize(true);
 
+        //se cambió de lugar
         getAsientos(); //sin conexion
-        //getVolleyPel(); //con conexion
-
-        Bundle data = getIntent().getExtras();
-        type = data.getString("TYPE");
 
         adminLayout = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(adminLayout);
@@ -72,6 +62,8 @@ public class AsientosActivity extends AppCompatActivity implements
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         checkConnection(1);
+
+        //getAsientos(); //sin conexion
     }
 
     /****************************************************************
@@ -97,16 +89,21 @@ public class AsientosActivity extends AppCompatActivity implements
         switch (item.getItemId()) {
             case R.id.itmRefresh:
                 try {
+                    List<TDAAsiento> p = db.select(
+                            "select asiento_id, sala_id, funcion_id, columna, fila from sala_asientos",
+                            new TDAAsiento());
+
                     lAsientos.clear();
                     getAsientos();
                     adapter.notifyDataSetChanged();
 
                     //si es mandado llamar desde otro punto que no sea el onCreate..
                     if (checkConnection(2)) { //si esta conectado, entonces... sincroniza
-                        new SyncVolley(this);
+                        new SyncAsientos(this);
                     }
                 } catch (Exception e) {
-                    Toast.makeText(this, "No hay funciones disponibles", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Refresh " + e.toString(), Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(this, "No hay funciones disponibles", Toast.LENGTH_SHORT).show();
                 }
                 break;
         }
@@ -148,7 +145,8 @@ public class AsientosActivity extends AppCompatActivity implements
 
             //sincroniza BD, solo las funciones
             if (isConnected) {
-                new SyncVolley(this);
+                //new SyncVolley(this);
+                new SyncAsientos(this);
             }
         } else {
             message = "Sorry! Not connected to internet";
@@ -171,8 +169,7 @@ public class AsientosActivity extends AppCompatActivity implements
      * HASTA RESOLVER EL PROBLEMA DE SQLITE
      */
     private void getAsientos() {
-        TDAPelicula objPel;
-        int totalFields = 7;
+        TDAAsiento objAsi;
         String url;
 
         try {
@@ -185,41 +182,24 @@ public class AsientosActivity extends AppCompatActivity implements
             List<String> lCatPeli = db.select("SELECT * FROM categoria_pelicula", 3);
             List<String> lRep = db.select("SELECT * FROM reparto", 3);*/
 
+            List<TDAAsiento> lAsi = db.select(
+                    "SELECT asiento_id, sala_id, funcion_id, columna, fila FROM " + db.TABLE_SALA_ASIENTOS, new TDAAsiento());
+            for (int i = 0; i < lAsi.size(); i++) {
+                objAsi = new TDAAsiento();
+                objAsi.setAsiento_id(lAsi.get(i).getAsiento_id());
+                objAsi.setSala_id(lAsi.get(i).getSala_id());
+                objAsi.setFuncion_id(lAsi.get(i).getFuncion_id());
+                objAsi.setColumna(lAsi.get(i).getColumna());
+                objAsi.setFila(lAsi.get(i).getFila());
 
-            url = "SELECT * FROM sucursal " +
-                    "WHERE latitud=" + ((MyApplication) this.getApplication()).getLatitud() +
-                    " AND longitud=" + ((MyApplication) this.getApplication()).getLongitud();
-            List<TDASucursal> lSuc = db.select(url, new TDASucursal());
-
-            if (lSuc == null) {
-                return;
+                lAsientos.add(objAsi);
             }
-
-            url = "SELECT DISTINCT pelicula.pelicula_id, titulo, descripcion, f_lanzamiento, lenguaje, duracion, poster \n" +
-                    "FROM pelicula\n" +
-                    "INNER JOIN funcion f ON f.pelicula_id = pelicula.pelicula_id\n" +
-                    "INNER JOIN sala s ON s.sala_id = f.sala_id\n" +
-                    "WHERE s.sucursal_id=" + lSuc.get(0).getSucursal_id() +
-                    " ORDER BY titulo";
-
-
-           /* List<TDAPelicula> lPeli = db.select(url, new TDAPelicula());
-            for (int i = 0; i < lPeli.size(); i++) {
-                objPel = new TDAPelicula();
-                objPel.setPelicula_id(lPeli.get(i).getPelicula_id());
-                objPel.setTitulo(lPeli.get(i).getTitulo());
-                objPel.setLenguaje(lPeli.get(i).getLenguaje());
-                objPel.setDuracion(lPeli.get(i).getDuracion());
-                objPel.setPoster(lPeli.get(i).getPoster());
-
-                lPeliculas.add(objPel);
-            }
-
-            adapter = new FunctionAdapter(lPeliculas, this);
-            recyclerView.setAdapter(adapter);*/
+            adapter = new AsientosAdapter(lAsientos, this);
+            recyclerView.setAdapter(adapter);
         } catch (Exception e) {
             e.printStackTrace();
-            Toast.makeText(this, "Actualice u obtenga conexión a internet para sincronizar", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, "Actualice u obtenga conexión a internet para sincronizar", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show();
         }
     }
 }

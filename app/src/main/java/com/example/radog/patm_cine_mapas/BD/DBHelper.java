@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.example.radog.patm_cine_mapas.TDA.TDAAsiento;
 import com.example.radog.patm_cine_mapas.TDA.TDACategoria;
 import com.example.radog.patm_cine_mapas.TDA.TDACategoriaPelicula;
 import com.example.radog.patm_cine_mapas.TDA.TDAColaborador;
@@ -399,6 +400,27 @@ public class DBHelper extends SQLiteOpenHelper {
                 tdaColaborador.setNombre(c.getString(1));
                 tdaColaborador.setApellidos(c.getString(2));
                 registers.add(tdaColaborador);
+            } while (c.moveToNext());
+        } else {
+            return null;
+        }
+        return registers;
+    }
+
+    public List<TDAAsiento> select(String query, TDAAsiento tda) {
+        List<TDAAsiento> registers = new ArrayList<>();
+        TDAAsiento tdaAsiento;
+
+        Cursor c = myDB.rawQuery(query, null);
+        if (c.moveToFirst()) {
+            do {
+                tdaAsiento = new TDAAsiento();
+                tdaAsiento.setAsiento_id(c.getInt(0));
+                tdaAsiento.setSala_id(c.getInt(1));
+                tdaAsiento.setFuncion_id(c.getInt(2));
+                tdaAsiento.setColumna(c.getInt(3));
+                tdaAsiento.setFila(c.getString(4));
+                registers.add(tdaAsiento);
             } while (c.moveToNext());
         } else {
             return null;

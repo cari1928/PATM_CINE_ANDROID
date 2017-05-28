@@ -13,7 +13,9 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.radog.patm_cine_mapas.BD.DBHelper;
+import com.example.radog.patm_cine_mapas.Connectivity.MyApplication;
 import com.example.radog.patm_cine_mapas.Constatns;
+import com.example.radog.patm_cine_mapas.TDA.TDAAsiento;
 import com.example.radog.patm_cine_mapas.TDA.TDASucursal;
 
 import org.json.JSONArray;
@@ -57,189 +59,53 @@ public class SyncAsientos implements Response.Listener<String>, Response.ErrorLi
         db.openDB();
         db.cleanDB_P2(); //borra el contenido de las tablas
 
+        List<TDAAsiento> p = db.select("select asiento_id, sala_id, funcion_id, columna, fila from sala_asientos", new TDAAsiento());
+
         sync(); //comienza sincronización
     }
 
     @Override
     public void onErrorResponse(VolleyError error) {
-        Log.e("VOLLEY-SYNC", error.toString());
-        errorMsg(error);
+        Log.e("CINE", error.toString());
         error.printStackTrace();
+        Toast.makeText(con, "onErrorResponse" + error.toString(), Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onResponse(String response) {
         long res;
-        TDASucursal tdaSucursal;
-
         try {
-            if (response.isEmpty()) return;
+            Log.e("CINE", response);
+            //Toast.makeText(con, response, Toast.LENGTH_SHORT).show();
 
-            JSONObject objJSON = new JSONObject(response);
-
-            Log.d("CINE", response);
-
-            JSONArray jaPeli = objJSON.getJSONArray("peliculas");
-            JSONArray jaFun = objJSON.getJSONArray("funciones");
-            JSONArray jaSuc = objJSON.getJSONArray("sucursales");
-            JSONArray jaSal = objJSON.getJSONArray("salas");
-            JSONArray jaCat = objJSON.getJSONArray("categorias");
-            JSONArray jaCol = objJSON.getJSONArray("colaboradores");
-            JSONArray jaCatPeli = objJSON.getJSONArray("cat_pelis");
-            JSONArray jaRep = objJSON.getJSONArray("repartos");
+            JSONArray jsonResponse = new JSONArray(response);
             JSONObject tmp;
+            for (int i = 0; i < jsonResponse.length(); i++) {
+                tmp = jsonResponse.getJSONObject(i);
 
-            for (int i = 0; i < jaSuc.length(); i++) {
-                tmp = jaSuc.getJSONObject(i);
                 res = db.insert(new String[]{
-                        db.SUCURSAL_ID,
-                        db.PAIS,
-                        db.CIUDAD,
-                        db.DIRECCION,
-                        db.LATITUD,
-                        db.LONGITUD
-                }, new String[]{
-                        tmp.getString(db.SUCURSAL_ID),
-                        tmp.getString(db.PAIS),
-                        tmp.getString(db.CIUDAD),
-                        tmp.getString(db.DIRECCION),
-                        tmp.getString(db.LATITUD),
-                        tmp.getString(db.LONGITUD)
-                }, db.TABLE_SUCURSAL, false);
-
-                if (res == -1) return;
-            }
-
-            for (int i = 0; i < jaSal.length(); i++) {
-                tmp = jaSal.getJSONObject(i);
-                res = db.insert(new String[]{
+                        db.ASIENTO_ID,
+                        db.COLUMNA,
+                        db.FILA,
                         db.SALA_ID,
-                        db.NOMBRE,
-                        db.SUCURSAL_ID,
-                        db.NUMERO_SALA
+                        db.FUNCION_ID
                 }, new String[]{
-                        tmp.getString(db.SALA_ID),
-                        tmp.getString(db.NOMBRE),
-                        tmp.getString(db.SUCURSAL_ID),
-                        tmp.getString(db.NUMERO_SALA)
-                }, db.TABLE_SALA, true);
+                        tmp.getString(db.ASIENTO_ID),
+                        tmp.getString(db.COLUMNA),
+                        tmp.getString(db.FILA),
+                        "1",
+                        "2"
+                }, db.TABLE_SALA_ASIENTOS, false);
 
                 if (res == -1) return;
             }
 
-            for (int i = 0; i < jaPeli.length(); i++) {
-                tmp = jaPeli.getJSONObject(i);
-                res = db.insert(new String[]{
-                        db.PELICULA_ID,
-                        db.TITULO,
-                        db.DESCRIPCION,
-                        db.F_LANZAMIENTO,
-                        db.LENGUAJE,
-                        db.DURACION,
-                        db.POSTER
-                }, new String[]{
-                        tmp.getString(db.PELICULA_ID),
-                        tmp.getString(db.TITULO),
-                        tmp.getString(db.DESCRIPCION),
-                        tmp.getString(db.F_LANZAMIENTO),
-                        tmp.getString(db.LENGUAJE),
-                        tmp.getString(db.DURACION),
-                        tmp.getString(db.POSTER)
-                }, db.TABLE_PELICULA, true);
-
-                if (res == -1) return;
-            }
-
-            for (int i = 0; i < jaFun.length(); i++) {
-                tmp = jaFun.getJSONObject(i);
-                res = db.insert(new String[]{
-                        db.FUNCION_ID,
-                        db.PELICULA_ID,
-                        db.SALA_ID,
-                        db.FECHA,
-                        db.HORA,
-                        db.FECHA_FIN,
-                        db.HORA_FIN
-                }, new String[]{
-                        tmp.getString(db.FUNCION_ID),
-                        tmp.getString(db.PELICULA_ID),
-                        tmp.getString(db.SALA_ID),
-                        tmp.getString(db.FECHA),
-                        tmp.getString(db.HORA),
-                        tmp.getString(db.FECHA_FIN),
-                        tmp.getString(db.HORA_FIN)
-                }, db.TABLE_FUNCION, true);
-
-                if (res == -1) return;
-            }
-
-            for (int i = 0; i < jaCat.length(); i++) {
-                tmp = jaCat.getJSONObject(i);
-                res = db.insert(new String[]{
-                        db.CATEGORIA_ID,
-                        db.CATEGORIA
-                }, new String[]{
-                        tmp.getString(db.CATEGORIA_ID),
-                        tmp.getString(db.CATEGORIA)
-                }, db.TABLE_CATEGORIA, false);
-
-                if (res == -1) return;
-            }
-
-            for (int i = 0; i < jaCol.length(); i++) {
-                tmp = jaCol.getJSONObject(i);
-                res = db.insert(new String[]{
-                        db.COLABORADOR_ID,
-                        db.NOMBRE,
-                        db.APELLIDOS
-                }, new String[]{
-                        tmp.getString(db.COLABORADOR_ID),
-                        tmp.getString(db.NOMBRE),
-                        tmp.getString(db.APELLIDOS)
-                }, db.TABLE_COLABORADOR, false);
-
-                if (res == -1) return;
-            }
-
-            for (int i = 0; i < jaCatPeli.length(); i++) {
-                tmp = jaCatPeli.getJSONObject(i);
-                res = db.insert(new String[]{
-                        db.CATEGORIA_ID,
-                        db.PELICULA_ID,
-                        db.CATEGORIA_PELICULA_ID
-                }, new String[]{
-                        tmp.getString(db.CATEGORIA_ID),
-                        tmp.getString(db.PELICULA_ID),
-                        tmp.getString(db.CATEGORIA_PELICULA_ID)
-                }, db.TABLE_CATEGORIA_PELICULA, true);
-
-                if (res == -1) return;
-            }
-
-            for (int i = 0; i < jaRep.length(); i++) {
-                tmp = jaRep.getJSONObject(i);
-                res = db.insert(new String[]{
-                        db.COLABORADOR_ID,
-                        db.PELICULA_ID,
-                        db.PUESTO,
-                        db.REPARTO_ID
-                }, new String[]{
-                        tmp.getString(db.COLABORADOR_ID),
-                        tmp.getString(db.PELICULA_ID),
-                        tmp.getString(db.PUESTO),
-                        tmp.getString(db.REPARTO_ID)
-                }, db.TABLE_REPARTO, true);
-
-                if (res == -1) return;
-            }
-
-            db.closeDB();
-            Log.e("VOLLEY-SYNC", "bien");
+            Log.e("CINE", "SYNC-ASIENTOS BIEN");
 
         } catch (Exception e) {
-            Log.e("VOLLEY-SYNC", e.toString());
-            errorMsg(e);
+            Log.e("CINE", "onResponse " + e.toString());
             e.printStackTrace();
+            Toast.makeText(con, "onResponse " + e.toString(), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -248,10 +114,24 @@ public class SyncAsientos implements Response.Listener<String>, Response.ErrorLi
     }
 
     private void sync() {
-        String URL = Constatns.RUTA_PHP + "/especial/listado/app";
+        String URL = Constatns.RUTA_PHP + "/sala_asientos/disponiblesApp/"
+                + ((MyApplication) con.getApplicationContext()).getFuncion_id() + "/"
+                + ((MyApplication) con.getApplicationContext()).getSucursal_id() + "/"
+                + ((MyApplication) con.getApplicationContext()).getSala_id() + "/"
+                + ((MyApplication) con.getApplicationContext()).getPersona_id() + "/"
+                + ((MyApplication) con.getApplicationContext()).getToken();
+
+  /*      String URL = "http://192.168.1.67/cineSlim/public/index.php/api" +
+                "/sala_asientos/disponiblesApp/" +
+                "16/" +
+                "1/" +
+                "6/" +
+                "34/" +
+                "3f35f32b19343fedc6a29dc854e7e096";*/
+
+        Log.e("CINE", URL);
 
         StringRequest request = new StringRequest(Request.Method.GET, URL, this, this) {
-
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 //HEADERS =  encabezados para la petición

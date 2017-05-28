@@ -57,7 +57,8 @@ public class LoginVolley implements Response.Listener<String>, Response.ErrorLis
                 Toast.makeText(con, "Welcome " + user, Toast.LENGTH_SHORT).show();
 
                 ((MyApplication) con.getApplicationContext()).setPersona_id(objJSON.getString("persona_id"));
-                ((MyApplication) con.getApplicationContext()).setPersona_id(objJSON.getString("token"));
+                ((MyApplication) con.getApplicationContext()).setPersona_nombre(user);
+                ((MyApplication) con.getApplicationContext()).setToken(objJSON.getString("token"));
 
                 Intent iMainMenu = new Intent(con, MainMenuActivity.class);
                 con.startActivity(iMainMenu);
