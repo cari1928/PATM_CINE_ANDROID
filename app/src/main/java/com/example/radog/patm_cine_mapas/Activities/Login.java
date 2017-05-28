@@ -20,16 +20,9 @@ import com.example.radog.patm_cine_mapas.Connectivity.ConnectivityReceiver;
 import com.example.radog.patm_cine_mapas.Connectivity.MyApplication;
 import com.example.radog.patm_cine_mapas.LoginService;
 import com.example.radog.patm_cine_mapas.R;
-import com.example.radog.patm_cine_mapas.TDA.TDACategoria;
-import com.example.radog.patm_cine_mapas.TDA.TDAColaborador;
-import com.example.radog.patm_cine_mapas.TDA.TDAFuncion;
-import com.example.radog.patm_cine_mapas.TDA.TDAPelicula;
-import com.example.radog.patm_cine_mapas.TDA.TDASala;
 import com.example.radog.patm_cine_mapas.Tools;
 import com.example.radog.patm_cine_mapas.Volley.LoginVolley;
 import com.example.radog.patm_cine_mapas.Volley.SyncVolley;
-
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -54,6 +47,7 @@ public class Login extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
+
         db = new DBHelper(this);
         db.openDB();
 
@@ -112,6 +106,7 @@ public class Login extends AppCompatActivity implements
         if (user.equals("") || pass.equals("")) {
             Toast.makeText(this, "Input the required information", Toast.LENGTH_SHORT).show();
         } else {
+            checkConnection(true); //para la sincronización de la bd
             new LoginVolley(this, etUser, user, pass);
         }
     }
@@ -123,6 +118,8 @@ public class Login extends AppCompatActivity implements
      */
     @Override
     public void onBackPressed() {
+/*
+        List<TDASucursal> lSuc = db.select("SELECT * FROM sucursal", new TDASucursal());
         List<TDASala> lSal = db.select("SELECT * FROM sala", new TDASala());
         List<TDAPelicula> lPeli = db.select("SELECT * FROM pelicula", new TDAPelicula());
         List<TDAFuncion> lFun = db.select("SELECT * FROM funcion", new TDAFuncion());
@@ -130,6 +127,7 @@ public class Login extends AppCompatActivity implements
         List<TDAColaborador> lCol = db.select("SELECT * FROM colaborador", new TDAColaborador());
         List<String> lCatPeli = db.select("SELECT * FROM categoria_pelicula", 3);
         List<String> lRep = db.select("SELECT * FROM reparto", 3);
+*/
         Toast.makeText(this, "", Toast.LENGTH_SHORT).show();
     }
 

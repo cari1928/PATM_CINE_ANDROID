@@ -14,7 +14,6 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.radog.patm_cine_mapas.BD.DBHelper;
 import com.example.radog.patm_cine_mapas.Constatns;
-import com.example.radog.patm_cine_mapas.Synchronization.SyncSucursal;
 import com.example.radog.patm_cine_mapas.TDA.TDASucursal;
 
 import org.json.JSONArray;
@@ -92,19 +91,24 @@ public class SyncVolley implements Response.Listener<String>, Response.ErrorList
 
             for (int i = 0; i < jaSuc.length(); i++) {
                 tmp = jaSuc.getJSONObject(i);
+                res = db.insert(new String[]{
+                        db.SUCURSAL_ID,
+                        db.PAIS,
+                        db.CIUDAD,
+                        db.DIRECCION,
+                        db.LATITUD,
+                        db.LONGITUD
+                }, new String[]{
+                        tmp.getString(db.SUCURSAL_ID),
+                        tmp.getString(db.PAIS),
+                        tmp.getString(db.CIUDAD),
+                        tmp.getString(db.DIRECCION),
+                        tmp.getString(db.LATITUD),
+                        tmp.getString(db.LONGITUD)
+                }, db.TABLE_SUCURSAL, false);
 
-                tdaSucursal = new TDASucursal();
-                tdaSucursal.setSucursal_id(tmp.getInt(db.SUCURSAL_ID));
-                tdaSucursal.setPais(tmp.getString(db.PAIS));
-                tdaSucursal.setCiudad(tmp.getString(db.CIUDAD));
-                tdaSucursal.setDireccion(tmp.getString(db.DIRECCION));
-                tdaSucursal.setLatitud(Float.parseFloat(tmp.getString(db.LATITUD)));
-                tdaSucursal.setLongitud(Float.parseFloat(tmp.getString(db.LONGITUD)));
-
-                lSucursales.add(tdaSucursal);
+                if (res == -1) return;
             }
-
-            new SyncSucursal(con, lSucursales);
 
             for (int i = 0; i < jaSal.length(); i++) {
                 tmp = jaSal.getJSONObject(i);

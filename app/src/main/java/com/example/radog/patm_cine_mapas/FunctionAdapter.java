@@ -3,6 +3,7 @@ package com.example.radog.patm_cine_mapas;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -14,16 +15,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.radog.patm_cine_mapas.Activities.Login;
+import com.example.radog.patm_cine_mapas.Connectivity.ConnectivityReceiver;
 import com.example.radog.patm_cine_mapas.TDA.TDAPelicula;
 import com.koushikdutta.ion.Ion;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Created by radog on 21/05/2017.
  */
 
-public class FunctionAdapter extends RecyclerView.Adapter<FunctionAdapter.FuncViewHolder> {
+public class FunctionAdapter extends RecyclerView.Adapter<FunctionAdapter.FuncViewHolder>
+        implements ConnectivityReceiver.ConnectivityReceiverListener {
 
     private List<TDAPelicula> lPeli;
     Context context;
@@ -44,7 +48,7 @@ public class FunctionAdapter extends RecyclerView.Adapter<FunctionAdapter.FuncVi
     public void onBindViewHolder(FuncViewHolder holder, int position) {
         Bitmap bitmap;
         try {
-            bitmap = Ion.with(context).load(lPeli.get(position).getPoster()).withBitmap().asBitmap().get();
+            bitmap = checkConnection(position); //para obtener la imagen
             holder.imvPoster.setImageBitmap(bitmap);
             holder.txtTitulo.setText(lPeli.get(position).getTitulo());
             holder.txtLenguaje.setText("Language: " + lPeli.get(position).getLenguaje());
@@ -80,6 +84,10 @@ public class FunctionAdapter extends RecyclerView.Adapter<FunctionAdapter.FuncVi
         }
     }
 
+    @Override
+    public void onNetworkConnectionChanged(boolean isConnected) {
+
+    }
 
     public static class FuncViewHolder extends RecyclerView.ViewHolder implements
             View.OnLongClickListener,
@@ -119,5 +127,15 @@ public class FunctionAdapter extends RecyclerView.Adapter<FunctionAdapter.FuncVi
             menu.add(0, 0, 0, "Buy Tickets");
         }
     }
+
+    private Bitmap checkConnection(int position) throws ExecutionException, InterruptedException {
+        boolean isConnected = ConnectivityReceiver.isConnected();
+        if (isConnected) {
+            return Ion.with(context).load(lPeli.get(position).getPoster()).withBitmap().asBitmap().get();
+        } else {
+            return BitmapFactory.decodeResource(context.getResources(), R.drawable.no_disponible);
+        }
+    }
+
 
 }

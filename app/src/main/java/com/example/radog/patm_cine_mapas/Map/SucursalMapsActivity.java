@@ -45,8 +45,8 @@ public class SucursalMapsActivity extends FragmentActivity implements OnMapReady
 
         marcas = new ArrayList<>();
 
-        data = getIntent().getExtras();
-        lUserData = data.getParcelableArrayList("USERDATA");
+        //data = getIntent().getExtras();
+        //lUserData = data.getParcelableArrayList("USERDATA");
     }
 
     @Override
@@ -123,15 +123,17 @@ public class SucursalMapsActivity extends FragmentActivity implements OnMapReady
     }
 
     public void changeIntent(LatLng position) {
-        UserData objU = new UserData("latitud", String.valueOf(position.latitude));
+        //TODO mandar datos entre estas actividades para no perder el usuario, pass y token
+
+        /*UserData objU = new UserData("latitud", String.valueOf(position.latitude));
         lUserData.add(objU);
         objU = new UserData("longitud", String.valueOf(position.longitude));
-        lUserData.add(objU);
+        lUserData.add(objU);*/
 
         Intent iFuncion = new Intent(this, Function.class);
-        data = new Bundle();
+        /*data = new Bundle();
         data.putParcelableArrayList("USERDATA", lUserData);
-        iFuncion.putExtras(data);
+        iFuncion.putExtras(data);*/
         startActivity(iFuncion);
     }
 

@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -26,8 +27,8 @@ import com.example.radog.patm_cine_mapas.Connectivity.MyApplication;
 import com.example.radog.patm_cine_mapas.Constatns;
 import com.example.radog.patm_cine_mapas.FunctionAdapter;
 import com.example.radog.patm_cine_mapas.R;
-import com.example.radog.patm_cine_mapas.TDA.TDAFuncion;
 import com.example.radog.patm_cine_mapas.TDA.TDAPelicula;
+import com.example.radog.patm_cine_mapas.Volley.SyncVolley;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -60,24 +61,23 @@ public class Function extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_function);
         ButterKnife.bind(this);
-        checkConnection();
         qSolicitudes = Volley.newRequestQueue(this);
+
         db = new DBHelper(this);
         db.openDB();
 
         lPeliculas = new ArrayList<>();
-        //recyclerView = (RecyclerView) findViewById(R.id.recycleList);
         recyclerView.setHasFixedSize(true);
 
-        //getPeliculas();
-        getVolleyPel();
+        getPeliculas(); //sin conexion
+        //getVolleyPel(); //con conexion
 
         adminLayout = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(adminLayout);
 
-        //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        checkConnection(1);
     }
 
     /****************************************************************
@@ -87,6 +87,32 @@ public class Function extends AppCompatActivity implements
     public boolean onContextItemSelected(MenuItem item) {
         adapter.getItemSelected(item, "login");
         return super.onContextItemSelected(item);
+    }
+
+    /****************************************************************
+     * MENÚ para refrescar**************************************************************
+     ***************************************************************/
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.function_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.itmRefresh:
+                lPeliculas.clear();
+                getPeliculas();
+                adapter.notifyDataSetChanged();
+
+                //si es mandado llamar desde otro punto que no sea el onCreate..
+                if (checkConnection(2)) { //si esta conectado, entonces... sincroniza
+                    new SyncVolley(this);
+                }
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     /****************************************************************
@@ -104,9 +130,14 @@ public class Function extends AppCompatActivity implements
         showSnack(isConnected);
     }
 
-    private void checkConnection() {
+    private boolean checkConnection(int type) {
         boolean isConnected = ConnectivityReceiver.isConnected();
+
+        if (type == 2) {
+            return isConnected;
+        }
         showSnack(isConnected);
+        return false;
     }
 
     private void showSnack(boolean isConnected) {
@@ -118,7 +149,9 @@ public class Function extends AppCompatActivity implements
             color = Color.WHITE;
 
             //sincroniza BD, solo las funciones
-            //new SyncVolley(this);
+            if (isConnected) {
+                new SyncVolley(this);
+            }
         } else {
             message = "Sorry! Not connected to internet";
             color = Color.RED;
@@ -197,27 +230,24 @@ public class Function extends AppCompatActivity implements
         int totalFields = 7;
 
         try {
-            /*List<String> listPel = db.select(
-                    "SELECT DISTINCT f.pelicula_id, titulo, fecha, fecha_fin, lenguaje, duracion, poster " +
-                            "    FROM funcion f " +
-                            "    INNER JOIN pelicula ON f.pelicula_id = pelicula.pelicula_id " +
-                            "    ORDER BY titulo", totalFields);*/
-
+/*            List<TDASucursal> lSuc = db.select("SELECT * FROM sucursal", new TDASucursal());
+            List<TDASala> lSal = db.select("SELECT * FROM sala", new TDASala());
             List<TDAPelicula> lPeli = db.select("SELECT * FROM pelicula", new TDAPelicula());
             List<TDAFuncion> lFun = db.select("SELECT * FROM funcion", new TDAFuncion());
-            List<String> listPel = db.select(
-                    "SELECT * FROM pelicula INNER JOIN funcion on funcion.pelicula_id = pelicula.pelicula_id", 3);
+            List<TDACategoria> lCat = db.select("SELECT * FROM categoria", new TDACategoria());
+            List<TDAColaborador> lCol = db.select("SELECT * FROM colaborador", new TDAColaborador());
+            List<String> lCatPeli = db.select("SELECT * FROM categoria_pelicula", 3);
+            List<String> lRep = db.select("SELECT * FROM reparto", 3);*/
 
-            for (int i = 0; i < listPel.size(); i++) {
+
+            List<TDAPelicula> lPeli = db.select("SELECT * FROM pelicula ORDER BY titulo", new TDAPelicula());
+            for (int i = 0; i < lPeli.size(); i++) {
                 objPel = new TDAPelicula();
-
-                objPel.setPelicula_id(Integer.parseInt(listPel.get(i)));
-                objPel.setTitulo(listPel.get(++i));
-                objPel.setFecha(listPel.get(++i));
-                objPel.setFecha_fin(listPel.get(++i));
-                objPel.setLenguaje(listPel.get(++i));
-                objPel.setDuracion(Integer.parseInt(listPel.get(++i)));
-                objPel.setPoster(listPel.get(++i));
+                objPel.setPelicula_id(lPeli.get(i).getPelicula_id());
+                objPel.setTitulo(lPeli.get(i).getTitulo());
+                objPel.setLenguaje(lPeli.get(i).getLenguaje());
+                objPel.setDuracion(lPeli.get(i).getDuracion());
+                objPel.setPoster(lPeli.get(i).getPoster());
 
                 lPeliculas.add(objPel);
             }
@@ -225,6 +255,7 @@ public class Function extends AppCompatActivity implements
             adapter = new FunctionAdapter(lPeliculas, this);
             recyclerView.setAdapter(adapter);
         } catch (Exception e) {
+            e.printStackTrace();
             Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show();
         }
     }

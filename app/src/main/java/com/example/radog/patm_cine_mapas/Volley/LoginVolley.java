@@ -15,7 +15,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.radog.patm_cine_mapas.Activities.MainMenuActivity;
-import com.example.radog.patm_cine_mapas.Map.SucursalMapsActivity;
+import com.example.radog.patm_cine_mapas.Constatns;
 import com.example.radog.patm_cine_mapas.UserData;
 
 import org.json.JSONObject;
@@ -85,7 +85,7 @@ public class LoginVolley implements Response.Listener<String>, Response.ErrorLis
     }
 
     private void validaCliente() {
-        String URL = "http://192.168.1.67:8082/PATM_CINE/apirest/persona/validar/" + user + "/" + pass;
+        String URL = Constatns.RUTA_JAVA + "/persona/validar/" + user + "/" + pass;
 
         StringRequest solInsCte = new StringRequest(Request.Method.GET, URL, this, this) {
 

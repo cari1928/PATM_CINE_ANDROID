@@ -29,8 +29,8 @@ public class LoginService extends Service {
             synchronized (this) {
                 while (i < 10) {
                     try {
-                        wait(1000); //15 seconds
-                        //wait(180000); //1800 seg = 30 min
+                        //wait(1000); //10 seconds
+                        wait(180000); //1800 seg = 30 min
                         i++;
                     } catch (InterruptedException e) {
                         e.printStackTrace();

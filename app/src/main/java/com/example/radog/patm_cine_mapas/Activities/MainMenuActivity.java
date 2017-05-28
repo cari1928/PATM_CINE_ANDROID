@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.example.radog.patm_cine_mapas.BD.DBHelper;
 import com.example.radog.patm_cine_mapas.LoginService;
+import com.example.radog.patm_cine_mapas.Map.SucursalMapsActivity;
 import com.example.radog.patm_cine_mapas.R;
 
 import butterknife.ButterKnife;
@@ -57,7 +58,8 @@ public class MainMenuActivity extends AppCompatActivity {
 
     @OnClick(R.id.ibtnTickets)
     public void ibtnTickets() {
-
+        Intent iMaps = new Intent(this, SucursalMapsActivity.class);
+        startActivity(iMaps);
     }
 
     @OnClick(R.id.ibtnLog)
