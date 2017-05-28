@@ -76,8 +76,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".Activities.Login" />
         </activity>
-
-        <activity android:name=".Activities.NotificationActivity"></activity>
+        <activity android:name=".Activities.NotificationActivity" />
 
         <receiver
             android:name=".Connectivity.ConnectivityReceiver"
@@ -102,6 +101,7 @@
             android:name=".LoginService"
             android:exported="false" />
 
+        <activity android:name=".Activities.AsientosActivity"></activity>
     </application>
 
 </manifest>

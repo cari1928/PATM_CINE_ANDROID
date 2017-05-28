@@ -79,6 +79,9 @@ public class SyncVolley implements Response.Listener<String>, Response.ErrorList
             if (response.isEmpty()) return;
 
             JSONObject objJSON = new JSONObject(response);
+
+            Log.d("CINE", response);
+
             JSONArray jaPeli = objJSON.getJSONArray("peliculas");
             JSONArray jaFun = objJSON.getJSONArray("funciones");
             JSONArray jaSuc = objJSON.getJSONArray("sucursales");

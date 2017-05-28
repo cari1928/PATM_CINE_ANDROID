@@ -28,6 +28,7 @@ import com.example.radog.patm_cine_mapas.Constatns;
 import com.example.radog.patm_cine_mapas.FunctionAdapter;
 import com.example.radog.patm_cine_mapas.R;
 import com.example.radog.patm_cine_mapas.TDA.TDAPelicula;
+import com.example.radog.patm_cine_mapas.TDA.TDASucursal;
 import com.example.radog.patm_cine_mapas.Volley.SyncVolley;
 
 import org.json.JSONArray;
@@ -50,6 +51,7 @@ public class Function extends AppCompatActivity implements
     private DBHelper db;
     private RequestQueue qSolicitudes;
     List<TDAPelicula> lPeliculas;
+    private String type;
 
     @BindView(R.id.recycleList)
     RecyclerView recyclerView;
@@ -72,6 +74,9 @@ public class Function extends AppCompatActivity implements
         getPeliculas(); //sin conexion
         //getVolleyPel(); //con conexion
 
+        Bundle data = getIntent().getExtras();
+        type = data.getString("TYPE");
+
         adminLayout = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(adminLayout);
 
@@ -85,7 +90,7 @@ public class Function extends AppCompatActivity implements
      ***************************************************************/
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-        adapter.getItemSelected(item, "login");
+        adapter.getItemSelected(item, type);
         return super.onContextItemSelected(item);
     }
 
@@ -102,13 +107,17 @@ public class Function extends AppCompatActivity implements
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.itmRefresh:
-                lPeliculas.clear();
-                getPeliculas();
-                adapter.notifyDataSetChanged();
+                try {
+                    lPeliculas.clear();
+                    getPeliculas();
+                    adapter.notifyDataSetChanged();
 
-                //si es mandado llamar desde otro punto que no sea el onCreate..
-                if (checkConnection(2)) { //si esta conectado, entonces... sincroniza
-                    new SyncVolley(this);
+                    //si es mandado llamar desde otro punto que no sea el onCreate..
+                    if (checkConnection(2)) { //si esta conectado, entonces... sincroniza
+                        new SyncVolley(this);
+                    }
+                } catch (Exception e) {
+                    Toast.makeText(this, "No hay funciones disponibles", Toast.LENGTH_SHORT).show();
                 }
                 break;
         }
@@ -228,6 +237,7 @@ public class Function extends AppCompatActivity implements
     private void getPeliculas() {
         TDAPelicula objPel;
         int totalFields = 7;
+        String url;
 
         try {
 /*            List<TDASucursal> lSuc = db.select("SELECT * FROM sucursal", new TDASucursal());
@@ -239,8 +249,27 @@ public class Function extends AppCompatActivity implements
             List<String> lCatPeli = db.select("SELECT * FROM categoria_pelicula", 3);
             List<String> lRep = db.select("SELECT * FROM reparto", 3);*/
 
+            if (type.equals("Login")) {
+                url = "SELECT DISTINCT pelicula.pelicula_id, titulo, descripcion, f_lanzamiento, lenguaje, duracion, poster FROM pelicula ORDER BY titulo";
+            } else {
+                url = "SELECT * FROM sucursal " +
+                        "WHERE latitud=" + ((MyApplication) this.getApplication()).getLatitud() +
+                        " AND longitud=" + ((MyApplication) this.getApplication()).getLongitud();
+                List<TDASucursal> lSuc = db.select(url, new TDASucursal());
 
-            List<TDAPelicula> lPeli = db.select("SELECT * FROM pelicula ORDER BY titulo", new TDAPelicula());
+                if (lSuc == null) {
+                    return;
+                }
+
+                url = "SELECT DISTINCT pelicula.pelicula_id, titulo, descripcion, f_lanzamiento, lenguaje, duracion, poster \n" +
+                        "FROM pelicula\n" +
+                        "INNER JOIN funcion f ON f.pelicula_id = pelicula.pelicula_id\n" +
+                        "INNER JOIN sala s ON s.sala_id = f.sala_id\n" +
+                        "WHERE s.sucursal_id=" + lSuc.get(0).getSucursal_id() +
+                        " ORDER BY titulo";
+            }
+
+            List<TDAPelicula> lPeli = db.select(url, new TDAPelicula());
             for (int i = 0; i < lPeli.size(); i++) {
                 objPel = new TDAPelicula();
                 objPel.setPelicula_id(lPeli.get(i).getPelicula_id());
@@ -256,7 +285,7 @@ public class Function extends AppCompatActivity implements
             recyclerView.setAdapter(adapter);
         } catch (Exception e) {
             e.printStackTrace();
-            Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Actualice u obtenga conexión a internet para sincronizar", Toast.LENGTH_SHORT).show();
         }
     }
 

@@ -2,7 +2,6 @@ package com.example.radog.patm_cine_mapas.Volley;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.util.Base64;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -15,12 +14,11 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.radog.patm_cine_mapas.Activities.MainMenuActivity;
+import com.example.radog.patm_cine_mapas.Connectivity.MyApplication;
 import com.example.radog.patm_cine_mapas.Constatns;
-import com.example.radog.patm_cine_mapas.UserData;
 
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -58,17 +56,10 @@ public class LoginVolley implements Response.Listener<String>, Response.ErrorLis
             if (objJSON.getString("status").equals("bitacora")) {
                 Toast.makeText(con, "Welcome " + user, Toast.LENGTH_SHORT).show();
 
+                ((MyApplication) con.getApplicationContext()).setPersona_id(objJSON.getString("persona_id"));
+                ((MyApplication) con.getApplicationContext()).setPersona_id(objJSON.getString("token"));
+
                 Intent iMainMenu = new Intent(con, MainMenuActivity.class);
-                Bundle data = new Bundle();
-
-                ArrayList<UserData> userData = new ArrayList<>();
-                UserData objU = new UserData("username", user);
-                userData.add(objU);
-                objU = new UserData("pass", pass);
-                userData.add(objU);
-
-                data.putParcelableArrayList("USERDATA", userData);
-                iMainMenu.putExtras(data);
                 con.startActivity(iMainMenu);
 
             } else {

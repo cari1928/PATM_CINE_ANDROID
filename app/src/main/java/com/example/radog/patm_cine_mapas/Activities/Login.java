@@ -75,6 +75,11 @@ public class Login extends AppCompatActivity implements
         switch (item.getItemId()) {
             case R.id.itmFunction:
                 Intent iFunction = new Intent(this, Function.class);
+
+                Bundle data = new Bundle();
+                data.putString("TYPE", "Login");
+                iFunction.putExtras(data);
+
                 startActivity(iFunction);
                 break;
 

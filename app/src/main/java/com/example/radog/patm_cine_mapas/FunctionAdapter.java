@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.radog.patm_cine_mapas.Activities.AsientosActivity;
 import com.example.radog.patm_cine_mapas.Activities.Login;
 import com.example.radog.patm_cine_mapas.Connectivity.ConnectivityReceiver;
 import com.example.radog.patm_cine_mapas.TDA.TDAPelicula;
@@ -72,13 +73,16 @@ public class FunctionAdapter extends RecyclerView.Adapter<FunctionAdapter.FuncVi
         return lPeli.size();
     }
 
-    public void getItemSelected(MenuItem item, String tClass) {
+    public void getItemSelected(MenuItem item, String type) {
         //Toast.makeText(context, name + " : " + item.getItemId(), Toast.LENGTH_SHORT).show();
         switch (item.getItemId()) {
             case 0:
-                if (tClass.equals("login")) {
+                if (type.equals("Login")) {
                     Intent iLogin = new Intent(context.getApplicationContext(), Login.class);
                     context.startActivity(iLogin);
+                } else if (type.equals("Sucursal")) {
+                    Intent iAsientos = new Intent(context.getApplicationContext(), AsientosActivity.class);
+                    context.startActivity(iAsientos);
                 }
                 break;
         }

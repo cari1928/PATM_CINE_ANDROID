@@ -9,6 +9,10 @@ import android.app.Application;
 public class MyApplication extends Application {
 
     private static MyApplication mInstance;
+    private static String persona_id;
+    private static String token;
+    private static double latitud;
+    private static double longitud;
 
     @Override
     public void onCreate() {
@@ -23,5 +27,45 @@ public class MyApplication extends Application {
 
     public void setConnectivityListener(ConnectivityReceiver.ConnectivityReceiverListener listener) {
         ConnectivityReceiver.connectivityReceiverListener = listener;
+    }
+
+    public static MyApplication getmInstance() {
+        return mInstance;
+    }
+
+    public static void setmInstance(MyApplication mInstance) {
+        MyApplication.mInstance = mInstance;
+    }
+
+    public static String getPersona_id() {
+        return persona_id;
+    }
+
+    public static void setPersona_id(String persona_id) {
+        MyApplication.persona_id = persona_id;
+    }
+
+    public static String getToken() {
+        return token;
+    }
+
+    public static void setToken(String token) {
+        MyApplication.token = token;
+    }
+
+    public static double getLatitud() {
+        return latitud;
+    }
+
+    public static void setLatitud(double latitud) {
+        MyApplication.latitud = latitud;
+    }
+
+    public static double getLongitud() {
+        return longitud;
+    }
+
+    public static void setLongitud(double longitud) {
+        MyApplication.longitud = longitud;
     }
 }

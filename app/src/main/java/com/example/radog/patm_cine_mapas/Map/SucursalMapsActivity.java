@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.example.radog.patm_cine_mapas.Activities.Function;
+import com.example.radog.patm_cine_mapas.Connectivity.MyApplication;
 import com.example.radog.patm_cine_mapas.R;
 import com.example.radog.patm_cine_mapas.UserData;
 import com.google.android.gms.maps.CameraUpdate;
@@ -80,6 +81,7 @@ public class SucursalMapsActivity extends FragmentActivity implements OnMapReady
         LatLng aquiEstoy = new LatLng(latitud, longitud);
         Geocode objG = new Geocode(this, mMap, aquiEstoy);
         objG.getPlace(latitud, longitud);
+
     }
 
     @Override
@@ -101,10 +103,18 @@ public class SucursalMapsActivity extends FragmentActivity implements OnMapReady
 
                 @Override
                 public View getInfoContents(Marker marker) {
-                    //HOW IT LOOKS LIKE
                     View v = getLayoutInflater().inflate(R.layout.marker_info, null);
                     TextView tvName = (TextView) v.findViewById(R.id.tvName);
+
                     LatLng ll = marker.getPosition();
+                    ((MyApplication) SucursalMapsActivity.this.getApplication()).setLatitud(ll.latitude);
+                    ((MyApplication) SucursalMapsActivity.this.getApplication()).setLongitud(ll.longitude);
+
+                    /*Toast.makeText(SucursalMapsActivity.this,
+                            "Latitud: " + ll.latitude + "\nLongitud: " + ll.longitude,
+                            Toast.LENGTH_SHORT).show();
+                    Log.d("CINE", "Latitud: " + ll.latitude + "\nLongitud: " + ll.longitude);*/
+
                     tvName.setText(marker.getTitle());
                     return v;
                 }
@@ -123,17 +133,10 @@ public class SucursalMapsActivity extends FragmentActivity implements OnMapReady
     }
 
     public void changeIntent(LatLng position) {
-        //TODO mandar datos entre estas actividades para no perder el usuario, pass y token
-
-        /*UserData objU = new UserData("latitud", String.valueOf(position.latitude));
-        lUserData.add(objU);
-        objU = new UserData("longitud", String.valueOf(position.longitude));
-        lUserData.add(objU);*/
-
         Intent iFuncion = new Intent(this, Function.class);
-        /*data = new Bundle();
-        data.putParcelableArrayList("USERDATA", lUserData);
-        iFuncion.putExtras(data);*/
+        data = new Bundle();
+        data.putString("TYPE", "Sucursal");
+        iFuncion.putExtras(data);
         startActivity(iFuncion);
     }
 
