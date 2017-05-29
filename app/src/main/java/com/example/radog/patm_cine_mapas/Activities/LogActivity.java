@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -25,7 +26,6 @@ import com.example.radog.patm_cine_mapas.Adapters.LogAdapter;
 import com.example.radog.patm_cine_mapas.BD.DBHelper;
 import com.example.radog.patm_cine_mapas.Connectivity.ConnectivityReceiver;
 import com.example.radog.patm_cine_mapas.Connectivity.MyApplication;
-import com.example.radog.patm_cine_mapas.Constatns;
 import com.example.radog.patm_cine_mapas.R;
 import com.example.radog.patm_cine_mapas.TDA.TDAPelicula;
 import com.example.radog.patm_cine_mapas.TDA.TDASucursal;
@@ -74,14 +74,6 @@ public class LogActivity extends AppCompatActivity implements
 
         getVolleyPel(); //sin conexion
 
-        Bundle data = getIntent().getExtras();
-        type = data.getString("TYPE");
-        if (type.equals("Login")) {
-            tipo = 1;
-        } else {
-            tipo = 2;
-        }
-
         adminLayout = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(adminLayout);
 
@@ -114,13 +106,8 @@ public class LogActivity extends AppCompatActivity implements
             case R.id.itmRefresh:
                 try {
                     lPeliculas.clear();
-                    getPeliculas();
+                    getVolleyPel();
                     adapter.notifyDataSetChanged();
-
-                    //si es mandado llamar desde otro punto que no sea el onCreate..
-                    if (checkConnection(2)) { //si esta conectado, entonces... sincroniza
-                        new SyncVolley(this);
-                    }
                 } catch (Exception e) {
                     Toast.makeText(this, "No hay funciones disponibles", Toast.LENGTH_SHORT).show();
                 }
@@ -132,6 +119,7 @@ public class LogActivity extends AppCompatActivity implements
     /****************************************************************
      * DETECCIÓN DE CONECCIÓN WIFI **************************************************************
      ***************************************************************/
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -161,17 +149,12 @@ public class LogActivity extends AppCompatActivity implements
         if (isConnected) {
             message = "Good! Connected to Internet";
             color = Color.WHITE;
-
-            //sincroniza BD, solo las funciones
-            if (isConnected) {
-                new SyncVolley(this);
-            }
         } else {
             message = "Sorry! Not connected to internet";
             color = Color.RED;
         }
 
-        Snackbar snackbar = Snackbar.make(findViewById(R.id.function_layout), message, Snackbar.LENGTH_LONG);
+        Snackbar snackbar = Snackbar.make(findViewById(R.id.log_layout), message, Snackbar.LENGTH_LONG);
 
         View sbView = snackbar.getView();
         TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
@@ -189,6 +172,7 @@ public class LogActivity extends AppCompatActivity implements
     @Override
     public void onErrorResponse(VolleyError error) {
         Log.e("VOLLEY-FUNCTION", error.toString());
+        error.printStackTrace();
         Toast.makeText(this, error.toString(), Toast.LENGTH_SHORT).show();
     }
 
@@ -202,10 +186,27 @@ public class LogActivity extends AppCompatActivity implements
 
                 objPel = new TDAPelicula();
                 objPel.setPelicula_id(tmp.getInt("compra_id"));
-                objPel.setTitulo(tmp.getString("titulo"));
-                objPel.setLenguaje(tmp.getString("lenguaje"));
-                objPel.setDuracion(tmp.getInt("duracion"));
-                objPel.setPoster(tmp.getString("poster"));
+                objPel.setFuncion_id(tmp.getInt("funcion_id"));
+                objPel.setFecha(tmp.getString("fecha"));
+
+                JSONArray jsonA = tmp.getJSONArray("pelicula");
+                JSONObject jsonO = jsonA.getJSONObject(0);
+                objPel.setTitulo(jsonO.getString("titulo"));
+
+                jsonA = tmp.getJSONArray("sala");
+                jsonO = jsonA.getJSONObject(0);
+                objPel.setNombre(jsonO.getString("nombre"));
+
+                jsonA = tmp.getJSONArray("sucursal");
+                jsonO = jsonA.getJSONObject(0);
+                objPel.setPais(jsonO.getString("pais"));
+                objPel.setCiudad(jsonO.getString("ciudad"));
+                objPel.setDireccion(jsonO.getString("direccion"));
+
+                jsonA = tmp.getJSONArray("funcion");
+                jsonO = jsonA.getJSONObject(0);
+                objPel.setHora(jsonO.getString("hora"));
+                objPel.setHora_fin(jsonO.getString("hora_fin"));
 
                 lPeliculas.add(objPel);
             }
@@ -221,9 +222,14 @@ public class LogActivity extends AppCompatActivity implements
         String persona_id = ((MyApplication) this.getApplicationContext()).getPersona_id();
         String token = ((MyApplication) this.getApplicationContext()).getToken();
 
-        String URL = Constatns.RUTA_PHP + "/compra/listado/cliente/"
+        /*String URL = Constatns.RUTA_PHP + "/compra/listado/cliente/"
                 + persona_id + "/"
-                + token;
+                + token;*/
+
+        String URL = "http://192.168.1.67/cineSlim/public/index.php/api/compra/listado/app/34/f972e23e8d11952a49651a8203f8f8c4";
+        Log.e("CINE", URL);
+
+
         StringRequest reqListComp = new StringRequest(Request.Method.GET, URL, this, this) {
             @Override
             public Map<String, String> getHeaders() {
@@ -234,91 +240,17 @@ public class LogActivity extends AppCompatActivity implements
                 return params;
             }
         };
+
+        //HERMOSO!!!!
+        reqListComp.setRetryPolicy(new DefaultRetryPolicy(100000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
         qSolicitudes.add(reqListComp);
     }
 
     /****************************************************************
      * FIN DE VOLLEY**************************************************************
      ***************************************************************/
-
-    /**
-     * HASTA RESOLVER EL PROBLEMA DE SQLITE
-     */
-    private void getPeliculas() {
-        TDAPelicula objPel;
-        String url;
-
-        try {
-/*            List<TDASucursal> lSuc = db.select("SELECT * FROM sucursal", new TDASucursal());
-            List<TDASala> lSal = db.select("SELECT * FROM sala", new TDASala());
-            List<TDAPelicula> lPeli = db.select("SELECT * FROM pelicula", new TDAPelicula());
-            List<TDAFuncion> lFun = db.select("SELECT * FROM funcion", new TDAFuncion());
-            List<TDACategoria> lCat = db.select("SELECT * FROM categoria", new TDACategoria());
-            List<TDAColaborador> lCol = db.select("SELECT * FROM colaborador", new TDAColaborador());
-            List<String> lCatPeli = db.select("SELECT * FROM categoria_pelicula", 3);
-            List<String> lRep = db.select("SELECT * FROM reparto", 3);*/
-
-            if (type.equals("Login")) {
-                //para que la persona que no se ha logueado vea todas las películas disponibles sin clasificación por función o sucursal
-                url = "SELECT DISTINCT pelicula.pelicula_id, titulo, descripcion, f_lanzamiento, lenguaje, duracion, poster " +
-                        "FROM pelicula ORDER BY titulo";
-                /*url = "SELECT * FROM funcion \n" +
-                        "INNER JOIN pelicula p ON p.pelicula_id = funcion.pelicula_id\n" +
-                        "ORDER BY titulo";*/
-            } else {
-                url = "SELECT * FROM sucursal " +
-                        "WHERE latitud=" + ((MyApplication) this.getApplication()).getLatitud() +
-                        " AND longitud=" + ((MyApplication) this.getApplication()).getLongitud();
-                List<TDASucursal> lSuc = db.select(url, new TDASucursal());
-
-                if (lSuc == null) {
-                    return;
-                }
-
-                ((MyApplication) this.getApplication()).setSucursal_id(lSuc.get(0).getSucursal_id());
-                ((MyApplication) this.getApplication()).setPais(lSuc.get(0).getPais());
-                ((MyApplication) this.getApplication()).setCiudad(lSuc.get(0).getCiudad());
-                ((MyApplication) this.getApplication()).setDireccion(lSuc.get(0).getDireccion());
-
-                //para que el cliente vea las funciones disponibles en una sucursal específica
-                url = "select f.pelicula_id, titulo, descripcion, f_lanzamiento, lenguaje, duracion, poster, funcion_id, f.sala_id, " +
-                        "fecha, hora, fecha_fin, hora_fin, nombre\n" +
-                        "from funcion f\n" +
-                        "inner join pelicula p on p.pelicula_id = f.pelicula_id\n" +
-                        "inner join sala s on s.sala_id = f.sala_id\n" +
-                        "where f.sala_id in (select sala_id from sala where sucursal_id=" + lSuc.get(0).getSucursal_id() + ")\n" +
-                        "order by titulo";
-            }
-
-            List<TDAPelicula> lPeli = db.select(url, new TDAPelicula(), tipo);
-            for (int i = 0; i < lPeli.size(); i++) {
-                objPel = new TDAPelicula();
-
-                objPel.setFuncion_id(lPeli.get(i).getFuncion_id());
-                objPel.setPelicula_id(lPeli.get(i).getPelicula_id());
-                objPel.setTitulo(lPeli.get(i).getTitulo());
-                objPel.setLenguaje(lPeli.get(i).getLenguaje());
-                objPel.setDuracion(lPeli.get(i).getDuracion());
-                objPel.setPoster(lPeli.get(i).getPoster());
-
-                if (tipo == 2) {
-                    objPel.setFuncion_id(lPeli.get(i).getFuncion_id());
-                    objPel.setSala_id(lPeli.get(i).getSala_id());
-                    objPel.setFecha(lPeli.get(i).getFecha());
-                    objPel.setHora(lPeli.get(i).getHora());
-                    objPel.setFecha_fin(lPeli.get(i).getFecha_fin());
-                    objPel.setHora_fin(lPeli.get(i).getHora_fin());
-                    objPel.setNombre(lPeli.get(i).getNombre());
-                }
-                lPeliculas.add(objPel);
-            }
-            adapter = new LogAdapter(lPeliculas, this);
-            recyclerView.setAdapter(adapter);
-        } catch (Exception e) {
-            e.printStackTrace();
-            Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show();
-            Toast.makeText(this, "Actualice u obtenga conexión a internet para sincronizar", Toast.LENGTH_SHORT).show();
-        }
-    }
 
 }

@@ -17,6 +17,7 @@ import com.example.radog.patm_cine_mapas.Activities.MainMenuActivity;
 import com.example.radog.patm_cine_mapas.BD.DBHelper;
 import com.example.radog.patm_cine_mapas.Connectivity.MyApplication;
 import com.example.radog.patm_cine_mapas.Constatns;
+import com.example.radog.patm_cine_mapas.LoginService;
 
 import org.json.JSONObject;
 
@@ -62,6 +63,7 @@ public class LoginVolley implements Response.Listener<String>, Response.ErrorLis
                 ((MyApplication) con.getApplicationContext()).setPersona_nombre(user);
                 ((MyApplication) con.getApplicationContext()).setToken(objJSON.getString("token"));
 
+                iniLoginService();
 
                 Intent iMainMenu = new Intent(con, MainMenuActivity.class);
                 con.startActivity(iMainMenu);
@@ -77,7 +79,7 @@ public class LoginVolley implements Response.Listener<String>, Response.ErrorLis
     }
 
     private void errorMsg() {
-        Toast.makeText(con, "Error, try later please", Toast.LENGTH_SHORT).show();
+        Toast.makeText(con, "Error, try later", Toast.LENGTH_SHORT).show();
     }
 
     private void validaCliente() {
@@ -99,5 +101,10 @@ public class LoginVolley implements Response.Listener<String>, Response.ErrorLis
             }
         };
         qSolicitudes.add(solInsCte);
+    }
+
+    private void iniLoginService() {
+        Intent intent = new Intent(con, LoginService.class);
+        con.startService(intent);
     }
 }

@@ -12,7 +12,6 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.example.radog.patm_cine_mapas.BD.DBHelper;
-import com.example.radog.patm_cine_mapas.LoginService;
 import com.example.radog.patm_cine_mapas.Map.SucursalMapsActivity;
 import com.example.radog.patm_cine_mapas.R;
 
@@ -28,8 +27,6 @@ public class MainMenuActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
         ButterKnife.bind(this);
-
-        iniLoginService();
 
         //conexión y apertura de la BD
         objDBH = new DBHelper(this);
@@ -60,6 +57,12 @@ public class MainMenuActivity extends AppCompatActivity {
     public void ibtnTickets() {
         Intent iMaps = new Intent(this, SucursalMapsActivity.class);
         startActivity(iMaps);
+
+        /*Intent iMaps = new Intent(this, FunctionActivity.class);
+        Bundle data = new Bundle();
+        data.putString("TYPE", "Sucursal");
+        iMaps.putExtras(data);
+        startActivity(iMaps);*/
     }
 
     @OnClick(R.id.ibtnLog)
@@ -98,8 +101,4 @@ public class MainMenuActivity extends AppCompatActivity {
         alertDialog.show();
     }
 
-    private void iniLoginService() {
-        Intent intent = new Intent(this, LoginService.class);
-        startService(intent);
-    }
 }

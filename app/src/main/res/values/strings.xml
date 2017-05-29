@@ -19,4 +19,5 @@
     <string name="action_reserve">Buy Tickets</string>
     <string name="title_activity_asientos">Asientos</string>
     <string name="title_activity_reporte">Final Report</string>
+    <string name="title_activity_log">Log</string>
 </resources>

@@ -46,8 +46,6 @@ public class LogAdapter extends
             holder.txtSala.setText("Sala: " + lPeli.get(position).getNombre());
             holder.txtHora.setText("Hora: " + lPeli.get(position).getHora() + " - " + lPeli.get(position).getHora_fin());
             holder.txtFecha.setText("Fecha: " + lPeli.get(position).getFecha() + " - " + lPeli.get(position).getFecha_fin());
-
-            //TODO modificar para mostrar la sucursal y mostrar el número de entradas compradas
             holder.txtSucursal.setText("Sucursal: "
                     + lPeli.get(position).getPais() + " "
                     + lPeli.get(position).getCiudad() + " "

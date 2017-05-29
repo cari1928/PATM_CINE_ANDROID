@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -52,9 +53,6 @@ public class AsientosActivity extends AppCompatActivity implements ConnectivityR
         lAsientos = new ArrayList<>();
         recyclerView.setHasFixedSize(true);
 
-        //se cambió de lugar
-        getAsientos(); //sin conexion
-
         adminLayout = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(adminLayout);
 
@@ -62,7 +60,7 @@ public class AsientosActivity extends AppCompatActivity implements ConnectivityR
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         checkConnection(1);
 
-        //getAsientos(); //sin conexion
+        getAsientos(); //sin conexion
     }
 
     /****************************************************************
@@ -183,6 +181,12 @@ public class AsientosActivity extends AppCompatActivity implements ConnectivityR
 
             List<TDAAsiento> lAsi = db.select(
                     "SELECT asiento_id, sala_id, funcion_id, columna, fila FROM " + db.TABLE_SALA_ASIENTOS, new TDAAsiento());
+
+            if (lAsi == null) {
+                Toast.makeText(this, "Refresh the activity, please", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             for (int i = 0; i < lAsi.size(); i++) {
                 objAsi = new TDAAsiento();
                 objAsi.setAsiento_id(lAsi.get(i).getAsiento_id());
@@ -197,6 +201,7 @@ public class AsientosActivity extends AppCompatActivity implements ConnectivityR
             recyclerView.setAdapter(adapter);
         } catch (Exception e) {
             e.printStackTrace();
+            Log.e("CINE", e.toString());
             //Toast.makeText(this, "Actualice u obtenga conexión a internet para sincronizar", Toast.LENGTH_SHORT).show();
             Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show();
         }

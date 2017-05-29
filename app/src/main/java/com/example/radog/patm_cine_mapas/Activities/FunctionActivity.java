@@ -257,13 +257,13 @@ public class FunctionActivity extends AppCompatActivity implements
             if (type.equals("Login")) {
                 //para que la persona que no se ha logueado vea todas las películas disponibles sin clasificación por función o sucursal
                 url = "SELECT * FROM pelicula ORDER BY titulo";
-                /*url = "SELECT * FROM funcion \n" +
-                        "INNER JOIN pelicula p ON p.pelicula_id = funcion.pelicula_id\n" +
-                        "ORDER BY titulo";*/
             } else {
                 url = "SELECT * FROM sucursal " +
                         "WHERE latitud=" + ((MyApplication) this.getApplication()).getLatitud() +
                         " AND longitud=" + ((MyApplication) this.getApplication()).getLongitud();
+
+                /*url = "SELECT * FROM sucursal " +
+                        "WHERE sucursal_id=1";*/
                 List<TDASucursal> lSuc = db.select(url, new TDASucursal());
 
                 if (lSuc == null) {
