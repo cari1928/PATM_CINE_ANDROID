@@ -297,10 +297,6 @@ public class FunctionActivity extends AppCompatActivity implements
                 objPel.setDuracion(lPeli.get(i).getDuracion());
                 objPel.setPoster(lPeli.get(i).getPoster());
 
-                /*((MyApplication) this.getApplication()).setFuncion_id(lPeli.get(i).getFuncion_id());
-                ((MyApplication) this.getApplication()).setPelicula_id(lPeli.get(i).getPelicula_id());
-                ((MyApplication) this.getApplication()).setPelicula_titulo(lPeli.get(i).getTitulo());*/
-
                 if (tipo == 2) {
                     objPel.setFuncion_id(lPeli.get(i).getFuncion_id());
                     objPel.setSala_id(lPeli.get(i).getSala_id());
@@ -309,9 +305,6 @@ public class FunctionActivity extends AppCompatActivity implements
                     objPel.setFecha_fin(lPeli.get(i).getFecha_fin());
                     objPel.setHora_fin(lPeli.get(i).getHora_fin());
                     objPel.setNombre(lPeli.get(i).getNombre());
-
-                    /*((MyApplication) this.getApplication()).setSala_id(lPeli.get(i).getSala_id());
-                    ((MyApplication) this.getApplication()).setSala_nombre(lPeli.get(i).getNombre());*/
                 }
                 lPeliculas.add(objPel);
             }

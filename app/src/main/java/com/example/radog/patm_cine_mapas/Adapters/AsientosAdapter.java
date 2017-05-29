@@ -1,6 +1,7 @@
 package com.example.radog.patm_cine_mapas.Adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
@@ -13,7 +14,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.radog.patm_cine_mapas.Activities.ReportActivity;
 import com.example.radog.patm_cine_mapas.Connectivity.ConnectivityReceiver;
+import com.example.radog.patm_cine_mapas.Connectivity.MyApplication;
 import com.example.radog.patm_cine_mapas.LongClickListener;
 import com.example.radog.patm_cine_mapas.R;
 import com.example.radog.patm_cine_mapas.TDA.TDAAsiento;
@@ -31,6 +34,9 @@ public class AsientosAdapter extends
     private List<TDAAsiento> lAsientos;
     Context context;
     private String name;
+    private int asiento_id;
+    private int columna;
+    private String fila;
 
     public AsientosAdapter(List<TDAAsiento> listComp, Context context) {
         this.lAsientos = listComp;
@@ -56,7 +62,9 @@ public class AsientosAdapter extends
                 @Override
                 public void onItemLongClick(int pos) {
                     name = lAsientos.get(pos).getFila() + " - " + lAsientos.get(pos).getColumna();
-                    //Toast.makeText(context, name, Toast.LENGTH_SHORT).show();
+                    asiento_id = lAsientos.get(pos).getAsiento_id();
+                    columna = lAsientos.get(pos).getColumna();
+                    fila = lAsientos.get(pos).getFila();
                 }
             });
         } catch (Exception e) {
@@ -70,17 +78,13 @@ public class AsientosAdapter extends
     }
 
     public void getItemSelected(MenuItem item, String type) {
-        //Toast.makeText(context, name + " : " + item.getItemId(), Toast.LENGTH_SHORT).show();
         switch (item.getItemId()) {
             case 0:
-                Toast.makeText(context, "DO SOMETHING HERE...", Toast.LENGTH_SHORT).show();
-//                if (type.equals("Login")) {
-//                    Intent iLogin = new Intent(context.getApplicationContext(), Login.class);
-//                    context.startActivity(iLogin);
-//                } else if (type.equals("Sucursal")) {
-//                    Intent iAsientos = new Intent(context.getApplicationContext(), AsientosActivity.class);
-//                    context.startActivity(iAsientos);
-//                }
+                ((MyApplication) context.getApplicationContext()).setAsiento_id(asiento_id);
+                ((MyApplication) context.getApplicationContext()).setColumna(columna);
+                ((MyApplication) context.getApplicationContext()).setFila(fila);
+                Intent iReport = new Intent(context, ReportActivity.class);
+                context.startActivity(iReport);
                 break;
         }
     }

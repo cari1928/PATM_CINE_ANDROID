@@ -21,6 +21,11 @@ public class MyApplication extends Application {
 
     //obtenido durante las funciones
     private static int funcion_id;
+    private static String hora;
+    private static String hora_fin;
+    private static String fecha;
+    private static String fecha_fin;
+
     private static int pelicula_id;
     private static String pelicula_titulo;
     private static int sala_id;
@@ -30,7 +35,14 @@ public class MyApplication extends Application {
     private static String ciudad;
     private static String direccion;
 
+    //obtenido al seleccionar asiento
     private static int asiento_id;
+    private static int columna;
+    private static String fila;
+    private static String tipo_pago = "Tarjeta"; //siempre sera con tarjeta
+
+    private static int num_entradas = 1;
+    private static int total = 79 * num_entradas;
 
     @Override
     public void onCreate() {
@@ -173,5 +185,77 @@ public class MyApplication extends Application {
 
     public static void setDireccion(String direccion) {
         MyApplication.direccion = direccion;
+    }
+
+    public static String getHora() {
+        return hora;
+    }
+
+    public static void setHora(String hora) {
+        MyApplication.hora = hora;
+    }
+
+    public static String getHora_fin() {
+        return hora_fin;
+    }
+
+    public static void setHora_fin(String hora_fin) {
+        MyApplication.hora_fin = hora_fin;
+    }
+
+    public static String getFecha() {
+        return fecha;
+    }
+
+    public static void setFecha(String fecha) {
+        MyApplication.fecha = fecha;
+    }
+
+    public static String getFecha_fin() {
+        return fecha_fin;
+    }
+
+    public static void setFecha_fin(String fecha_fin) {
+        MyApplication.fecha_fin = fecha_fin;
+    }
+
+    public static String getTipo_pago() {
+        return tipo_pago;
+    }
+
+    public static void setTipo_pago(String tipo_pago) {
+        MyApplication.tipo_pago = tipo_pago;
+    }
+
+    public static int getColumna() {
+        return columna;
+    }
+
+    public static void setColumna(int columna) {
+        MyApplication.columna = columna;
+    }
+
+    public static String getFila() {
+        return fila;
+    }
+
+    public static void setFila(String fila) {
+        MyApplication.fila = fila;
+    }
+
+    public static int getNum_entradas() {
+        return num_entradas;
+    }
+
+    public static void setNum_entradas(int num_entradas) {
+        MyApplication.num_entradas = num_entradas;
+    }
+
+    public static int getTotal() {
+        return total;
+    }
+
+    public static void setTotal(int total) {
+        MyApplication.total = total;
     }
 }

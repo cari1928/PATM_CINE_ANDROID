@@ -41,7 +41,7 @@ public class SyncAsientos implements Response.Listener<String>, Response.ErrorLi
     List<TDAColaborador> lCol = db.select("SELECT * FROM colaborador", new TDAColaborador());
     List<String> lCatPeli = db.select("SELECT * FROM categoria_pelicula", 3);
     List<String> lRep = db.select("SELECT * FROM reparto", 3);
-            Log.e("VOLLEY-SUC",lFun.toString());
+    Log.e("VOLLEY-SUC",lFun.toString());
     */
 
     private RequestQueue qSolicitudes;

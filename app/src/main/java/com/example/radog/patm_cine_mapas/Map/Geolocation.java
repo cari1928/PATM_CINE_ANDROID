@@ -3,6 +3,7 @@ package com.example.radog.patm_cine_mapas.Map;
 import android.content.Context;
 import android.location.Location;
 import android.location.LocationManager;
+import android.widget.Toast;
 
 import static android.content.Context.LOCATION_SERVICE;
 
@@ -33,7 +34,6 @@ public class Geolocation {
     public void getLocationByGPS() {
         try {
             adminLoc.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 10, new ListenerLocation());
-
             //en caso de que actualmente no hay localización
             //tomará la última conocida
             coordenada = adminLoc.getLastKnownLocation(LocationManager.GPS_PROVIDER);
@@ -41,6 +41,7 @@ public class Geolocation {
             longActual = coordenada.getLongitude();
         } catch (SecurityException e) {
             e.printStackTrace();
+            Toast.makeText(con, "Error, habilite el GPS de su dispositivo", Toast.LENGTH_SHORT).show();
         }
     }
 

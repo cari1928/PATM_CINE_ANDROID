@@ -43,7 +43,6 @@
             android:name=".Activities.Login"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -107,8 +106,15 @@
             android:label="@string/title_activity_asientos"
             android:parentActivityName=".Activities.Login"
             android:theme="@style/AppTheme.NoActionBar">
-
-
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Activities.Login" />
+        </activity>
+        <activity
+            android:name=".Activities.ReportActivity"
+            android:label="@string/title_activity_reporte"
+            android:parentActivityName=".Activities.Login"
+            android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".Activities.Login" />

@@ -18,4 +18,5 @@
     <string name="title_activity_function">Cinema Functions</string>
     <string name="action_reserve">Buy Tickets</string>
     <string name="title_activity_asientos">Asientos</string>
+    <string name="title_activity_reporte">Final Report</string>
 </resources>

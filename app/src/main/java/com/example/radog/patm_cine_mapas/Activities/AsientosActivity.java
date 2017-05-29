@@ -27,8 +27,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class AsientosActivity extends AppCompatActivity implements
-        ConnectivityReceiver.ConnectivityReceiverListener {
+public class AsientosActivity extends AppCompatActivity implements ConnectivityReceiver.ConnectivityReceiverListener {
 
     private AsientosAdapter adapter;
     private RecyclerView.LayoutManager adminLayout;
@@ -89,9 +88,9 @@ public class AsientosActivity extends AppCompatActivity implements
         switch (item.getItemId()) {
             case R.id.itmRefresh:
                 try {
-                    List<TDAAsiento> p = db.select(
+/*                    List<TDAAsiento> p = db.select(
                             "select asiento_id, sala_id, funcion_id, columna, fila from sala_asientos",
-                            new TDAAsiento());
+                            new TDAAsiento());*/
 
                     lAsientos.clear();
                     getAsientos();

@@ -83,7 +83,10 @@ public class FunctionAdapter extends
                     ((MyApplication) context.getApplicationContext()).setPelicula_titulo(lPeli.get(pos).getTitulo());
                     ((MyApplication) context.getApplicationContext()).setSala_id(lPeli.get(pos).getSala_id());
                     ((MyApplication) context.getApplicationContext()).setSala_nombre(lPeli.get(pos).getNombre());
-
+                    ((MyApplication) context.getApplicationContext()).setHora(lPeli.get(pos).getHora());
+                    ((MyApplication) context.getApplicationContext()).setHora_fin(lPeli.get(pos).getHora_fin());
+                    ((MyApplication) context.getApplicationContext()).setFecha(lPeli.get(pos).getFecha());
+                    ((MyApplication) context.getApplicationContext()).setFecha_fin(lPeli.get(pos).getFecha_fin());
                     //Toast.makeText(context, name, Toast.LENGTH_SHORT).show();
                 }
             });
