@@ -1,6 +1,7 @@
 package com.example.radog.patm_cine_mapas.Volley;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Base64;
 import android.util.Log;
 import android.widget.Toast;
@@ -12,6 +13,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.radog.patm_cine_mapas.Activities.MainMenuActivity;
 import com.example.radog.patm_cine_mapas.BD.DBHelper;
 import com.example.radog.patm_cine_mapas.Connectivity.MyApplication;
 import com.example.radog.patm_cine_mapas.Constatns;
@@ -26,16 +28,17 @@ import java.util.Map;
  * Created by radog on 28/05/2017.
  */
 
-public class SyncSale implements Response.Listener<String>, Response.ErrorListener {
+public class SyncAsientoReservado implements Response.Listener<String>, Response.ErrorListener {
 
     private RequestQueue qSolicitudes;
-    private JSONObject jsonObject = new JSONObject();
+    private JSONObject jsonObject;
     private Context con;
     private DBHelper db;
 
-    public SyncSale(Context con) {
+    public SyncAsientoReservado(Context con) {
         qSolicitudes = Volley.newRequestQueue(con);
         this.con = con;
+        jsonObject = new JSONObject();
 
         sync(); //comienza sincronización
     }
@@ -50,11 +53,9 @@ public class SyncSale implements Response.Listener<String>, Response.ErrorListen
     @Override
     public void onResponse(String response) {
         try {
-            if (response.contains("token no valido")) {
-                Toast.makeText(con, "Disculpe, su tiempo en la app ha expirado", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            new SyncAsientoReservado(con);
+            ((MyApplication) con.getApplicationContext()).init(); //inicializa las variables
+            Intent iMainMenu = new Intent(con, MainMenuActivity.class);
+            con.startActivity(iMainMenu);
 
         } catch (Exception e) {
             Log.e("CINE", "onResponse " + e.toString());
@@ -69,11 +70,9 @@ public class SyncSale implements Response.Listener<String>, Response.ErrorListen
 
         try {
             jsonObject.put("cliente_id", persona_id);
+            jsonObject.put("asiento_id", String.valueOf(((MyApplication) con.getApplicationContext()).getAsiento_id()));
+            jsonObject.put("sala_id", String.valueOf(((MyApplication) con.getApplicationContext()).getSala_id()));
             jsonObject.put("funcion_id", String.valueOf(((MyApplication) con.getApplicationContext()).getFuncion_id()));
-            jsonObject.put("empleado_id", "-3"); //porque se está comprando desde la app
-            jsonObject.put("total", String.valueOf(((MyApplication) con.getApplicationContext()).getTotal()));
-            jsonObject.put("entradas", String.valueOf(((MyApplication) con.getApplicationContext()).getNum_entradas()));
-            jsonObject.put("tipo_pago", ((MyApplication) con.getApplicationContext()).getTipo_pago());
 
         } catch (Exception e) {
             Log.e("CINE", "SYNC: " + e.toString());
@@ -81,7 +80,7 @@ public class SyncSale implements Response.Listener<String>, Response.ErrorListen
             return;
         }
 
-        String URL = Constatns.RUTA_PHP + "/compra/add/" + persona_id + "/" + token;
+        String URL = Constatns.RUTA_PHP + "/asientos_reservados/add/" + persona_id + "/" + token;
         Log.e("CINE", "COMPRA: " + URL);
 
         StringRequest request = new StringRequest(Request.Method.POST, URL, this, this) {
@@ -112,4 +111,5 @@ public class SyncSale implements Response.Listener<String>, Response.ErrorListen
         };
         qSolicitudes.add(request);
     }
+
 }

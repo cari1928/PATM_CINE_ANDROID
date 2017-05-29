@@ -67,6 +67,12 @@ public class MyApplication extends Application {
         MyApplication.mInstance = mInstance;
     }
 
+    public void init() {
+        latitud = longitud = 0f;
+        funcion_id = pelicula_id = sala_id = sucursal_id = asiento_id = columna = 0;
+        hora = hora_fin = fecha = fecha_fin = pelicula_titulo = sala_nombre = pais = ciudad = direccion = fila = null;
+    }
+
     public static String getPersona_id() {
         return persona_id;
     }
@@ -258,4 +264,6 @@ public class MyApplication extends Application {
     public static void setTotal(int total) {
         MyApplication.total = total;
     }
+
+
 }

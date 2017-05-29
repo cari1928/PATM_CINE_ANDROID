@@ -16,12 +16,10 @@ import com.example.radog.patm_cine_mapas.BD.DBHelper;
 import com.example.radog.patm_cine_mapas.Connectivity.MyApplication;
 import com.example.radog.patm_cine_mapas.Constatns;
 import com.example.radog.patm_cine_mapas.TDA.TDAAsiento;
-import com.example.radog.patm_cine_mapas.TDA.TDASucursal;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,12 +45,10 @@ public class SyncAsientos implements Response.Listener<String>, Response.ErrorLi
     private RequestQueue qSolicitudes;
     private Context con;
     private DBHelper db;
-    List<TDASucursal> lSucursales;
 
     public SyncAsientos(Context con) {
         qSolicitudes = Volley.newRequestQueue(con);
         this.con = con;
-        lSucursales = new ArrayList<>();
 
         //PREPARA LA BD LOCAL
         db = new DBHelper(con);

@@ -13,6 +13,7 @@ import android.widget.Toast;
 import com.example.radog.patm_cine_mapas.Connectivity.ConnectivityReceiver;
 import com.example.radog.patm_cine_mapas.Connectivity.MyApplication;
 import com.example.radog.patm_cine_mapas.R;
+import com.example.radog.patm_cine_mapas.Volley.SyncSale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -61,7 +62,7 @@ public class ReportActivity extends AppCompatActivity implements ConnectivityRec
     @OnClick(R.id.btnComprar)
     public void btnComprar() {
         if (checkConnection(2)) {
-
+            new SyncSale(this);
         } else {
             Toast.makeText(this, "No es posible realizar la compra si no cuenta con conexión a Internet", Toast.LENGTH_SHORT).show();
         }
