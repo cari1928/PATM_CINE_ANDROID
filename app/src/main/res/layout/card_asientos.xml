@@ -23,7 +23,7 @@
             android:layout_marginRight="16dp" />
 
         <TextView
-            android:id="@+id/txtFila"
+            android:id="@+id/txtCompraId"
             android:layout_width="90dp"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/imvAsiento"
@@ -34,13 +34,13 @@
             android:textSize="18dp" />
 
         <TextView
-            android:id="@+id/txtColumna"
+            android:id="@+id/txtPelicula"
             android:layout_width="90dp"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:layout_marginLeft="20dp"
-            android:layout_toRightOf="@id/txtFila"
+            android:layout_toRightOf="@id/txtCompraId"
             android:hint="Columna"
             android:paddingBottom="5dp"
             android:paddingTop="5dp"

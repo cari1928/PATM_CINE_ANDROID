@@ -28,6 +28,10 @@ public class TDAPelicula {
     //info sala
     private String nombre;
     private int sucursal_id;
+    private String pais;
+    private String ciudad;
+    private String direccion;
+
     private int numero_sala;
 
     //info categoria
@@ -200,5 +204,29 @@ public class TDAPelicula {
 
     public void setCategoria(List<String> categoria) {
         this.categoria = categoria;
+    }
+
+    public String getPais() {
+        return pais;
+    }
+
+    public void setPais(String pais) {
+        this.pais = pais;
+    }
+
+    public String getCiudad() {
+        return ciudad;
+    }
+
+    public void setCiudad(String ciudad) {
+        this.ciudad = ciudad;
+    }
+
+    public String getDireccion() {
+        return direccion;
+    }
+
+    public void setDireccion(String direccion) {
+        this.direccion = direccion;
     }
 }

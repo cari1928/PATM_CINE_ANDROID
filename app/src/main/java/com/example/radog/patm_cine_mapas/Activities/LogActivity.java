@@ -21,7 +21,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.radog.patm_cine_mapas.Adapters.FunctionAdapter;
+import com.example.radog.patm_cine_mapas.Adapters.LogAdapter;
 import com.example.radog.patm_cine_mapas.BD.DBHelper;
 import com.example.radog.patm_cine_mapas.Connectivity.ConnectivityReceiver;
 import com.example.radog.patm_cine_mapas.Connectivity.MyApplication;
@@ -42,11 +42,11 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class FunctionActivity extends AppCompatActivity implements
+public class LogActivity extends AppCompatActivity implements
         Response.Listener<String>, Response.ErrorListener,
         ConnectivityReceiver.ConnectivityReceiverListener {
 
-    private FunctionAdapter adapter;
+    private LogAdapter adapter;
     private RecyclerView.LayoutManager adminLayout;
     private DBHelper db;
     private RequestQueue qSolicitudes;
@@ -62,7 +62,7 @@ public class FunctionActivity extends AppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_function);
+        setContentView(R.layout.activity_log);
         ButterKnife.bind(this);
         qSolicitudes = Volley.newRequestQueue(this);
 
@@ -72,6 +72,8 @@ public class FunctionActivity extends AppCompatActivity implements
         lPeliculas = new ArrayList<>();
         recyclerView.setHasFixedSize(true);
 
+        getVolleyPel(); //sin conexion
+
         Bundle data = getIntent().getExtras();
         type = data.getString("TYPE");
         if (type.equals("Login")) {
@@ -79,8 +81,6 @@ public class FunctionActivity extends AppCompatActivity implements
         } else {
             tipo = 2;
         }
-
-        getPeliculas(); //sin conexion
 
         adminLayout = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(adminLayout);
@@ -201,7 +201,7 @@ public class FunctionActivity extends AppCompatActivity implements
                 JSONObject tmp = jsonArray.getJSONObject(i);
 
                 objPel = new TDAPelicula();
-                objPel.setPelicula_id(tmp.getInt("pelicula_id"));
+                objPel.setPelicula_id(tmp.getInt("compra_id"));
                 objPel.setTitulo(tmp.getString("titulo"));
                 objPel.setLenguaje(tmp.getString("lenguaje"));
                 objPel.setDuracion(tmp.getInt("duracion"));
@@ -210,7 +210,7 @@ public class FunctionActivity extends AppCompatActivity implements
                 lPeliculas.add(objPel);
             }
 
-            adapter = new FunctionAdapter(lPeliculas, this, tipo);
+            adapter = new LogAdapter(lPeliculas, this);
             recyclerView.setAdapter(adapter);
         } catch (Exception e) {
             Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show();
@@ -218,7 +218,12 @@ public class FunctionActivity extends AppCompatActivity implements
     }
 
     private void getVolleyPel() {
-        String URL = Constatns.RUTA_PHP + "/pelicula/listado";
+        String persona_id = ((MyApplication) this.getApplicationContext()).getPersona_id();
+        String token = ((MyApplication) this.getApplicationContext()).getToken();
+
+        String URL = Constatns.RUTA_PHP + "/compra/listado/cliente/"
+                + persona_id + "/"
+                + token;
         StringRequest reqListComp = new StringRequest(Request.Method.GET, URL, this, this) {
             @Override
             public Map<String, String> getHeaders() {
@@ -241,7 +246,6 @@ public class FunctionActivity extends AppCompatActivity implements
      */
     private void getPeliculas() {
         TDAPelicula objPel;
-        //int tipo = 2;
         String url;
 
         try {
@@ -256,7 +260,8 @@ public class FunctionActivity extends AppCompatActivity implements
 
             if (type.equals("Login")) {
                 //para que la persona que no se ha logueado vea todas las películas disponibles sin clasificación por función o sucursal
-                url = "SELECT * FROM pelicula ORDER BY titulo";
+                url = "SELECT DISTINCT pelicula.pelicula_id, titulo, descripcion, f_lanzamiento, lenguaje, duracion, poster " +
+                        "FROM pelicula ORDER BY titulo";
                 /*url = "SELECT * FROM funcion \n" +
                         "INNER JOIN pelicula p ON p.pelicula_id = funcion.pelicula_id\n" +
                         "ORDER BY titulo";*/
@@ -286,12 +291,6 @@ public class FunctionActivity extends AppCompatActivity implements
             }
 
             List<TDAPelicula> lPeli = db.select(url, new TDAPelicula(), tipo);
-
-            if (lPeli == null) {
-                Toast.makeText(this, "Refresque la Actividad", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
             for (int i = 0; i < lPeli.size(); i++) {
                 objPel = new TDAPelicula();
 
@@ -313,7 +312,7 @@ public class FunctionActivity extends AppCompatActivity implements
                 }
                 lPeliculas.add(objPel);
             }
-            adapter = new FunctionAdapter(lPeliculas, this, tipo);
+            adapter = new LogAdapter(lPeliculas, this);
             recyclerView.setAdapter(adapter);
         } catch (Exception e) {
             e.printStackTrace();

@@ -140,13 +140,13 @@ public class FunctionAdapter extends
             super(itemView);
 
             imvPoster = (ImageView) itemView.findViewById(R.id.imvAsiento);
-            txtTitulo = (TextView) itemView.findViewById(R.id.txtFila);
-            txtLenguaje = (TextView) itemView.findViewById(R.id.txtColumna);
-            txtDuracion = (TextView) itemView.findViewById(R.id.txtDuracion);
+            txtTitulo = (TextView) itemView.findViewById(R.id.txtCompraId);
+            txtLenguaje = (TextView) itemView.findViewById(R.id.txtPelicula);
+            txtDuracion = (TextView) itemView.findViewById(R.id.txtSucursal);
 
-            txtSala = (TextView) itemView.findViewById(R.id.txtSala);
+            txtSala = (TextView) itemView.findViewById(R.id.txtSucursal);
             txtFecha = (TextView) itemView.findViewById(R.id.txtFecha);
-            txtHora = (TextView) itemView.findViewById(R.id.txtHora);
+            txtHora = (TextView) itemView.findViewById(R.id.txtFecha);
 
             itemView.setOnLongClickListener(this);
             itemView.setOnCreateContextMenuListener(this);

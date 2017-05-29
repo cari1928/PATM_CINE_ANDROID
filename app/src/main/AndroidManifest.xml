@@ -119,6 +119,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".Activities.Login" />
         </activity>
+        <activity android:name=".Activities.LogActivity"></activity>
     </application>
 
 </manifest>

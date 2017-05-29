@@ -64,7 +64,8 @@ public class MainMenuActivity extends AppCompatActivity {
 
     @OnClick(R.id.ibtnLog)
     public void ibtnLog() {
-
+        Intent iLog = new Intent(this, LogActivity.class);
+        startActivity(iLog);
     }
 
     @OnClick(R.id.ibtnAbout)

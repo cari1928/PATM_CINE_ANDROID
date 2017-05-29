@@ -14,6 +14,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.radog.patm_cine_mapas.Activities.MainMenuActivity;
+import com.example.radog.patm_cine_mapas.BD.DBHelper;
 import com.example.radog.patm_cine_mapas.Connectivity.MyApplication;
 import com.example.radog.patm_cine_mapas.Constatns;
 
@@ -32,6 +33,7 @@ public class LoginVolley implements Response.Listener<String>, Response.ErrorLis
     private Context con;
     private TextView etUser;
     private String user, pass;
+    private DBHelper db;
 
     public LoginVolley(Context con, TextView etUser, String user, String pass) {
         qSolicitudes = Volley.newRequestQueue(con);
@@ -45,7 +47,7 @@ public class LoginVolley implements Response.Listener<String>, Response.ErrorLis
 
     @Override
     public void onErrorResponse(VolleyError error) {
-        etUser.setText(error.toString());
+        //Toast.makeText(con, error.toString(), Toast.LENGTH_SHORT).show();
         errorMsg();
     }
 
@@ -60,6 +62,7 @@ public class LoginVolley implements Response.Listener<String>, Response.ErrorLis
                 ((MyApplication) con.getApplicationContext()).setPersona_nombre(user);
                 ((MyApplication) con.getApplicationContext()).setToken(objJSON.getString("token"));
 
+
                 Intent iMainMenu = new Intent(con, MainMenuActivity.class);
                 con.startActivity(iMainMenu);
 
@@ -67,13 +70,14 @@ public class LoginVolley implements Response.Listener<String>, Response.ErrorLis
                 errorMsg();
             }
         } catch (Exception e) {
-            etUser.setText(e.toString());
+            //etUser.setText(e.toString());
             errorMsg();
+            //Toast.makeText(con, e.toString(), Toast.LENGTH_SHORT).show();
         }
     }
 
     private void errorMsg() {
-        Toast.makeText(con, "Error, try later", Toast.LENGTH_SHORT).show();
+        Toast.makeText(con, "Error, try later please", Toast.LENGTH_SHORT).show();
     }
 
     private void validaCliente() {

@@ -14,42 +14,12 @@
         android:layout_height="wrap_content"
         android:padding="16dp">
 
-        <ImageView
-            android:id="@+id/imvPoster"
-            android:layout_width="100dp"
-            android:layout_height="140dp"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginRight="16dp" />
-
         <TextView
-            android:id="@+id/txtTitulo"
+            android:id="@+id/txtPelicula"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/imvPoster"
-            android:hint="Título"
-            android:paddingBottom="5dp"
-            android:paddingTop="5dp"
-            android:textSize="15dp" />
-
-        <TextView
-            android:id="@+id/txtLenguaje"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/txtTitulo"
-            android:layout_toRightOf="@+id/imvPoster"
-            android:hint="Lenguaje"
-            android:paddingBottom="5dp"
-            android:paddingTop="5dp"
-            android:textSize="12sp" />
-
-        <TextView
-            android:id="@+id/txtDuracion"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/txtLenguaje"
-            android:layout_toRightOf="@+id/imvPoster"
-            android:hint="Duración"
+            android:layout_below="@id/txtCompraId"
+            android:hint="Película"
             android:paddingBottom="5dp"
             android:paddingTop="5dp"
             android:textSize="12sp" />
@@ -58,20 +28,18 @@
             android:id="@+id/txtSala"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/txtDuracion"
-            android:layout_toRightOf="@+id/imvPoster"
+            android:layout_below="@id/txtPelicula"
             android:hint="Sala"
             android:paddingBottom="5dp"
             android:paddingTop="5dp"
             android:textSize="12sp" />
 
         <TextView
-            android:id="@+id/txtFecha"
+            android:id="@+id/txtSucursal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/txtSala"
-            android:layout_toRightOf="@+id/imvPoster"
-            android:hint="Fecha"
+            android:hint="Sucursal"
             android:paddingBottom="5dp"
             android:paddingTop="5dp"
             android:textSize="12sp" />
@@ -80,12 +48,45 @@
             android:id="@+id/txtHora"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/txtFecha"
-            android:layout_toRightOf="@+id/imvPoster"
+            android:layout_below="@id/txtSucursal"
             android:hint="Hora"
             android:paddingBottom="5dp"
             android:paddingTop="5dp"
             android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/txtFecha"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/txtHora"
+            android:hint="Fecha"
+            android:paddingBottom="5dp"
+            android:paddingTop="5dp"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/txtEntradas"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="Entradas"
+            android:paddingBottom="5dp"
+            android:paddingTop="5dp"
+            android:textSize="12sp"
+            android:layout_below="@+id/txtFecha" />
+
+        <TextView
+            android:id="@+id/txtTotal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="Total"
+            android:paddingBottom="5dp"
+            android:paddingTop="5dp"
+            android:textSize="12sp"
+            android:layout_below="@+id/txtFecha"
+            android:layout_toRightOf="@+id/txtEntradas"
+            android:layout_toEndOf="@+id/txtEntradas"
+            android:layout_marginLeft="22dp"
+            android:layout_marginStart="22dp" />
 
     </RelativeLayout>
 

@@ -54,7 +54,7 @@ public class Login extends AppCompatActivity implements
         closeService();
 
         setSupportActionBar(toolbar);
-        checkConnection(true); //para la sincronización de la bd
+        checkConnection(); //para la sincronización de la bd
     }
 
     @Override
@@ -111,8 +111,13 @@ public class Login extends AppCompatActivity implements
         if (user.equals("") || pass.equals("")) {
             Toast.makeText(this, "Input the required information", Toast.LENGTH_SHORT).show();
         } else {
-            checkConnection(true); //para la sincronización de la bd
-            new LoginVolley(this, etUser, user, pass);
+            if (checkConnection()) {
+                //login mediante internet
+                new LoginVolley(this, etUser, user, pass);
+            } else {
+                //login mediante la bd
+
+            }
         }
     }
 
@@ -123,16 +128,6 @@ public class Login extends AppCompatActivity implements
      */
     @Override
     public void onBackPressed() {
-/*
-        List<TDASucursal> lSuc = db.select("SELECT * FROM sucursal", new TDASucursal());
-        List<TDASala> lSal = db.select("SELECT * FROM sala", new TDASala());
-        List<TDAPelicula> lPeli = db.select("SELECT * FROM pelicula", new TDAPelicula());
-        List<TDAFuncion> lFun = db.select("SELECT * FROM funcion", new TDAFuncion());
-        List<TDACategoria> lCat = db.select("SELECT * FROM categoria", new TDACategoria());
-        List<TDAColaborador> lCol = db.select("SELECT * FROM colaborador", new TDAColaborador());
-        List<String> lCatPeli = db.select("SELECT * FROM categoria_pelicula", 3);
-        List<String> lRep = db.select("SELECT * FROM reparto", 3);
-*/
         Toast.makeText(this, "", Toast.LENGTH_SHORT).show();
     }
 
@@ -142,13 +137,10 @@ public class Login extends AppCompatActivity implements
         startActivity(iRegister);
     }
 
-    private void checkConnection(boolean sync) {
+    private boolean checkConnection() {
         boolean isConnected = ConnectivityReceiver.isConnected();
-        if (sync) {
-            showSnack(isConnected);
-        } else {
-            volley(isConnected);
-        }
+        showSnack(isConnected);
+        return isConnected;
     }
 
     private void showSnack(boolean isConnected) {
@@ -165,7 +157,6 @@ public class Login extends AppCompatActivity implements
         }
 
         Snackbar snackbar = Snackbar.make(findViewById(R.id.login_layout), message, Snackbar.LENGTH_LONG);
-
         View sbView = snackbar.getView();
         TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
         textView.setTextColor(color);

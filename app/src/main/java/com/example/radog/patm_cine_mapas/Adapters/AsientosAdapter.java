@@ -107,8 +107,8 @@ public class AsientosAdapter extends
             super(itemView);
 
             imvAsiento = (ImageView) itemView.findViewById(R.id.imvAsiento);
-            txtFila = (TextView) itemView.findViewById(R.id.txtFila);
-            txtColumna = (TextView) itemView.findViewById(R.id.txtColumna);
+            txtFila = (TextView) itemView.findViewById(R.id.txtCompraId);
+            txtColumna = (TextView) itemView.findViewById(R.id.txtPelicula);
 
             itemView.setOnLongClickListener(this);
             itemView.setOnCreateContextMenuListener(this);
