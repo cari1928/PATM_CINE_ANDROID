@@ -288,7 +288,7 @@ public class FunctionActivity extends AppCompatActivity implements
             List<TDAPelicula> lPeli = db.select(url, new TDAPelicula(), tipo);
 
             if (lPeli == null) {
-                Toast.makeText(this, "Refresque la Actividad", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Refresh this activity", Toast.LENGTH_SHORT).show();
                 return;
             }
 

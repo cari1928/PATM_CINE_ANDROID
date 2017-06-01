@@ -45,7 +45,7 @@ public class LogAdapter extends
             holder.txtPelicula.setText("Película: " + lPeli.get(position).getTitulo());
             holder.txtSala.setText("Sala: " + lPeli.get(position).getNombre());
             holder.txtHora.setText("Hora: " + lPeli.get(position).getHora() + " - " + lPeli.get(position).getHora_fin());
-            holder.txtFecha.setText("Fecha: " + lPeli.get(position).getFecha() + " - " + lPeli.get(position).getFecha_fin());
+            holder.txtFecha.setText("Fecha de compra: " + lPeli.get(position).getFecha());
             holder.txtSucursal.setText("Sucursal: "
                     + lPeli.get(position).getPais() + " "
                     + lPeli.get(position).getCiudad() + " "

@@ -41,7 +41,7 @@ public class Geolocation {
             longActual = coordenada.getLongitude();
         } catch (SecurityException e) {
             e.printStackTrace();
-            Toast.makeText(con, "Error, habilite el GPS de su dispositivo", Toast.LENGTH_SHORT).show();
+            Toast.makeText(con, "Sugerencia: habilite el GPS de su dispositivo", Toast.LENGTH_SHORT).show();
         }
     }
 

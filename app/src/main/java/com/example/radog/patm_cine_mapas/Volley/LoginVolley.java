@@ -57,7 +57,7 @@ public class LoginVolley implements Response.Listener<String>, Response.ErrorLis
         try {
             JSONObject objJSON = new JSONObject(response);
             if (objJSON.getString("status").equals("bitacora")) {
-                Toast.makeText(con, "Welcome " + user, Toast.LENGTH_SHORT).show();
+                //Toast.makeText(con, "Welcome " + user, Toast.LENGTH_SHORT).show();
 
                 ((MyApplication) con.getApplicationContext()).setPersona_id(objJSON.getString("persona_id"));
                 ((MyApplication) con.getApplicationContext()).setPersona_nombre(user);
@@ -79,7 +79,7 @@ public class LoginVolley implements Response.Listener<String>, Response.ErrorLis
     }
 
     private void errorMsg() {
-        Toast.makeText(con, "Error, try later", Toast.LENGTH_SHORT).show();
+        Toast.makeText(con, "Error, try again", Toast.LENGTH_SHORT).show();
     }
 
     private void validaCliente() {

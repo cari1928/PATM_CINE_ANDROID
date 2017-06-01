@@ -26,10 +26,9 @@ import com.example.radog.patm_cine_mapas.Adapters.LogAdapter;
 import com.example.radog.patm_cine_mapas.BD.DBHelper;
 import com.example.radog.patm_cine_mapas.Connectivity.ConnectivityReceiver;
 import com.example.radog.patm_cine_mapas.Connectivity.MyApplication;
+import com.example.radog.patm_cine_mapas.Constatns;
 import com.example.radog.patm_cine_mapas.R;
 import com.example.radog.patm_cine_mapas.TDA.TDAPelicula;
-import com.example.radog.patm_cine_mapas.TDA.TDASucursal;
-import com.example.radog.patm_cine_mapas.Volley.SyncVolley;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -109,7 +108,7 @@ public class LogActivity extends AppCompatActivity implements
                     getVolleyPel();
                     adapter.notifyDataSetChanged();
                 } catch (Exception e) {
-                    Toast.makeText(this, "No hay funciones disponibles", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Try Again", Toast.LENGTH_SHORT).show();
                 }
                 break;
         }
@@ -226,7 +225,10 @@ public class LogActivity extends AppCompatActivity implements
                 + persona_id + "/"
                 + token;*/
 
-        String URL = "http://192.168.1.67/cineSlim/public/index.php/api/compra/listado/app/34/f972e23e8d11952a49651a8203f8f8c4";
+        String URL = Constatns.RUTA_PHP + "/compra/listado/app/"
+                + ((MyApplication) this.getApplicationContext()).getPersona_id() + "/"
+                + ((MyApplication) this.getApplicationContext()).getToken();
+        ;
         Log.e("CINE", URL);
 
 

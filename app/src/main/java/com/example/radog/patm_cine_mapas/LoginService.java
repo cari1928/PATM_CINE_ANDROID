@@ -51,7 +51,7 @@ public class LoginService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Toast.makeText(this, "Service started", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Session started", Toast.LENGTH_SHORT).show();
         Thread thread = new Thread(new MyThread(startId));
         thread.start();
         return START_STICKY;
@@ -59,7 +59,7 @@ public class LoginService extends Service {
 
     @Override
     public void onDestroy() {
-        Toast.makeText(this, "Service destroyed", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Session finished", Toast.LENGTH_SHORT).show();
     }
 
     @Override

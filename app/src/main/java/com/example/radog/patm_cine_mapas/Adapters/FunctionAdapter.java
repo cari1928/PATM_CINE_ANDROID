@@ -166,7 +166,7 @@ public class FunctionAdapter extends
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
             menu.setHeaderTitle("Select Action:");
             menu.add(0, 0, 0, "Buy Tickets");
-            menu.add(0, 1, 1, "Extra Info");
+            //menu.add(0, 1, 1, "Extra Info");
         }
     }
 
