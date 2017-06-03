@@ -1,5 +1,6 @@
 package com.example.radog.patm_cine_mapas.Activities;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -28,7 +29,13 @@ import com.example.radog.patm_cine_mapas.Connectivity.ConnectivityReceiver;
 import com.example.radog.patm_cine_mapas.Connectivity.MyApplication;
 import com.example.radog.patm_cine_mapas.Constants;
 import com.example.radog.patm_cine_mapas.R;
+import com.example.radog.patm_cine_mapas.TDA.TDACompra;
+import com.example.radog.patm_cine_mapas.TDA.TDAFuncion;
 import com.example.radog.patm_cine_mapas.TDA.TDAPelicula;
+import com.example.radog.patm_cine_mapas.TDA.TDAPersona;
+import com.example.radog.patm_cine_mapas.TDA.TDASala;
+import com.example.radog.patm_cine_mapas.TDA.TDASucursal;
+import com.example.radog.patm_cine_mapas.Volley.LoginVolley;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -101,9 +108,15 @@ public class LogActivity extends AppCompatActivity implements
         switch (item.getItemId()) {
             case R.id.itmRefresh:
                 try {
-                    lPeliculas.clear();
-                    getVolleyPel();
-                    adapter.notifyDataSetChanged();
+                    if (checkConnection(2)) {
+                        lPeliculas = new ArrayList<>();
+                        getVolleyPel();
+                        adapter.notifyDataSetChanged();
+                    } else {
+                        lPeliculas = new ArrayList<>();
+                        getLocalPel();
+                        adapter.notifyDataSetChanged();
+                    }
                 } catch (Exception e) {
                     Toast.makeText(this, "Try Again", Toast.LENGTH_SHORT).show();
                 }
@@ -139,18 +152,23 @@ public class LogActivity extends AppCompatActivity implements
     }
 
     private void showSnack(boolean isConnected) {
-        String message;
+        String message, email, pass;
         int color;
 
         if (isConnected) {
             message = "Good! Connected to Internet";
             color = Color.WHITE;
 
+            if (((MyApplication) getApplicationContext()).getToken() == null) {
+                email = ((MyApplication) getApplicationContext()).getEmail();
+                pass = ((MyApplication) getApplicationContext()).getPass();
+                new LoginVolley(this, email, pass, "MainMenu");
+            }
             getVolleyPel();
         } else {
             message = "Sorry! Not connected to internet";
             color = Color.RED;
-
+            ((MyApplication) getApplicationContext()).setToken(null);
             getLocalPel();
         }
 
@@ -167,18 +185,42 @@ public class LogActivity extends AppCompatActivity implements
      ***************************************************************/
 
     private void getLocalPel() {
-        String query = "SELECT c.compra_id, c.funcion_id, c.fecha, p.titulo, s.nombre, \n" +
-                "suc.pais, suc.ciudad, suc.direccion, f.hora, f.hora_fin\n" +
-                "FROM compra c\n" +
-                "INNER JOIN funcion f ON c.funcion_id=f.funcion_id\n" +
-                "INNER JOIN sala s ON s.sala_id=f.sala_id\n" +
-                "INNER JOIN sucursal suc ON suc.sucursal_id=s.sucursal_id\n" +
-                "INNER JOIN pelicula p ON p.pelicula_id=f.funcion_id\n" +
-                "WHERE cliente_id=34 \n" +
-                "ORDER BY compra_id DESC\t";
+        String persona_id = ((MyApplication) getApplicationContext()).getPersona_id();
+        TDAPelicula tmpPelicula;
 
-        List<TDAPelicula> lPeliculas = db.select(query, new TDAPelicula(), 3);
-        Log.e("CINE", "LOCAL-LOGIN-" + lPeliculas.get(0).getFecha());
+        List<TDAPersona> lPersonas = db.select("SELECT * FROM persona WHERE persona_id=" + persona_id, new TDAPersona());
+        if (lPersonas != null) {
+            List<TDACompra> lCompras = db.select("SELECT * FROM compra WHERE cliente_id=" + lPersonas.get(0).getPersona_id(), new TDACompra());
+            if (lCompras != null) {
+                for (TDACompra compra : lCompras) {
+                    List<TDAFuncion> lFunciones = db.select("SELECT * FROM funcion WHERE funcion_id=" + compra.getFuncion_id(), new TDAFuncion());
+                    if (lFunciones != null) {
+                        List<TDAPelicula> lPelis = db.select("SELECT * FROM pelicula WHERE pelicula_id=" + lFunciones.get(0).getPelicula_id(), new TDAPelicula(), 1);
+                        List<TDASala> lSalas = db.select("SELECT * FROM sala WHERE sala_id=" + lFunciones.get(0).getSala_id(), new TDASala());
+                        if (lPelis != null && lSalas != null) {
+                            List<TDASucursal> lSucursales = db.select("SELECT * FROM sucursal WHERE sucursal_id=" + lSalas.get(0).getSucursal_id(), new TDASucursal());
+                            if (lSucursales != null) {
+                                tmpPelicula = new TDAPelicula();
+                                tmpPelicula.setPelicula_id(lPelis.get(0).getPelicula_id());
+                                tmpPelicula.setFuncion_id(lFunciones.get(0).getFuncion_id());
+                                tmpPelicula.setFecha(compra.getFecha());
+                                tmpPelicula.setTitulo(lPelis.get(0).getTitulo());
+                                tmpPelicula.setNombre(lSalas.get(0).getNombre());
+                                tmpPelicula.setPais(lSucursales.get(0).getPais());
+                                tmpPelicula.setCiudad(lSucursales.get(0).getCiudad());
+                                tmpPelicula.setDireccion(lSucursales.get(0).getDireccion());
+                                tmpPelicula.setHora(lFunciones.get(0).getHora());
+                                tmpPelicula.setHora_fin(lFunciones.get(0).getHora_fin());
+
+                                lPeliculas.add(tmpPelicula);
+                            }
+                        }
+                    }
+                }
+                adapter = new LogAdapter(lPeliculas, this);
+                recyclerView.setAdapter(adapter);
+            }
+        }
     }
 
     /****************************************************************
@@ -195,6 +237,13 @@ public class LogActivity extends AppCompatActivity implements
     public void onResponse(String response) {
         TDAPelicula objPel;
         try {
+            if (response.contains("token no valido")) {
+                Toast.makeText(this, "Sorry, your time has finished", Toast.LENGTH_SHORT).show();
+                Intent iLogin = new Intent(this, Login.class);
+                startActivity(iLogin);
+                return;
+            }
+
             JSONArray jsonArray = new JSONArray(response);
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject tmp = jsonArray.getJSONObject(i);

@@ -240,19 +240,9 @@ public class FunctionActivity extends AppCompatActivity implements
      */
     private void getPeliculas() {
         TDAPelicula objPel;
-        //int tipo = 2;
         String url;
 
         try {
-/*            List<TDASucursal> lSuc = db.select("SELECT * FROM sucursal", new TDASucursal());
-            List<TDASala> lSal = db.select("SELECT * FROM sala", new TDASala());
-            List<TDAPelicula> lPeli = db.select("SELECT * FROM pelicula", new TDAPelicula());
-            List<TDAFuncion> lFun = db.select("SELECT * FROM funcion", new TDAFuncion());
-            List<TDACategoria> lCat = db.select("SELECT * FROM categoria", new TDACategoria());
-            List<TDAColaborador> lCol = db.select("SELECT * FROM colaborador", new TDAColaborador());
-            List<String> lCatPeli = db.select("SELECT * FROM categoria_pelicula", 3);
-            List<String> lRep = db.select("SELECT * FROM reparto", 3);*/
-
             if (type.equals("Login")) {
                 //para que la persona que no se ha logueado vea todas las películas disponibles sin clasificación por función o sucursal
                 url = "SELECT * FROM pelicula ORDER BY titulo";
@@ -285,7 +275,6 @@ public class FunctionActivity extends AppCompatActivity implements
             }
 
             List<TDAPelicula> lPeli = db.select(url, new TDAPelicula(), tipo);
-
             if (lPeli == null) {
                 Toast.makeText(this, "Refresh this activity", Toast.LENGTH_SHORT).show();
                 return;

@@ -68,6 +68,7 @@ public class MainMenuActivity extends AppCompatActivity implements ConnectivityR
 
     @OnClick(R.id.ibtnTickets)
     public void ibtnTickets() {
+        checkConnection();
         if (((MyApplication) getApplicationContext()).getToken() == null) {
             Toast.makeText(this, "Sorry, you need internet connection for this", Toast.LENGTH_SHORT).show();
             return;
