@@ -13,6 +13,12 @@ public class MyApplication extends Application {
     // obtenido durante el login
     private static String persona_id;
     private static String persona_nombre;
+    private static String apellidos;
+    private static String email;
+    private static String username;
+    private static String pass;
+    private static int edad;
+    private static String tarjeta;
     private static String token;
 
     //obtenido durante los mapas
@@ -265,5 +271,51 @@ public class MyApplication extends Application {
         MyApplication.total = total;
     }
 
+    public static String getApellidos() {
+        return apellidos;
+    }
 
+    public static void setApellidos(String apellidos) {
+        MyApplication.apellidos = apellidos;
+    }
+
+    public static String getEmail() {
+        return email;
+    }
+
+    public static void setEmail(String email) {
+        MyApplication.email = email;
+    }
+
+    public static String getUsername() {
+        return username;
+    }
+
+    public static void setUsername(String username) {
+        MyApplication.username = username;
+    }
+
+    public static String getPass() {
+        return pass;
+    }
+
+    public static void setPass(String pass) {
+        MyApplication.pass = pass;
+    }
+
+    public static int getEdad() {
+        return edad;
+    }
+
+    public static void setEdad(int edad) {
+        MyApplication.edad = edad;
+    }
+
+    public static String getTarjeta() {
+        return tarjeta;
+    }
+
+    public static void setTarjeta(String tarjeta) {
+        MyApplication.tarjeta = tarjeta;
+    }
 }

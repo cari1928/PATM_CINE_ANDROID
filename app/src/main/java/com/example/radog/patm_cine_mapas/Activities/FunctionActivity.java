@@ -25,7 +25,7 @@ import com.example.radog.patm_cine_mapas.Adapters.FunctionAdapter;
 import com.example.radog.patm_cine_mapas.BD.DBHelper;
 import com.example.radog.patm_cine_mapas.Connectivity.ConnectivityReceiver;
 import com.example.radog.patm_cine_mapas.Connectivity.MyApplication;
-import com.example.radog.patm_cine_mapas.Constatns;
+import com.example.radog.patm_cine_mapas.Constants;
 import com.example.radog.patm_cine_mapas.R;
 import com.example.radog.patm_cine_mapas.TDA.TDAPelicula;
 import com.example.radog.patm_cine_mapas.TDA.TDASucursal;
@@ -218,7 +218,7 @@ public class FunctionActivity extends AppCompatActivity implements
     }
 
     private void getVolleyPel() {
-        String URL = Constatns.RUTA_PHP + "/pelicula/listado";
+        String URL = Constants.RUTA_PHP + "/pelicula/listado";
         StringRequest reqListComp = new StringRequest(Request.Method.GET, URL, this, this) {
             @Override
             public Map<String, String> getHeaders() {

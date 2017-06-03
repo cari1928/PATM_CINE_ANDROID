@@ -20,9 +20,12 @@ import com.example.radog.patm_cine_mapas.Connectivity.ConnectivityReceiver;
 import com.example.radog.patm_cine_mapas.Connectivity.MyApplication;
 import com.example.radog.patm_cine_mapas.LoginService;
 import com.example.radog.patm_cine_mapas.R;
+import com.example.radog.patm_cine_mapas.TDA.TDAPersona;
 import com.example.radog.patm_cine_mapas.Tools;
 import com.example.radog.patm_cine_mapas.Volley.LoginVolley;
 import com.example.radog.patm_cine_mapas.Volley.SyncVolley;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -31,14 +34,14 @@ import butterknife.OnClick;
 public class Login extends AppCompatActivity implements
         ConnectivityReceiver.ConnectivityReceiverListener {
 
-    @BindView(R.id.etUser)
+    @BindView(R.id.etEmail)
     EditText etUser;
     @BindView(R.id.etPass)
     EditText etPass;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
 
-    private String user, pass;
+    private String email, pass;
     private DBHelper db;
     private SyncVolley syncVolley;
 
@@ -60,7 +63,6 @@ public class Login extends AppCompatActivity implements
     @Override
     protected void onRestart() {
         super.onRestart();
-
         closeService();
     }
 
@@ -105,20 +107,54 @@ public class Login extends AppCompatActivity implements
     @OnClick(R.id.btnLogin)
     public void btnLogin() {
         Tools objT = new Tools();
-        user = etUser.getText().toString();
+        email = etUser.getText().toString();
         pass = objT.encriptaDato("MD5", etPass.getText().toString());
 
-        if (user.equals("") || pass.equals("")) {
+        if (email.equals("") || pass.equals("")) {
             Toast.makeText(this, "Input the required information", Toast.LENGTH_SHORT).show();
         } else {
             if (checkConnection()) {
-                //login mediante internet
-                new LoginVolley(this, etUser, user, pass);
+                new LoginVolley(this, etUser, email, pass);
             } else {
-                //login mediante la bd
-
+                localLogin();
             }
         }
+    }
+
+    private void localLogin() {
+        List<TDAPersona> lPersonas = db.select("SELECT * FROM persona", new TDAPersona());
+        TDAPersona tmpPersona = null;
+
+        for (TDAPersona persona : lPersonas) {
+            if (persona.getEmail().equals(email) && persona.getPass().equals(pass)) {
+                tmpPersona = persona;
+                break;
+            }
+        }
+
+        if (tmpPersona != null) {
+            fillUserData(tmpPersona);
+            iniLoginService();
+            Intent iMainMenu = new Intent(this, MainMenuActivity.class);
+            startActivity(iMainMenu);
+        }
+
+    }
+
+    private void fillUserData(TDAPersona persona) {
+        ((MyApplication) getApplicationContext()).setPersona_id(String.valueOf(persona.getPersona_id()));
+        ((MyApplication) getApplicationContext()).setPersona_nombre(persona.getNombre());
+        ((MyApplication) getApplicationContext()).setApellidos(persona.getApellidos());
+        ((MyApplication) getApplicationContext()).setEmail(email);
+        ((MyApplication) getApplicationContext()).setUsername(persona.getUsername());
+        ((MyApplication) getApplicationContext()).setPass(pass);
+        ((MyApplication) getApplicationContext()).setEdad(persona.getEdad());
+        ((MyApplication) getApplicationContext()).setTarjeta(persona.getTarjeta());
+    }
+
+    private void iniLoginService() {
+        Intent intent = new Intent(this, LoginService.class);
+        startService(intent);
     }
 
     /**
@@ -161,17 +197,6 @@ public class Login extends AppCompatActivity implements
         TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
         textView.setTextColor(color);
         snackbar.show();
-    }
-
-    private void volley(boolean isConnected) {
-        LoginVolley loginVolley;
-
-        if (isConnected) {
-            loginVolley = new LoginVolley(this, etUser, user, pass);
-        } else {
-            //valida de forma local
-            //db.select("SELECT persona_id FROM persona WHERE username='" + user + "' AND pass='" + pass + "'", 5);
-        }
     }
 
     /**

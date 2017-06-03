@@ -2,7 +2,9 @@ package com.example.radog.patm_cine_mapas.Volley;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.util.Base64;
+import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,12 +18,14 @@ import com.android.volley.toolbox.Volley;
 import com.example.radog.patm_cine_mapas.Activities.MainMenuActivity;
 import com.example.radog.patm_cine_mapas.BD.DBHelper;
 import com.example.radog.patm_cine_mapas.Connectivity.MyApplication;
-import com.example.radog.patm_cine_mapas.Constatns;
+import com.example.radog.patm_cine_mapas.Constants;
 import com.example.radog.patm_cine_mapas.LoginService;
+import com.example.radog.patm_cine_mapas.TDA.TDAPersona;
 
 import org.json.JSONObject;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -33,15 +37,18 @@ public class LoginVolley implements Response.Listener<String>, Response.ErrorLis
     private RequestQueue qSolicitudes;
     private Context con;
     private TextView etUser;
-    private String user, pass;
+    private String email, pass;
     private DBHelper db;
 
-    public LoginVolley(Context con, TextView etUser, String user, String pass) {
+    public LoginVolley(Context con, TextView etUser, String email, String pass) {
         qSolicitudes = Volley.newRequestQueue(con);
         this.con = con;
         this.etUser = etUser;
-        this.user = user;
+        this.email = email;
         this.pass = pass;
+
+        db = new DBHelper(con);
+        db.openDB();
 
         validaCliente();
     }
@@ -54,14 +61,58 @@ public class LoginVolley implements Response.Listener<String>, Response.ErrorLis
 
     @Override
     public void onResponse(String response) {
+        long res;
+        List<TDAPersona> lPersonas;
+        boolean flag = false;
         try {
             JSONObject objJSON = new JSONObject(response);
             if (objJSON.getString("status").equals("bitacora")) {
-                //Toast.makeText(con, "Welcome " + user, Toast.LENGTH_SHORT).show();
 
-                ((MyApplication) con.getApplicationContext()).setPersona_id(objJSON.getString("persona_id"));
-                ((MyApplication) con.getApplicationContext()).setPersona_nombre(user);
+                //similar a un $_SESSION
+                ((MyApplication) con.getApplicationContext()).setPersona_id(objJSON.getString(db.PERSONA_ID));
                 ((MyApplication) con.getApplicationContext()).setToken(objJSON.getString("token"));
+                ((MyApplication) con.getApplicationContext()).setPersona_nombre(objJSON.getString(db.NOMBRE));
+                ((MyApplication) con.getApplicationContext()).setApellidos(objJSON.getString(db.APELLIDOS));
+                ((MyApplication) con.getApplicationContext()).setEmail(email);
+                ((MyApplication) con.getApplicationContext()).setUsername(objJSON.getString(db.USERNAME));
+                ((MyApplication) con.getApplicationContext()).setPass(pass);
+                ((MyApplication) con.getApplicationContext()).setEdad(objJSON.getInt(db.EDAD));
+                ((MyApplication) con.getApplicationContext()).setTarjeta(objJSON.getString(db.TARJETA));
+
+                lPersonas = db.select("SELECT * FROM persona", new TDAPersona());
+                for (TDAPersona persona : lPersonas) {
+                    if (persona.getEmail().equals(email) && persona.getPass().equals(pass)) {
+                        flag = true;
+                        break;
+                    }
+                }
+
+                if (!flag) {
+                    res = db.insert(new String[]{
+                            db.PERSONA_ID,
+                            db.NOMBRE,
+                            db.APELLIDOS,
+                            db.EMAIL,
+                            db.USERNAME,
+                            db.PASS,
+                            db.EDAD,
+                            db.TARJETA
+                    }, new String[]{
+                            objJSON.getString(db.PERSONA_ID),
+                            objJSON.getString(db.NOMBRE),
+                            objJSON.getString(db.APELLIDOS),
+                            objJSON.getString(db.EMAIL),
+                            objJSON.getString(db.USERNAME),
+                            objJSON.getString(db.PASS),
+                            objJSON.getString(db.EDAD),
+                            objJSON.getString(db.TARJETA)
+                    }, db.TABLE_PERSONA, false);
+
+                    if (res == -1) {
+                        Log.e("CINE", "LOGIN-ERROR-INSERTAR-PERSONA-BD-LOCAL");
+                        return;
+                    }
+                }
 
                 iniLoginService();
 
@@ -70,11 +121,11 @@ public class LoginVolley implements Response.Listener<String>, Response.ErrorLis
 
             } else {
                 errorMsg();
+                Log.e("CINE", "LOGIN - BITACORA ERROR");
             }
         } catch (Exception e) {
-            //etUser.setText(e.toString());
+            e.printStackTrace();
             errorMsg();
-            //Toast.makeText(con, e.toString(), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -83,7 +134,7 @@ public class LoginVolley implements Response.Listener<String>, Response.ErrorLis
     }
 
     private void validaCliente() {
-        String URL = Constatns.RUTA_JAVA + "/persona/validar/" + user + "/" + pass;
+        String URL = Constants.RUTA_JAVA + "/persona/validar/" + email + "/" + pass;
 
         StringRequest solInsCte = new StringRequest(Request.Method.GET, URL, this, this) {
 

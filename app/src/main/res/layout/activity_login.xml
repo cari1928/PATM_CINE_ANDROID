@@ -37,10 +37,10 @@
             app:srcCompat="@drawable/logo2" />
 
         <EditText
-            android:id="@+id/etUser"
+            android:id="@+id/etEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Username"
+            android:hint="E-Mail"
             android:inputType="textPersonName" />
 
         <EditText

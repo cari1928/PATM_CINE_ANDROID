@@ -102,16 +102,10 @@ public class FunctionAdapter extends
     }
 
     public void getItemSelected(MenuItem item, String type) {
-        if(type.equals("Sucursal")) {
-            Intent iSeatings = new Intent(context.getApplicationContext(), AsientosActivity.class);
-        } else  {
-
-        }
-
+        Intent iSeatings = new Intent(context.getApplicationContext(), AsientosActivity.class);
         Bundle data = new Bundle();
         data.putString("TYPE", type);
         iSeatings.putExtras(data);
-
     }
 
     @Override

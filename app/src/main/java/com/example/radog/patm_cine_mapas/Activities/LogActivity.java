@@ -26,7 +26,7 @@ import com.example.radog.patm_cine_mapas.Adapters.LogAdapter;
 import com.example.radog.patm_cine_mapas.BD.DBHelper;
 import com.example.radog.patm_cine_mapas.Connectivity.ConnectivityReceiver;
 import com.example.radog.patm_cine_mapas.Connectivity.MyApplication;
-import com.example.radog.patm_cine_mapas.Constatns;
+import com.example.radog.patm_cine_mapas.Constants;
 import com.example.radog.patm_cine_mapas.R;
 import com.example.radog.patm_cine_mapas.TDA.TDAPelicula;
 
@@ -221,11 +221,11 @@ public class LogActivity extends AppCompatActivity implements
         String persona_id = ((MyApplication) this.getApplicationContext()).getPersona_id();
         String token = ((MyApplication) this.getApplicationContext()).getToken();
 
-        /*String URL = Constatns.RUTA_PHP + "/compra/listado/cliente/"
+        /*String URL = Constants.RUTA_PHP + "/compra/listado/cliente/"
                 + persona_id + "/"
                 + token;*/
 
-        String URL = Constatns.RUTA_PHP + "/compra/listado/app/"
+        String URL = Constants.RUTA_PHP + "/compra/listado/app/"
                 + ((MyApplication) this.getApplicationContext()).getPersona_id() + "/"
                 + ((MyApplication) this.getApplicationContext()).getToken();
         ;

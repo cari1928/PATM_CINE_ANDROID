@@ -12,6 +12,7 @@ import com.example.radog.patm_cine_mapas.TDA.TDACategoriaPelicula;
 import com.example.radog.patm_cine_mapas.TDA.TDAColaborador;
 import com.example.radog.patm_cine_mapas.TDA.TDAFuncion;
 import com.example.radog.patm_cine_mapas.TDA.TDAPelicula;
+import com.example.radog.patm_cine_mapas.TDA.TDAPersona;
 import com.example.radog.patm_cine_mapas.TDA.TDAReparto;
 import com.example.radog.patm_cine_mapas.TDA.TDASala;
 import com.example.radog.patm_cine_mapas.TDA.TDASucursal;
@@ -27,7 +28,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     //DATABASE - GENERAL INFORMATION
     private static final String DB_NAME = "cine.db";
-    private static final int VERSION = 1;
+    private static final int VERSION = 2;
 
     /**
      * TABLE Persona - STRUCTURE
@@ -148,7 +149,7 @@ public class DBHelper extends SQLiteOpenHelper {
             + PERSONA_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
             + NOMBRE + " VARCHAR(50), "
             + APELLIDOS + " VARCHAR(80), "
-            + EMAIL + " VARCHAR(50), "
+            + EMAIL + " VARCHAR(50) UNIQUE, "
             + USERNAME + " VARCHAR(50), "
             + PASS + " VARCHAR(32), "
             + EDAD + " INTEGER, "
@@ -309,7 +310,7 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_FUNCION);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_COMPRA);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_SALA_ASIENTOS);
-        db.execSQL("DROP TABLE IF EXISTS " + CREATE_ASIENTOS_RESERVADOS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_ASIENTOS_RESERVADOS);
         onCreate(db);
     }
 
@@ -333,7 +334,12 @@ public class DBHelper extends SQLiteOpenHelper {
 
         if (foreignK) myDB.execSQL("PRAGMA foreign_keys=ON;");
 
-        res = myDB.insert(table, null, objCV);
+        try {
+            res = myDB.insert(table, null, objCV);
+        } catch (Exception e) {
+            res = -1;
+            e.printStackTrace();
+        }
 
         if (foreignK) myDB.execSQL("PRAGMA foreign_keys=OFF;");
 
@@ -381,6 +387,31 @@ public class DBHelper extends SQLiteOpenHelper {
                 tdaCategoria.setCategoria(c.getString(1));
 
                 registers.add(tdaCategoria);
+            } while (c.moveToNext());
+        } else {
+            return null;
+        }
+        return registers;
+    }
+
+    public List<TDAPersona> select(String query, TDAPersona tda) {
+        List<TDAPersona> registers = new ArrayList<>();
+        TDAPersona tdaPersona;
+
+        Cursor c = myDB.rawQuery(query, null);
+        if (c.moveToFirst()) {
+            do {
+                tdaPersona = new TDAPersona();
+                tdaPersona.setPersona_id(c.getInt(0));
+                tdaPersona.setNombre(c.getString(1));
+                tdaPersona.setApellidos(c.getString(2));
+                tdaPersona.setEmail(c.getString(3));
+                tdaPersona.setUsername(c.getString(4));
+                tdaPersona.setPass(c.getString(5));
+                tdaPersona.setEdad(c.getInt(6));
+                tdaPersona.setTarjeta(c.getString(7));
+
+                registers.add(tdaPersona);
             } while (c.moveToNext());
         } else {
             return null;

@@ -16,7 +16,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.radog.patm_cine_mapas.Activities.MainMenuActivity;
 import com.example.radog.patm_cine_mapas.BD.DBHelper;
 import com.example.radog.patm_cine_mapas.Connectivity.MyApplication;
-import com.example.radog.patm_cine_mapas.Constatns;
+import com.example.radog.patm_cine_mapas.Constants;
 
 import org.json.JSONObject;
 
@@ -80,7 +80,7 @@ public class SyncAsientoReservado implements Response.Listener<String>, Response
             return;
         }
 
-        String URL = Constatns.RUTA_PHP + "/asientos_reservados/add/" + persona_id + "/" + token;
+        String URL = Constants.RUTA_PHP + "/asientos_reservados/add/" + persona_id + "/" + token;
         Log.e("CINE", "COMPRA: " + URL);
 
         StringRequest request = new StringRequest(Request.Method.POST, URL, this, this) {

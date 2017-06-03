@@ -14,7 +14,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.radog.patm_cine_mapas.BD.DBHelper;
 import com.example.radog.patm_cine_mapas.Connectivity.MyApplication;
-import com.example.radog.patm_cine_mapas.Constatns;
+import com.example.radog.patm_cine_mapas.Constants;
 import com.example.radog.patm_cine_mapas.TDA.TDAAsiento;
 
 import org.json.JSONArray;
@@ -110,7 +110,7 @@ public class SyncAsientos implements Response.Listener<String>, Response.ErrorLi
     }
 
     private void sync() {
-        String URL = Constatns.RUTA_PHP + "/sala_asientos/disponiblesApp/"
+        String URL = Constants.RUTA_PHP + "/sala_asientos/disponiblesApp/"
                 + ((MyApplication) con.getApplicationContext()).getFuncion_id() + "/"
                 + ((MyApplication) con.getApplicationContext()).getSucursal_id() + "/"
                 + ((MyApplication) con.getApplicationContext()).getSala_id() + "/"

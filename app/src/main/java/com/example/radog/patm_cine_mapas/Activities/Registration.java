@@ -21,7 +21,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.radog.patm_cine_mapas.Connectivity.ConnectivityReceiver;
 import com.example.radog.patm_cine_mapas.Connectivity.MyApplication;
-import com.example.radog.patm_cine_mapas.Constatns;
+import com.example.radog.patm_cine_mapas.Constants;
 import com.example.radog.patm_cine_mapas.LoginService;
 import com.example.radog.patm_cine_mapas.R;
 import com.example.radog.patm_cine_mapas.Volley.SyncVolley;
@@ -175,7 +175,7 @@ public class Registration extends AppCompatActivity implements
             jsonObject.put("edad", etAge.getText().toString());
             jsonObject.put("tarjeta", etCreditCard.getText().toString());
 
-            String URL = Constatns.RUTA_JAVA + "/persona/insertar";
+            String URL = Constants.RUTA_JAVA + "/persona/insertar";
 
             StringRequest insCte = new StringRequest(Request.Method.POST, URL, this, this) {
                 @Override

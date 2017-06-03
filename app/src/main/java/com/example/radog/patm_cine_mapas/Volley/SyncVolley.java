@@ -13,7 +13,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.radog.patm_cine_mapas.BD.DBHelper;
-import com.example.radog.patm_cine_mapas.Constatns;
+import com.example.radog.patm_cine_mapas.Constants;
 import com.example.radog.patm_cine_mapas.TDA.TDASucursal;
 
 import org.json.JSONArray;
@@ -252,7 +252,7 @@ public class SyncVolley implements Response.Listener<String>, Response.ErrorList
     }
 
     private void sync() {
-        String URL = Constatns.RUTA_PHP + "/especial/listado/app";
+        String URL = Constants.RUTA_PHP + "/especial/listado/app";
 
         StringRequest request = new StringRequest(Request.Method.GET, URL, this, this) {
 
