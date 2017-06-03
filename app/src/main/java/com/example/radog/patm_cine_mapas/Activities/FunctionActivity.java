@@ -1,5 +1,6 @@
 package com.example.radog.patm_cine_mapas.Activities;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -77,7 +78,7 @@ public class FunctionActivity extends AppCompatActivity implements
         if (type.equals("Login")) {
             tipo = 1;
         } else {
-            tipo = 2;
+            tipo = 2; //cualquiera menos login
         }
 
         getPeliculas(); //sin conexion
@@ -133,6 +134,12 @@ public class FunctionActivity extends AppCompatActivity implements
      * DETECCIÓN DE CONECCIÓN WIFI **************************************************************
      ***************************************************************/
     @Override
+    protected void onRestart() {
+        super.onRestart();
+        checkConnection(1);
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         // register connection status listener
@@ -166,6 +173,13 @@ public class FunctionActivity extends AppCompatActivity implements
                 new SyncVolley(this);
             }
         } else {
+            if (tipo == 2) {
+                ((MyApplication) getApplicationContext()).setToken(null);
+                Toast.makeText(this, "Sorry, you need internet connection for this", Toast.LENGTH_SHORT).show();
+                Intent iMain = new Intent(this, MainMenuActivity.class);
+                startActivity(iMain);
+            }
+
             message = "Sorry! Not connected to internet";
             color = Color.RED;
         }

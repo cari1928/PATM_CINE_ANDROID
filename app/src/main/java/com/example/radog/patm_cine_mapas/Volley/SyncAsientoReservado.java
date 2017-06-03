@@ -34,7 +34,6 @@ public class SyncAsientoReservado implements Response.Listener<String>, Response
     private RequestQueue qSolicitudes;
     private JSONObject jsonObject;
     private Context con;
-    private DBHelper db;
 
     public SyncAsientoReservado(Context con) {
         qSolicitudes = Volley.newRequestQueue(con);
@@ -58,6 +57,9 @@ public class SyncAsientoReservado implements Response.Listener<String>, Response
             Intent iMainMenu = new Intent(con, MainMenuActivity.class);
             Bundle data = new Bundle();
             data.putString("TYPE", "Sucursal");
+
+            Toast.makeText(con, "Your purchase has been completed!", Toast.LENGTH_SHORT).show();
+
             iMainMenu.putExtras(data);
             con.startActivity(iMainMenu);
 

@@ -1,5 +1,6 @@
 package com.example.radog.patm_cine_mapas.Activities;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -56,12 +57,12 @@ public class ReportActivity extends AppCompatActivity implements ConnectivityRec
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        checkConnection(1);
+        checkConnection();
     }
 
     @OnClick(R.id.btnComprar)
     public void btnComprar() {
-        if (checkConnection(2)) {
+        if (checkConnection()) {
             new SyncSale(this);
         } else {
             Toast.makeText(this, "No es posible realizar la compra si no cuenta con conexión a Internet", Toast.LENGTH_SHORT).show();
@@ -79,16 +80,18 @@ public class ReportActivity extends AppCompatActivity implements ConnectivityRec
     }
 
     @Override
+    protected void onRestart() {
+        super.onRestart();
+        checkConnection();
+    }
+
+    @Override
     public void onNetworkConnectionChanged(boolean isConnected) {
         showSnack(isConnected);
     }
 
-    private boolean checkConnection(int type) {
+    private boolean checkConnection() {
         boolean isConnected = ConnectivityReceiver.isConnected();
-
-        if (type == 2) {
-            return isConnected;
-        }
         showSnack(isConnected);
         return isConnected;
     }
@@ -101,12 +104,16 @@ public class ReportActivity extends AppCompatActivity implements ConnectivityRec
             message = "Good! Connected to Internet";
             color = Color.WHITE;
         } else {
+            ((MyApplication) getApplicationContext()).setToken(null);
+            Toast.makeText(this, "Sorry, you need internet connection for this", Toast.LENGTH_SHORT).show();
+            Intent iMain = new Intent(this, MainMenuActivity.class);
+            startActivity(iMain);
+
             message = "Sorry! Not connected to internet";
             color = Color.RED;
         }
 
         Snackbar snackbar = Snackbar.make(findViewById(R.id.report_layout), message, Snackbar.LENGTH_LONG);
-
         View sbView = snackbar.getView();
         TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
         textView.setTextColor(color);

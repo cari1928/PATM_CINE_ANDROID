@@ -6,8 +6,11 @@ import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.radog.patm_cine_mapas.Activities.FunctionActivity;
+import com.example.radog.patm_cine_mapas.Activities.MainMenuActivity;
+import com.example.radog.patm_cine_mapas.Connectivity.ConnectivityReceiver;
 import com.example.radog.patm_cine_mapas.Connectivity.MyApplication;
 import com.example.radog.patm_cine_mapas.R;
 import com.example.radog.patm_cine_mapas.UserData;
@@ -25,7 +28,9 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SucursalMapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMapClickListener {
+public class SucursalMapsActivity extends FragmentActivity implements
+        OnMapReadyCallback, GoogleMap.OnMapClickListener,
+        ConnectivityReceiver.ConnectivityReceiverListener {
 
     private GoogleMap mMap;
     private Marker marcador = null;
@@ -40,20 +45,36 @@ public class SucursalMapsActivity extends FragmentActivity implements OnMapReady
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sucursal_maps);
 
+        checkConnection();
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
         marcas = new ArrayList<>();
-
-        //data = getIntent().getExtras();
-        //lUserData = data.getParcelableArrayList("USERDATA");
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu, menu);
         return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MyApplication.getInstance().setConnectivityListener(this);
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        checkConnection();
+    }
+
+    @Override
+    public void onNetworkConnectionChanged(boolean isConnected) {
+        checkConnection();
     }
 
     /**
@@ -75,8 +96,6 @@ public class SucursalMapsActivity extends FragmentActivity implements OnMapReady
         //obtiene posición actual
         latitud = objGeo.getLatActual();
         longitud = objGeo.getLongActual();
-
-        //Toast.makeText(this, "latitud: " + latitud + "\nLongitud: " + longitud, Toast.LENGTH_SHORT).show();
 
         LatLng aquiEstoy = new LatLng(latitud, longitud);
         Geocode objG = new Geocode(this, mMap, aquiEstoy);
@@ -105,30 +124,31 @@ public class SucursalMapsActivity extends FragmentActivity implements OnMapReady
                 public View getInfoContents(Marker marker) {
                     View v = getLayoutInflater().inflate(R.layout.marker_info, null);
                     TextView tvName = (TextView) v.findViewById(R.id.tvName);
-
                     LatLng ll = marker.getPosition();
                     ((MyApplication) SucursalMapsActivity.this.getApplication()).setLatitud(ll.latitude);
                     ((MyApplication) SucursalMapsActivity.this.getApplication()).setLongitud(ll.longitude);
-
-                    /*Toast.makeText(SucursalMapsActivity.this,
-                            "Latitud: " + ll.latitude + "\nLongitud: " + ll.longitude,
-                            Toast.LENGTH_SHORT).show();
-                    Log.d("CINE", "Latitud: " + ll.latitude + "\nLongitud: " + ll.longitude);*/
-
                     tvName.setText(marker.getTitle());
                     return v;
                 }
-
             });
 
             mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
-
                 @Override
                 public void onInfoWindowClick(Marker marker) {
-                    //Toast.makeText(SucursalMapsActivity.this, "prueba", Toast.LENGTH_SHORT).show();
                     changeIntent(marker.getPosition());
                 }
             });
+        }
+    }
+
+    private void checkConnection() {
+        boolean isConnected = ConnectivityReceiver.isConnected();
+
+        if (!isConnected) {
+            ((MyApplication) getApplicationContext()).setToken(null);
+            Toast.makeText(this, "Sorry, you need internet connection for this", Toast.LENGTH_SHORT).show();
+            Intent iMain = new Intent(this, MainMenuActivity.class);
+            startActivity(iMain);
         }
     }
 

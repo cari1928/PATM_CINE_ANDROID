@@ -30,7 +30,6 @@ public class MainMenuActivity extends AppCompatActivity implements ConnectivityR
     @BindView(R.id.toolbar)
     Toolbar toolbar;
 
-    private String type;
     private DBHelper objDBH;
 
     @Override
@@ -38,9 +37,6 @@ public class MainMenuActivity extends AppCompatActivity implements ConnectivityR
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
         ButterKnife.bind(this);
-
-        Bundle data = getIntent().getExtras();
-        type = data.getString("TYPE");
 
         //conexión y apertura de la BD
         objDBH = new DBHelper(this);
@@ -61,6 +57,7 @@ public class MainMenuActivity extends AppCompatActivity implements ConnectivityR
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.itmProfile:
+
                 break;
         }
         return super.onOptionsItemSelected(item);

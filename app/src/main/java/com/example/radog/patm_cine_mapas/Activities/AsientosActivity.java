@@ -1,5 +1,6 @@
 package com.example.radog.patm_cine_mapas.Activities;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -58,7 +59,7 @@ public class AsientosActivity extends AppCompatActivity implements ConnectivityR
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        checkConnection(1);
+        checkConnection();
 
         getAsientos(); //sin conexion
     }
@@ -86,18 +87,9 @@ public class AsientosActivity extends AppCompatActivity implements ConnectivityR
         switch (item.getItemId()) {
             case R.id.itmRefresh:
                 try {
-/*                    List<TDAAsiento> p = db.select(
-                            "select asiento_id, sala_id, funcion_id, columna, fila from sala_asientos",
-                            new TDAAsiento());*/
-
                     lAsientos.clear();
                     getAsientos();
                     adapter.notifyDataSetChanged();
-
-                    //si es mandado llamar desde otro punto que no sea el onCreate..
-                    if (checkConnection(2)) { //si esta conectado, entonces... sincroniza
-                        new SyncAsientos(this);
-                    }
                 } catch (Exception e) {
                     Toast.makeText(this, "Refresh " + e.toString(), Toast.LENGTH_SHORT).show();
                     //Toast.makeText(this, "No hay funciones disponibles", Toast.LENGTH_SHORT).show();
@@ -118,18 +110,21 @@ public class AsientosActivity extends AppCompatActivity implements ConnectivityR
     }
 
     @Override
+    protected void onRestart() {
+        super.onRestart();
+        checkConnection();
+    }
+
+
+    @Override
     public void onNetworkConnectionChanged(boolean isConnected) {
         showSnack(isConnected);
     }
 
-    private boolean checkConnection(int type) {
+    private boolean checkConnection() {
         boolean isConnected = ConnectivityReceiver.isConnected();
-
-        if (type == 2) {
-            return isConnected;
-        }
         showSnack(isConnected);
-        return false;
+        return isConnected;
     }
 
     private void showSnack(boolean isConnected) {
@@ -141,11 +136,13 @@ public class AsientosActivity extends AppCompatActivity implements ConnectivityR
             color = Color.WHITE;
 
             //sincroniza BD, solo las funciones
-            if (isConnected) {
-                //new SyncVolley(this);
-                new SyncAsientos(this);
-            }
+            new SyncAsientos(this);
         } else {
+            ((MyApplication) getApplicationContext()).setToken(null);
+            Toast.makeText(this, "Sorry, you need internet connection for this", Toast.LENGTH_SHORT).show();
+            Intent iMain = new Intent(this, MainMenuActivity.class);
+            startActivity(iMain);
+
             message = "Sorry! Not connected to internet";
             color = Color.RED;
         }
@@ -170,15 +167,6 @@ public class AsientosActivity extends AppCompatActivity implements ConnectivityR
         String url;
 
         try {
-/*            List<TDASucursal> lSuc = db.select("SELECT * FROM sucursal", new TDASucursal());
-            List<TDASala> lSal = db.select("SELECT * FROM sala", new TDASala());
-            List<TDAPelicula> lPeli = db.select("SELECT * FROM pelicula", new TDAPelicula());
-            List<TDAFuncion> lFun = db.select("SELECT * FROM funcion", new TDAFuncion());
-            List<TDACategoria> lCat = db.select("SELECT * FROM categoria", new TDACategoria());
-            List<TDAColaborador> lCol = db.select("SELECT * FROM colaborador", new TDAColaborador());
-            List<String> lCatPeli = db.select("SELECT * FROM categoria_pelicula", 3);
-            List<String> lRep = db.select("SELECT * FROM reparto", 3);*/
-
             List<TDAAsiento> lAsi = db.select(
                     "SELECT asiento_id, sala_id, funcion_id, columna, fila FROM " + db.TABLE_SALA_ASIENTOS, new TDAAsiento());
 
@@ -202,7 +190,6 @@ public class AsientosActivity extends AppCompatActivity implements ConnectivityR
         } catch (Exception e) {
             e.printStackTrace();
             Log.e("CINE", e.toString());
-            //Toast.makeText(this, "Actualice u obtenga conexión a internet para sincronizar", Toast.LENGTH_SHORT).show();
             Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show();
         }
     }
