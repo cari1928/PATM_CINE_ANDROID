@@ -15,11 +15,14 @@ import com.android.volley.toolbox.Volley;
 import com.example.radog.patm_cine_mapas.BD.DBHelper;
 import com.example.radog.patm_cine_mapas.Connectivity.MyApplication;
 import com.example.radog.patm_cine_mapas.Constants;
+import com.example.radog.patm_cine_mapas.TDA.TDACompra;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -37,6 +40,9 @@ public class SyncSale implements Response.Listener<String>, Response.ErrorListen
         qSolicitudes = Volley.newRequestQueue(con);
         this.con = con;
 
+        db = new DBHelper(con);
+        db.openDB();
+
         sync(); //comienza sincronización
     }
 
@@ -49,11 +55,40 @@ public class SyncSale implements Response.Listener<String>, Response.ErrorListen
 
     @Override
     public void onResponse(String response) {
+        long res;
         try {
             if (response.contains("token no valido")) {
                 Toast.makeText(con, "Disculpe, su tiempo en la app ha expirado", Toast.LENGTH_SHORT).show();
                 return;
             }
+
+            JSONArray arrayResponse = new JSONArray(response);
+            JSONObject objResponse = arrayResponse.getJSONObject(0);
+
+            res = db.insert(new String[]{
+                    db.CLIENTE_ID,
+                    db.FUNCION_ID,
+                    db.FECHA,
+                    db.TOTAL,
+                    db.ENTRADAS,
+                    db.TIPO_PAGO
+            }, new String[]{
+                    objResponse.getString(db.CLIENTE_ID),
+                    objResponse.getString(db.FUNCION_ID),
+                    objResponse.getString(db.FECHA),
+                    objResponse.getString(db.TOTAL),
+                    objResponse.getString(db.ENTRADAS),
+                    objResponse.getString(db.TIPO_PAGO)
+            }, db.TABLE_COMPRA, false);
+
+            if (res == -1) {
+                Toast.makeText(con, "We couldn't save your purchase in this device, but check our webpage to see your full receipt", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            List<TDACompra> lCompras = db.select("select * from compra", new TDACompra());
+            Log.e("CINE", "BD-COMPRA_ID " + lCompras.get(0).getCompra_id());
+
             new SyncAsientoReservado(con);
 
         } catch (Exception e) {
@@ -76,7 +111,7 @@ public class SyncSale implements Response.Listener<String>, Response.ErrorListen
             jsonObject.put("tipo_pago", ((MyApplication) con.getApplicationContext()).getTipo_pago());
 
         } catch (Exception e) {
-            Log.e("CINE", "SYNC: " + e.toString());
+            e.printStackTrace();
             Toast.makeText(con, e.toString(), Toast.LENGTH_SHORT).show();
             return;
         }

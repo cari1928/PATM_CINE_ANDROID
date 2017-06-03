@@ -10,6 +10,7 @@ import com.example.radog.patm_cine_mapas.TDA.TDAAsiento;
 import com.example.radog.patm_cine_mapas.TDA.TDACategoria;
 import com.example.radog.patm_cine_mapas.TDA.TDACategoriaPelicula;
 import com.example.radog.patm_cine_mapas.TDA.TDAColaborador;
+import com.example.radog.patm_cine_mapas.TDA.TDACompra;
 import com.example.radog.patm_cine_mapas.TDA.TDAFuncion;
 import com.example.radog.patm_cine_mapas.TDA.TDAPelicula;
 import com.example.radog.patm_cine_mapas.TDA.TDAPersona;
@@ -28,7 +29,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     //DATABASE - GENERAL INFORMATION
     private static final String DB_NAME = "cine.db";
-    private static final int VERSION = 2;
+    private static final int VERSION = 3;
 
     /**
      * TABLE Persona - STRUCTURE
@@ -348,13 +349,9 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public long update(String[] fields, String[] data, String where, String table) {
         ContentValues objCV = new ContentValues();
-        //String where;
-
         for (int i = 0; i < fields.length; i++) {
             objCV.put(fields[i], data[i]);
         }
-
-        //where = ID_EVENT + "=" + idEvent;
         return myDB.update(table, objCV, where, null);
     }
 
@@ -387,6 +384,29 @@ public class DBHelper extends SQLiteOpenHelper {
                 tdaCategoria.setCategoria(c.getString(1));
 
                 registers.add(tdaCategoria);
+            } while (c.moveToNext());
+        } else {
+            return null;
+        }
+        return registers;
+    }
+
+    public List<TDACompra> select(String query, TDACompra tda) {
+        List<TDACompra> registers = new ArrayList<>();
+        TDACompra tdaCompra;
+
+        Cursor c = myDB.rawQuery(query, null);
+        if (c.moveToFirst()) {
+            do {
+                tdaCompra = new TDACompra();
+                tdaCompra.setCompra_id(c.getInt(0));
+                tdaCompra.setCliente_id(c.getInt(1));
+                tdaCompra.setFuncion_id(c.getInt(2));
+                tdaCompra.setFecha(c.getString(3));
+                tdaCompra.setTotal(c.getFloat(4));
+                tdaCompra.setEntradas(c.getInt(5));
+
+                registers.add(tdaCompra);
             } while (c.moveToNext());
         } else {
             return null;
@@ -632,11 +652,9 @@ public class DBHelper extends SQLiteOpenHelper {
         delete(TABLE_REPARTO, null);
         delete(TABLE_COLABORADOR, null);
         delete(TABLE_CATEGORIA, null);
+        delete(TABLE_CATEGORIA, null);
     }
 
-    /**
-     * TODO MODIFICAR LAS TABLAS
-     */
     public void cleanDB_P2() {
         delete(TABLE_ASIENTOS_RESERVADOS, null);
         delete(TABLE_SALA_ASIENTOS, null);

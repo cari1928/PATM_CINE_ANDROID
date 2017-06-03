@@ -2,6 +2,7 @@ package com.example.radog.patm_cine_mapas.Volley;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
 import android.widget.Toast;
@@ -55,6 +56,9 @@ public class SyncAsientoReservado implements Response.Listener<String>, Response
         try {
             ((MyApplication) con.getApplicationContext()).init(); //inicializa las variables
             Intent iMainMenu = new Intent(con, MainMenuActivity.class);
+            Bundle data = new Bundle();
+            data.putString("TYPE", "Sucursal");
+            iMainMenu.putExtras(data);
             con.startActivity(iMainMenu);
 
         } catch (Exception e) {

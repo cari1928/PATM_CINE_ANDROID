@@ -55,6 +55,7 @@ public class LoginVolley implements Response.Listener<String>, Response.ErrorLis
     @Override
     public void onErrorResponse(VolleyError error) {
         //Toast.makeText(con, error.toString(), Toast.LENGTH_SHORT).show();
+        Log.e("CINE", "LOGIN-" + error.toString());
         errorMsg();
     }
 
@@ -79,10 +80,13 @@ public class LoginVolley implements Response.Listener<String>, Response.ErrorLis
                 ((MyApplication) con.getApplicationContext()).setTarjeta(objJSON.getString(db.TARJETA));
 
                 lPersonas = db.select("SELECT * FROM persona", new TDAPersona());
-                for (TDAPersona persona : lPersonas) {
-                    if (persona.getEmail().equals(email) && persona.getPass().equals(pass)) {
-                        flag = true;
-                        break;
+                if (lPersonas != null) {
+                    //checa si la persona ya esta registrada en la BD local
+                    for (TDAPersona persona : lPersonas) {
+                        if (persona.getEmail().equals(email) && persona.getPass().equals(pass)) {
+                            flag = true;
+                            break;
+                        }
                     }
                 }
 
