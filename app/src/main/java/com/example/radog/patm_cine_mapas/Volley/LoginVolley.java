@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -36,16 +35,16 @@ public class LoginVolley implements Response.Listener<String>, Response.ErrorLis
 
     private RequestQueue qSolicitudes;
     private Context con;
-    private TextView etUser;
     private String email, pass;
     private DBHelper db;
+    private String type;
 
-    public LoginVolley(Context con, TextView etUser, String email, String pass) {
+    public LoginVolley(Context con, String email, String pass, String type) {
         qSolicitudes = Volley.newRequestQueue(con);
         this.con = con;
-        this.etUser = etUser;
         this.email = email;
         this.pass = pass;
+        this.type = type;
 
         db = new DBHelper(con);
         db.openDB();
@@ -114,10 +113,14 @@ public class LoginVolley implements Response.Listener<String>, Response.ErrorLis
                     }
                 }
 
-                iniLoginService();
-
-                Intent iMainMenu = new Intent(con, MainMenuActivity.class);
-                con.startActivity(iMainMenu);
+                if (type.equals("Login")) {
+                    iniLoginService();
+                    Intent iMainMenu = new Intent(con, MainMenuActivity.class);
+                    Bundle data = new Bundle();
+                    data.putString("TYPE", "ON");
+                    iMainMenu.putExtras(data);
+                    con.startActivity(iMainMenu);
+                }
 
             } else {
                 errorMsg();

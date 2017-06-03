@@ -31,8 +31,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class Login extends AppCompatActivity implements
-        ConnectivityReceiver.ConnectivityReceiverListener {
+public class Login extends AppCompatActivity implements ConnectivityReceiver.ConnectivityReceiverListener {
 
     @BindView(R.id.etEmail)
     EditText etUser;
@@ -43,7 +42,6 @@ public class Login extends AppCompatActivity implements
 
     private String email, pass;
     private DBHelper db;
-    private SyncVolley syncVolley;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,7 +112,7 @@ public class Login extends AppCompatActivity implements
             Toast.makeText(this, "Input the required information", Toast.LENGTH_SHORT).show();
         } else {
             if (checkConnection()) {
-                new LoginVolley(this, etUser, email, pass);
+                new LoginVolley(this, email, pass, "Login");
             } else {
                 localLogin();
             }
@@ -136,9 +134,11 @@ public class Login extends AppCompatActivity implements
             fillUserData(tmpPersona);
             iniLoginService();
             Intent iMainMenu = new Intent(this, MainMenuActivity.class);
+            Bundle data = new Bundle();
+            data.putString("TYPE", "OFF");
+            iMainMenu.putExtras(data);
             startActivity(iMainMenu);
         }
-
     }
 
     private void fillUserData(TDAPersona persona) {
@@ -186,7 +186,7 @@ public class Login extends AppCompatActivity implements
         if (isConnected) {
             message = "Good! Connected to Internet";
             color = Color.WHITE;
-            syncVolley = new SyncVolley(this); //sincroniza BD, solo las funciones
+            SyncVolley syncVolley = new SyncVolley(this);
         } else {
             message = "Sorry! Not connected to internet";
             color = Color.RED;

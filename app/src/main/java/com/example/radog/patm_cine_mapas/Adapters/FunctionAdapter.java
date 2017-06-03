@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -16,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.radog.patm_cine_mapas.Activities.AsientosActivity;
+import com.example.radog.patm_cine_mapas.Activities.Login;
 import com.example.radog.patm_cine_mapas.Connectivity.ConnectivityReceiver;
 import com.example.radog.patm_cine_mapas.Connectivity.MyApplication;
 import com.example.radog.patm_cine_mapas.LongClickListener;
@@ -102,10 +102,18 @@ public class FunctionAdapter extends
     }
 
     public void getItemSelected(MenuItem item, String type) {
-        Intent iSeatings = new Intent(context.getApplicationContext(), AsientosActivity.class);
-        Bundle data = new Bundle();
-        data.putString("TYPE", type);
-        iSeatings.putExtras(data);
+        //Toast.makeText(context, name + " : " + item.getItemId(), Toast.LENGTH_SHORT).show();
+        switch (item.getItemId()) {
+            case 0:
+                if (type.equals("Login")) {
+                    Intent iLogin = new Intent(context.getApplicationContext(), Login.class);
+                    context.startActivity(iLogin);
+                } else if (type.equals("Sucursal")) {
+                    Intent iAsientos = new Intent(context.getApplicationContext(), AsientosActivity.class);
+                    context.startActivity(iAsientos);
+                }
+                break;
+        }
     }
 
     @Override

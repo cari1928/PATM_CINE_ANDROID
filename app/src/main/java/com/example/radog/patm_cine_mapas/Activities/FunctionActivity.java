@@ -162,8 +162,7 @@ public class FunctionActivity extends AppCompatActivity implements
             message = "Good! Connected to Internet";
             color = Color.WHITE;
 
-            //sincroniza BD, solo las funciones
-            if (isConnected) {
+            if (isConnected) { //sincroniza BD, solo las funciones
                 new SyncVolley(this);
             }
         } else {
@@ -317,7 +316,6 @@ public class FunctionActivity extends AppCompatActivity implements
             recyclerView.setAdapter(adapter);
         } catch (Exception e) {
             e.printStackTrace();
-            Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show();
             Toast.makeText(this, "Actualice u obtenga conexión a internet para sincronizar", Toast.LENGTH_SHORT).show();
         }
     }

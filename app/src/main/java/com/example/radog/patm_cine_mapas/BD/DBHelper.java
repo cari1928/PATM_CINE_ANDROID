@@ -467,13 +467,28 @@ public class DBHelper extends SQLiteOpenHelper {
         if (c.moveToFirst()) {
             do {
                 tdaPeli = new TDAPelicula();
-                tdaPeli.setPelicula_id(c.getInt(0));
-                tdaPeli.setTitulo(c.getString(1));
-                tdaPeli.setDescripcion(c.getString(2));
-                tdaPeli.setF_lanzamiento(c.getString(3));
-                tdaPeli.setLenguaje(c.getString(4));
-                tdaPeli.setDuracion(c.getInt(5));
-                tdaPeli.setPoster(c.getString(6));
+
+                if (tipo == 3) {
+                    tdaPeli.setPelicula_id(c.getInt(1));
+                    tdaPeli.setFuncion_id(c.getInt(2));
+                    tdaPeli.setFecha(c.getString(3));
+                    tdaPeli.setTitulo(c.getString(4));
+                    tdaPeli.setNombre(c.getString(5));
+                    tdaPeli.setPais(c.getString(6));
+                    tdaPeli.setCiudad(c.getString(7));
+                    tdaPeli.setDireccion(c.getString(8));
+                    tdaPeli.setHora(c.getString(9));
+                    tdaPeli.setHora_fin(c.getString(10));
+                } else {
+                    //tipo == 1 || tipo == 2
+                    tdaPeli.setPelicula_id(c.getInt(0));
+                    tdaPeli.setTitulo(c.getString(1));
+                    tdaPeli.setDescripcion(c.getString(2));
+                    tdaPeli.setF_lanzamiento(c.getString(3));
+                    tdaPeli.setLenguaje(c.getString(4));
+                    tdaPeli.setDuracion(c.getInt(5));
+                    tdaPeli.setPoster(c.getString(6));
+                }
 
                 if (tipo == 2) {
                     tdaPeli.setFuncion_id(c.getInt(7));

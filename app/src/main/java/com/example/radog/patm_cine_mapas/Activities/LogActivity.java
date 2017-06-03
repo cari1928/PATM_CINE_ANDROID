@@ -51,7 +51,6 @@ public class LogActivity extends AppCompatActivity implements
     private RequestQueue qSolicitudes;
     List<TDAPelicula> lPeliculas;
     private String type;
-    private int tipo;
 
     @BindView(R.id.recycleList)
     RecyclerView recyclerView;
@@ -70,8 +69,6 @@ public class LogActivity extends AppCompatActivity implements
 
         lPeliculas = new ArrayList<>();
         recyclerView.setHasFixedSize(true);
-
-        getVolleyPel(); //sin conexion
 
         adminLayout = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(adminLayout);
@@ -148,9 +145,13 @@ public class LogActivity extends AppCompatActivity implements
         if (isConnected) {
             message = "Good! Connected to Internet";
             color = Color.WHITE;
+
+            getVolleyPel();
         } else {
             message = "Sorry! Not connected to internet";
             color = Color.RED;
+
+            getLocalPel();
         }
 
         Snackbar snackbar = Snackbar.make(findViewById(R.id.log_layout), message, Snackbar.LENGTH_LONG);
@@ -164,6 +165,21 @@ public class LogActivity extends AppCompatActivity implements
     /****************************************************************
      * FIN DE DETECCIÓN DE CONEXIÓN WIFI**************************************************************
      ***************************************************************/
+
+    private void getLocalPel() {
+        String query = "SELECT c.compra_id, c.funcion_id, c.fecha, p.titulo, s.nombre, \n" +
+                "suc.pais, suc.ciudad, suc.direccion, f.hora, f.hora_fin\n" +
+                "FROM compra c\n" +
+                "INNER JOIN funcion f ON c.funcion_id=f.funcion_id\n" +
+                "INNER JOIN sala s ON s.sala_id=f.sala_id\n" +
+                "INNER JOIN sucursal suc ON suc.sucursal_id=s.sucursal_id\n" +
+                "INNER JOIN pelicula p ON p.pelicula_id=f.funcion_id\n" +
+                "WHERE cliente_id=34 \n" +
+                "ORDER BY compra_id DESC\t";
+
+        List<TDAPelicula> lPeliculas = db.select(query, new TDAPelicula(), 3);
+        Log.e("CINE", "LOCAL-LOGIN-" + lPeliculas.get(0).getFecha());
+    }
 
     /****************************************************************
      * Inicio Volley**************************************************************
@@ -218,19 +234,10 @@ public class LogActivity extends AppCompatActivity implements
     }
 
     private void getVolleyPel() {
-        String persona_id = ((MyApplication) this.getApplicationContext()).getPersona_id();
-        String token = ((MyApplication) this.getApplicationContext()).getToken();
-
-        /*String URL = Constants.RUTA_PHP + "/compra/listado/cliente/"
-                + persona_id + "/"
-                + token;*/
-
         String URL = Constants.RUTA_PHP + "/compra/listado/app/"
                 + ((MyApplication) this.getApplicationContext()).getPersona_id() + "/"
                 + ((MyApplication) this.getApplicationContext()).getToken();
-        ;
         Log.e("CINE", URL);
-
 
         StringRequest reqListComp = new StringRequest(Request.Method.GET, URL, this, this) {
             @Override
