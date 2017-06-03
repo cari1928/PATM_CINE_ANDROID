@@ -26,8 +26,5 @@ public class NotificationActivity extends AppCompatActivity {
 
         txtTitle.setText(getIntent().getExtras().getString("title"));
         txtMessage.setText(getIntent().getExtras().getString("message"));
-
-
-
     }
 }

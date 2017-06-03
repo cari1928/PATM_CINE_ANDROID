@@ -47,6 +47,9 @@ public class AsientosActivity extends AppCompatActivity implements ConnectivityR
         setContentView(R.layout.activity_asientos);
         ButterKnife.bind(this);
 
+        Bundle data = getIntent().getExtras();
+        type = data.getString("TYPE");
+
         db = new DBHelper(this);
         db.openDB();
 
