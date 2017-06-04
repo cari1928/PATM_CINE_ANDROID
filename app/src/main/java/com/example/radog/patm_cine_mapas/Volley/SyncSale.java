@@ -32,12 +32,13 @@ import java.util.Map;
 public class SyncSale implements Response.Listener<String>, Response.ErrorListener {
 
     private RequestQueue qSolicitudes;
-    private JSONObject jsonObject = new JSONObject();
+    private JSONObject jsonObject;
     private Context con;
     private DBHelper db;
 
     public SyncSale(Context con) {
         qSolicitudes = Volley.newRequestQueue(con);
+        jsonObject = new JSONObject();
         this.con = con;
 
         db = new DBHelper(con);

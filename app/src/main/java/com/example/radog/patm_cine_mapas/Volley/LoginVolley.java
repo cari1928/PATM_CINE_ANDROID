@@ -147,7 +147,6 @@ public class LoginVolley implements Response.Listener<String>, Response.ErrorLis
 
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
-                //HEADERS =  encabezados para la petición
                 Map<String, String> headers = new HashMap<String, String>();
                 headers.put(
                         "Authorization",

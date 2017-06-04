@@ -36,6 +36,7 @@ import com.example.radog.patm_cine_mapas.TDA.TDAPersona;
 import com.example.radog.patm_cine_mapas.TDA.TDASala;
 import com.example.radog.patm_cine_mapas.TDA.TDASucursal;
 import com.example.radog.patm_cine_mapas.Volley.LoginVolley;
+import com.example.radog.patm_cine_mapas.Volley.SyncProfile;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -164,6 +165,10 @@ public class LogActivity extends AppCompatActivity implements
                 pass = ((MyApplication) getApplicationContext()).getPass();
                 new LoginVolley(this, email, pass, "MainMenu");
             }
+            List<TDAPersona> lPersona = db.select("SELECT * FROM persona", new TDAPersona());
+            for (TDAPersona tmpP : lPersona) {
+                new SyncProfile(this, tmpP);
+            }
             getVolleyPel();
         } else {
             message = "Sorry! Not connected to internet";
@@ -193,6 +198,7 @@ public class LogActivity extends AppCompatActivity implements
             List<TDACompra> lCompras = db.select("SELECT * FROM compra WHERE cliente_id=" + lPersonas.get(0).getPersona_id(), new TDACompra());
             if (lCompras != null) {
                 for (TDACompra compra : lCompras) {
+                    List<TDAFuncion> lFunciones2 = db.select("SELECT * FROM funcion", new TDAFuncion());
                     List<TDAFuncion> lFunciones = db.select("SELECT * FROM funcion WHERE funcion_id=" + compra.getFuncion_id(), new TDAFuncion());
                     if (lFunciones != null) {
                         List<TDAPelicula> lPelis = db.select("SELECT * FROM pelicula WHERE pelicula_id=" + lFunciones.get(0).getPelicula_id(), new TDAPelicula(), 1);
@@ -283,6 +289,20 @@ public class LogActivity extends AppCompatActivity implements
     }
 
     private void getVolleyPel() {
+
+        if (((MyApplication) this.getApplicationContext()).getToken() == null) {
+            Toast.makeText(this, "Refresh, please", Toast.LENGTH_SHORT).show();
+
+            if (!((MyApplication) this.getApplicationContext()).isIntentos()) {
+                ((MyApplication) this.getApplicationContext()).setIntentos(true);
+            } else {
+                Toast.makeText(this, "Sorry, your time has finished", Toast.LENGTH_SHORT).show();
+                Intent iLogin = new Intent(this, Login.class);
+                startActivity(iLogin);
+            }
+            return;
+        }
+
         String URL = Constants.RUTA_PHP + "/compra/listado/app/"
                 + ((MyApplication) this.getApplicationContext()).getPersona_id() + "/"
                 + ((MyApplication) this.getApplicationContext()).getToken();

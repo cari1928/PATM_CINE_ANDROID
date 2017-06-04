@@ -19,7 +19,11 @@ import com.example.radog.patm_cine_mapas.Connectivity.ConnectivityReceiver;
 import com.example.radog.patm_cine_mapas.Connectivity.MyApplication;
 import com.example.radog.patm_cine_mapas.Map.SucursalMapsActivity;
 import com.example.radog.patm_cine_mapas.R;
+import com.example.radog.patm_cine_mapas.TDA.TDAPersona;
 import com.example.radog.patm_cine_mapas.Volley.LoginVolley;
+import com.example.radog.patm_cine_mapas.Volley.SyncProfile;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -57,7 +61,8 @@ public class MainMenuActivity extends AppCompatActivity implements ConnectivityR
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.itmProfile:
-
+                Intent iProfile = new Intent(this, ProfileActivity.class);
+                startActivity(iProfile);
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -92,6 +97,9 @@ public class MainMenuActivity extends AppCompatActivity implements ConnectivityR
         objDBH.closeDB();
     }
 
+    /****************************************************************
+     * DETECCIÓN DE CONECCIÓN WIFI **********************************
+     ***************************************************************/
     @Override
     protected void onResume() {
         super.onResume();
@@ -129,6 +137,13 @@ public class MainMenuActivity extends AppCompatActivity implements ConnectivityR
                 new LoginVolley(this, email, pass, "MainMenu");
             }
 
+            DBHelper db = new DBHelper(this);
+            db.openDB();
+            List<TDAPersona> lPersona = db.select("SELECT * FROM persona", new TDAPersona());
+            for (TDAPersona tmpP : lPersona) {
+                new SyncProfile(this, tmpP);
+            }
+
         } else {
             ((MyApplication) getApplicationContext()).setToken(null);
             message = "Sorry! Not connected to internet";
@@ -141,6 +156,10 @@ public class MainMenuActivity extends AppCompatActivity implements ConnectivityR
         textView.setTextColor(color);
         snackbar.show();
     }
+
+    /****************************************************************
+     * FIN DE DETECCIÓN DE CONEXIÓN WIFI**************************************************************
+     ***************************************************************/
 
     /**
      * To show modal window

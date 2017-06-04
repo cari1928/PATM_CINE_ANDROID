@@ -10,10 +10,13 @@ import android.widget.Toast;
 
 import com.example.radog.patm_cine_mapas.Activities.FunctionActivity;
 import com.example.radog.patm_cine_mapas.Activities.MainMenuActivity;
+import com.example.radog.patm_cine_mapas.BD.DBHelper;
 import com.example.radog.patm_cine_mapas.Connectivity.ConnectivityReceiver;
 import com.example.radog.patm_cine_mapas.Connectivity.MyApplication;
 import com.example.radog.patm_cine_mapas.R;
+import com.example.radog.patm_cine_mapas.TDA.TDAPersona;
 import com.example.radog.patm_cine_mapas.UserData;
+import com.example.radog.patm_cine_mapas.Volley.SyncProfile;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -45,7 +48,14 @@ public class SucursalMapsActivity extends FragmentActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sucursal_maps);
 
-        checkConnection();
+        if (checkConnection()) {
+            DBHelper db = new DBHelper(this);
+            db.openDB();
+            List<TDAPersona> lPersona = db.select("SELECT * FROM persona", new TDAPersona());
+            for (TDAPersona tmpP : lPersona) {
+                new SyncProfile(this, tmpP);
+            }
+        }
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
@@ -141,15 +151,15 @@ public class SucursalMapsActivity extends FragmentActivity implements
         }
     }
 
-    private void checkConnection() {
+    private boolean checkConnection() {
         boolean isConnected = ConnectivityReceiver.isConnected();
-
         if (!isConnected) {
             ((MyApplication) getApplicationContext()).setToken(null);
             Toast.makeText(this, "Sorry, you need internet connection for this", Toast.LENGTH_SHORT).show();
             Intent iMain = new Intent(this, MainMenuActivity.class);
             startActivity(iMain);
         }
+        return isConnected;
     }
 
     public void changeIntent(LatLng position) {

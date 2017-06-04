@@ -50,6 +50,8 @@ public class MyApplication extends Application {
     private static int num_entradas = 1;
     private static int total = 79 * num_entradas;
 
+    boolean intentos = false;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -317,5 +319,13 @@ public class MyApplication extends Application {
 
     public static void setTarjeta(String tarjeta) {
         MyApplication.tarjeta = tarjeta;
+    }
+
+    public boolean isIntentos() {
+        return intentos;
+    }
+
+    public void setIntentos(boolean intentos) {
+        this.intentos = intentos;
     }
 }

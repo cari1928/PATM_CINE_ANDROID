@@ -134,8 +134,6 @@ public class AsientosActivity extends AppCompatActivity implements ConnectivityR
         if (isConnected) {
             message = "Good! Connected to Internet";
             color = Color.WHITE;
-
-            //sincroniza BD, solo las funciones
             new SyncAsientos(this);
         } else {
             ((MyApplication) getApplicationContext()).setToken(null);

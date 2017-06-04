@@ -55,6 +55,9 @@ public class Registration extends AppCompatActivity implements
     @BindView(R.id.etCreditCard)
     EditText etCreditCard;
 
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+
     private JSONObject jsonObject;
     private RequestQueue qSolicitudes;
 
@@ -63,13 +66,9 @@ public class Registration extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
         ButterKnife.bind(this);
+
         checkConnection();
         jsonObject = new JSONObject();
-
-        //pruebas de tiempo de sesión
-        //iniLoginService();
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
@@ -94,7 +93,6 @@ public class Registration extends AppCompatActivity implements
 
     @OnClick(R.id.btnRegister)
     public void btnRegister() {
-        //Toast.makeText(this, etName.getText().toString(), Toast.LENGTH_SHORT).show();
 
         if (checkEditText(etName) &&
                 checkEditText(etLastName) &&
@@ -111,7 +109,6 @@ public class Registration extends AppCompatActivity implements
 
     @Override
     public void onErrorResponse(VolleyError error) {
-        etName.setText(error.toString());
         errorMsg();
     }
 
@@ -176,7 +173,6 @@ public class Registration extends AppCompatActivity implements
             jsonObject.put("tarjeta", etCreditCard.getText().toString());
 
             String URL = Constants.RUTA_JAVA + "/persona/insertar";
-
             StringRequest insCte = new StringRequest(Request.Method.POST, URL, this, this) {
                 @Override
                 public byte[] getBody() throws AuthFailureError {

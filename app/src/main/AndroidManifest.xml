@@ -128,6 +128,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".Activities.Login" />
         </activity>
+        <activity
+            android:name=".Activities.ProfileActivity"
+            android:label="Profile"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Activities.Login" />
+        </activity>
     </application>
 
 </manifest>

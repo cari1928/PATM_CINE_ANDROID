@@ -14,6 +14,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.radog.patm_cine_mapas.BD.DBHelper;
 import com.example.radog.patm_cine_mapas.Constants;
+import com.example.radog.patm_cine_mapas.TDA.TDAFuncion;
 import com.example.radog.patm_cine_mapas.TDA.TDASucursal;
 
 import org.json.JSONArray;
@@ -219,22 +220,7 @@ public class SyncVolley implements Response.Listener<String>, Response.ErrorList
                 if (res == -1) return;
             }
 
-            for (int i = 0; i < jaRep.length(); i++) {
-                tmp = jaRep.getJSONObject(i);
-                res = db.insert(new String[]{
-                        db.COLABORADOR_ID,
-                        db.PELICULA_ID,
-                        db.PUESTO,
-                        db.REPARTO_ID
-                }, new String[]{
-                        tmp.getString(db.COLABORADOR_ID),
-                        tmp.getString(db.PELICULA_ID),
-                        tmp.getString(db.PUESTO),
-                        tmp.getString(db.REPARTO_ID)
-                }, db.TABLE_REPARTO, true);
-
-                if (res == -1) return;
-            }
+            List<TDAFuncion> lF = db.select("select * from funcion", new TDAFuncion());
 
             db.closeDB();
             Log.e("VOLLEY-SYNC", "bien");
