@@ -160,6 +160,8 @@ public class LogActivity extends AppCompatActivity implements
             message = "Good! Connected to Internet";
             color = Color.WHITE;
 
+            Toast.makeText(this, "Be pacient, this will take some time", Toast.LENGTH_SHORT).show();
+
             if (((MyApplication) getApplicationContext()).getToken() == null) {
                 email = ((MyApplication) getApplicationContext()).getEmail();
                 pass = ((MyApplication) getApplicationContext()).getPass();

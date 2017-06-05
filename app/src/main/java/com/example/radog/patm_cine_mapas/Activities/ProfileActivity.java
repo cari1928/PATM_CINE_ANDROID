@@ -86,7 +86,16 @@ public class ProfileActivity extends AppCompatActivity implements ConnectivityRe
             new SyncProfile(this, tmpPersona);
 
             actClienteLocal();
+
+            Toast.makeText(this, "Information saved", Toast.LENGTH_SHORT).show();
         } else {
+            Tools objT = new Tools();
+            String md5Pass = objT.encriptaDato("MD5", etPass.getText().toString());
+            if (!((MyApplication) getApplicationContext()).getPass().equals(md5Pass)) {
+                Toast.makeText(this, "Sorry, password can only be modified with internet connection", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             actClienteLocal();
             Toast.makeText(this, "You information will be updated when you recover internet connection", Toast.LENGTH_SHORT).show();
         }
@@ -156,6 +165,8 @@ public class ProfileActivity extends AppCompatActivity implements ConnectivityRe
     private void actClienteLocal() {
         long res;
         Tools objT = new Tools();
+        String md5Pass = objT.encriptaDato("MD5", etPass.getText().toString());
+
         res = db.update(new String[]{
                 db.NOMBRE,
                 db.APELLIDOS,
@@ -165,7 +176,7 @@ public class ProfileActivity extends AppCompatActivity implements ConnectivityRe
         }, new String[]{
                 etName.getText().toString(),
                 etLastName.getText().toString(),
-                objT.encriptaDato("MD5", etPass.getText().toString()),
+                md5Pass,
                 etAge.getText().toString(),
                 etCreditCard.getText().toString()
         }, "email='" + ((MyApplication) getApplicationContext()).getEmail() + "'", db.TABLE_PERSONA);

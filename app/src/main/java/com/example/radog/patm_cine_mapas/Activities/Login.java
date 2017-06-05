@@ -52,10 +52,10 @@ public class Login extends AppCompatActivity implements ConnectivityReceiver.Con
         db = new DBHelper(this);
         db.openDB();
 
-        Tools objT = new Tools();
+        /*Tools objT = new Tools();
         String dato = objT.encriptaDato("MD5", "1234");
         db.update(new String[]{db.PASS}, new String[]{dato}, "persona_id=34", db.TABLE_PERSONA);
-        List<TDAPersona> lPer = db.select("select * from persona", new TDAPersona());
+        List<TDAPersona> lPer = db.select("select * from persona", new TDAPersona());*/
 
         closeService();
 
