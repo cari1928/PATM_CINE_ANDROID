@@ -85,24 +85,27 @@ public class ProfileActivity extends AppCompatActivity implements ConnectivityRe
             tmpPersona.setTarjeta(etCreditCard.getText().toString());
             new SyncProfile(this, tmpPersona);
 
-            actClienteLocal();
+            String pass = etPass.getText().toString();
+            if (!((MyApplication) getApplicationContext()).getPass().equals(etPass.getText().toString())) {
+                Tools objT = new Tools();
+                pass = objT.encriptaDato("MD5", etPass.getText().toString());
+            }
+            actClienteLocal(pass);
 
             Toast.makeText(this, "Information saved", Toast.LENGTH_SHORT).show();
         } else {
-            Tools objT = new Tools();
-            String md5Pass = objT.encriptaDato("MD5", etPass.getText().toString());
-            if (!((MyApplication) getApplicationContext()).getPass().equals(md5Pass)) {
+            String pass = etPass.getText().toString();
+            if (!((MyApplication) getApplicationContext()).getPass().equals(pass)) {
                 Toast.makeText(this, "Sorry, password can only be modified with internet connection", Toast.LENGTH_SHORT).show();
                 return;
             }
-
-            actClienteLocal();
+            actClienteLocal(etPass.getText().toString());
             Toast.makeText(this, "You information will be updated when you recover internet connection", Toast.LENGTH_SHORT).show();
         }
     }
 
     /****************************************************************
-     * DETECCIÓN DE CONECCIÓN WIFI **************************************************************
+     * DETECCIÓN DE CONECCIÓN WIFI **********************************
      ***************************************************************/
     @Override
     protected void onResume() {
@@ -162,10 +165,8 @@ public class ProfileActivity extends AppCompatActivity implements ConnectivityRe
      * FIN DE DETECCIÓN DE CONEXIÓN WIFI*****************************
      ***************************************************************/
 
-    private void actClienteLocal() {
+    private void actClienteLocal(String pass) {
         long res;
-        Tools objT = new Tools();
-        String md5Pass = objT.encriptaDato("MD5", etPass.getText().toString());
 
         res = db.update(new String[]{
                 db.NOMBRE,
@@ -176,7 +177,7 @@ public class ProfileActivity extends AppCompatActivity implements ConnectivityRe
         }, new String[]{
                 etName.getText().toString(),
                 etLastName.getText().toString(),
-                md5Pass,
+                pass,
                 etAge.getText().toString(),
                 etCreditCard.getText().toString()
         }, "email='" + ((MyApplication) getApplicationContext()).getEmail() + "'", db.TABLE_PERSONA);

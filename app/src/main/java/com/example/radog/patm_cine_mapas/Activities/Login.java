@@ -128,11 +128,16 @@ public class Login extends AppCompatActivity implements ConnectivityReceiver.Con
         List<TDAPersona> lPersonas = db.select("SELECT * FROM persona", new TDAPersona());
         TDAPersona tmpPersona = null;
 
-        for (TDAPersona persona : lPersonas) {
-            if (persona.getEmail().equals(email) && persona.getPass().equals(pass)) {
-                tmpPersona = persona;
-                break;
+        if (lPersonas != null) {
+            for (TDAPersona persona : lPersonas) {
+                if (persona.getEmail().equals(email) && persona.getPass().equals(pass)) {
+                    tmpPersona = persona;
+                    break;
+                }
             }
+        } else {
+            Toast.makeText(this, "Sorry, your first login has to be with internet", Toast.LENGTH_SHORT).show();
+            return;
         }
 
         if (tmpPersona != null) {
@@ -143,6 +148,9 @@ public class Login extends AppCompatActivity implements ConnectivityReceiver.Con
             data.putString("TYPE", "OFF");
             iMainMenu.putExtras(data);
             startActivity(iMainMenu);
+        } else {
+            Toast.makeText(this, "Unkown account", Toast.LENGTH_SHORT).show();
+            return;
         }
     }
 
